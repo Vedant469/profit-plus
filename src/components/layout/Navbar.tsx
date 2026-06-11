@@ -34,12 +34,12 @@ export default function Navbar() {
           scrolled ? 'bg-slate-950/95 backdrop-blur-md border-b border-white/5 py-3' : 'py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
               <TrendingUp className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-white text-lg">Profit<span className="text-green-400">Plus</span></span>
+            <span className="font-bold text-white text-lg">Profit<span className="text-amber-400">Plus</span></span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
@@ -61,12 +61,12 @@ export default function Navbar() {
               <TrendingUp className="w-4 h-4" />
               Client Login
             </Link>
-            <Link to="/contact" className="flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors">
+            <Link to="/contact" className="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-lg transition-colors">
               Get Started <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <button className="md:hidden text-gray-400 hover:text-white" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="md:hidden text-gray-400 hover:text-white p-1" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -82,13 +82,13 @@ export default function Navbar() {
           >
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <Link key={link.href} to={link.href} className="text-gray-300 hover:text-white font-medium py-2">
+                <Link key={link.href} to={link.href} className="text-gray-300 hover:text-white font-medium py-2 border-b border-white/5">
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
-                <Link to="/dashboard" className="text-gray-400 hover:text-white text-sm">Client Login</Link>
-                <Link to="/contact" className="px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg text-center">Get Started</Link>
+              <div className="pt-4 flex flex-col gap-3">
+                <Link to="/dashboard" className="text-gray-400 hover:text-white text-sm text-center py-2">Client Login</Link>
+                <Link to="/contact" className="px-4 py-3 bg-amber-500 text-slate-950 text-sm font-bold rounded-lg text-center">Get Started</Link>
               </div>
             </div>
           </motion.div>
