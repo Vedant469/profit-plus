@@ -70,7 +70,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
+      <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-amber-500/10 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/10 rounded-full blur-3xl" />
@@ -145,7 +145,7 @@ export default function HomePage() {
       </section>
 
       {/* Client Logos */}
-      <section className="py-12 bg-slate-900/30 border-y border-white/5 overflow-hidden">
+      <section className="py-12 bg-slate-900/30 border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <p className="text-center text-gray-500 text-sm mb-8">TRUSTED BY FAST-GROWING COMPANIES</p>
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
@@ -186,7 +186,7 @@ export default function HomePage() {
       </section>
 
       {/* Services */}
-      <section className="py-20 md:py-24 bg-slate-950">
+      <section id="services" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -229,7 +229,7 @@ export default function HomePage() {
       </section>
 
       {/* Case Studies */}
-      <section className="py-20 md:py-24 bg-slate-900/30">
+      <section id="portfolio" className="py-20 md:py-24 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -279,7 +279,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 md:py-24 bg-slate-950">
+      <section id="testimonials" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -321,7 +321,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section className="py-20 md:py-24 bg-slate-900/30">
+      <section id="pricing" className="py-20 md:py-24 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -384,7 +384,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 md:py-24 bg-slate-950">
+      <section id="faq" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

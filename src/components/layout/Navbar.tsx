@@ -4,16 +4,26 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, TrendingUp, ChevronRight } from 'lucide-react'
 
 const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Services', href: '/services' },
-  { label: 'Portfolio', href: '/portfolio' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Home', href: '/', sectionId: 'hero' },
+  { label: 'Services', href: '/services', sectionId: 'services' },
+  { label: 'Portfolio', href: '/portfolio', sectionId: 'portfolio' },
+  { label: 'About', href: '/about', sectionId: null },
+  { label: 'Contact', href: '/contact', sectionId: null },
 ]
+
+const sectionToNav: Record<string, string> = {
+  hero: '/',
+  services: '/services',
+  portfolio: '/portfolio',
+  testimonials: '/portfolio',
+  pricing: '/services',
+  faq: '/',
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('/')
   const location = useLocation()
 
   useEffect(() => {
@@ -24,7 +34,35 @@ export default function Navbar() {
 
   useEffect(() => setMobileOpen(false), [location])
 
+  useEffect(() => {
+    if (location.pathname !== '/') return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const nav = sectionToNav[entry.target.id]
+            if (nav) setActiveSection(nav)
+          }
+        })
+      },
+      {
+        threshold: 0.3,
+        rootMargin: '-80px 0px -30% 0px',
+      }
+    )
+
+    const ids = ['hero', 'services', 'portfolio', 'testimonials', 'pricing', 'faq']
+    ids.forEach((id) => {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    })
+
+    return () => observer.disconnect()
+  }, [location.pathname])
+
   const isActive = (href: string) => {
+    if (location.pathname === '/') return activeSection === href
     if (href === '/') return location.pathname === '/'
     return location.pathname.startsWith(href)
   }
@@ -54,22 +92,27 @@ export default function Navbar() {
                 to={link.href}
                 className="relative px-4 py-2 group"
               >
-                <span className={`text-sm font-medium transition-colors ${
+                <span className={`text-sm font-medium transition-all duration-200 ${
                   isActive(link.href) ? 'text-white' : 'text-gray-400 hover:text-white'
                 }`}>
                   {link.label}
                 </span>
-                {/* Active indicator bar */}
+
+                {/* Animated glowing underbar */}
                 {isActive(link.href) && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
+                  <>
+                    <motion.div
+                      layoutId="activeNav"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                    <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-amber-400 blur-sm opacity-80 rounded-full" />
+                  </>
                 )}
-                {/* Glow effect */}
-                {isActive(link.href) && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400 blur-sm opacity-70" />
+
+                {/* Hover dot */}
+                {!isActive(link.href) && (
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-400 rounded-full opacity-0 group-hover:opacity-60 transition-opacity" />
                 )}
               </Link>
             ))}
@@ -85,7 +128,7 @@ export default function Navbar() {
             </Link>
             <Link
               to="/contact"
-              className="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-lg transition-all hover:shadow-lg hover:shadow-amber-500/25"
             >
               Get Started <ChevronRight className="w-3.5 h-3.5" />
             </Link>
@@ -121,7 +164,7 @@ export default function Navbar() {
                 >
                   {link.label}
                   {isActive(link.href) && (
-                    <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-amber-400 rounded-full shadow-lg shadow-amber-400/50" />
                   )}
                 </Link>
               ))}
