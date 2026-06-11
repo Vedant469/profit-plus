@@ -22,8 +22,8 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Campaigns</h1>
-        <p className="text-gray-400 mt-1">Track and manage all your active campaigns.</p>
+        <h1 className="text-xl md:text-2xl font-bold text-white">Campaigns</h1>
+        <p className="text-gray-400 mt-1 text-sm">Track and manage all your active campaigns.</p>
       </div>
 
       {/* Summary Cards */}
@@ -33,7 +33,7 @@ export default function CampaignsPage() {
           { label: 'Paused', count: campaignData.filter(c => c.status === 'paused').length, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
           { label: 'Completed', count: campaignData.filter(c => c.status === 'completed').length, color: 'text-gray-400 bg-gray-500/10 border-gray-500/20' },
         ].map(({ label, count, color }) => (
-          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-between">
+          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-between hover:border-amber-500/10 transition-all">
             <span className="text-gray-400 text-sm">{label} Campaigns</span>
             <span className={`px-3 py-1 rounded-full text-sm font-bold border ${color}`}>{count}</span>
           </div>
@@ -67,7 +67,7 @@ export default function CampaignsPage() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table - Desktop */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -77,13 +77,13 @@ export default function CampaignsPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/5">
-                <th className="text-left px-6 py-4 text-gray-400 text-sm font-medium">Campaign</th>
-                <th className="text-left px-6 py-4 text-gray-400 text-sm font-medium">Channel</th>
-                <th className="text-left px-6 py-4 text-gray-400 text-sm font-medium">Status</th>
-                <th className="text-right px-6 py-4 text-gray-400 text-sm font-medium">Budget</th>
-                <th className="text-right px-6 py-4 text-gray-400 text-sm font-medium">Spent</th>
-                <th className="text-right px-6 py-4 text-gray-400 text-sm font-medium">Conversions</th>
-                <th className="text-right px-6 py-4 text-gray-400 text-sm font-medium">ROAS</th>
+                <th className="text-left px-4 md:px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-wide">Campaign</th>
+                <th className="text-left px-4 md:px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-wide hidden md:table-cell">Channel</th>
+                <th className="text-left px-4 md:px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-wide">Status</th>
+                <th className="text-right px-4 md:px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-wide hidden sm:table-cell">Budget</th>
+                <th className="text-right px-4 md:px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-wide hidden lg:table-cell">Spent</th>
+                <th className="text-right px-4 md:px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-wide hidden lg:table-cell">Conversions</th>
+                <th className="text-right px-4 md:px-6 py-4 text-gray-400 text-xs font-medium uppercase tracking-wide">ROAS</th>
               </tr>
             </thead>
             <tbody>
@@ -95,37 +95,37 @@ export default function CampaignsPage() {
                   transition={{ delay: i * 0.05 }}
                   className="border-b border-white/5 hover:bg-white/5 transition-colors"
                 >
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <p className="text-white font-medium text-sm">{campaign.name}</p>
                     <p className="text-gray-500 text-xs mt-0.5">{campaign.client}</p>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4 hidden md:table-cell">
                     <span className="text-gray-300 text-sm">{campaign.channel}</span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-medium border capitalize ${statusColors[campaign.status] ?? statusColors['completed']}`}>
                       {campaign.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right hidden sm:table-cell">
                     <span className="text-gray-300 text-sm">${campaign.budget.toLocaleString()}</span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right hidden lg:table-cell">
                     <div>
                       <span className="text-gray-300 text-sm">${campaign.spent.toLocaleString()}</span>
                       <div className="w-16 h-1 bg-white/10 rounded-full mt-1 ml-auto">
                         <div
-                          className="h-1 bg-blue-500 rounded-full"
+                          className="h-1 bg-amber-500 rounded-full"
                           style={{ width: `${Math.min((campaign.spent / campaign.budget) * 100, 100)}%` }}
                         />
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right hidden lg:table-cell">
                     <span className="text-gray-300 text-sm">{campaign.conversions.toLocaleString()}</span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className={`text-sm font-semibold ${campaign.roas >= 5 ? 'text-emerald-400' : campaign.roas >= 3 ? 'text-amber-400' : 'text-red-400'}`}>
+                  <td className="px-4 md:px-6 py-4 text-right">
+                    <span className={`text-sm font-bold ${campaign.roas >= 5 ? 'text-emerald-400' : campaign.roas >= 3 ? 'text-amber-400' : 'text-red-400'}`}>
                       {campaign.roas}x
                     </span>
                   </td>
@@ -135,7 +135,7 @@ export default function CampaignsPage() {
           </table>
 
           {filtered.length === 0 && (
-            <div className="py-12 text-center text-gray-500">No campaigns found.</div>
+            <div className="py-12 text-center text-gray-500 text-sm">No campaigns found.</div>
           )}
         </div>
       </motion.div>
