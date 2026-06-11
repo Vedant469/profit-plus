@@ -95,18 +95,41 @@ export default function Footer() {
 
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Contact</h4>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-2.5 text-gray-400 text-sm">
-                <Mail className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                hello@profitplus.io
+            <ul className="space-y-4">
+              <li className="flex items-start gap-2.5 text-gray-400 text-sm">
+                <Mail className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                <a href="mailto:profitplus025@gmail.com" className="hover:text-amber-400 transition-colors break-all">
+                  profitplus025@gmail.com
+                </a>
               </li>
-              <li className="flex items-center gap-2.5 text-gray-400 text-sm">
-                <Phone className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                +1 (888) 420-9999
+              <li className="space-y-2">
+                <div className="flex items-center gap-2.5 text-gray-400 text-sm">
+                  <Phone className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <span className="text-gray-500 text-xs">Direct Contacts</span>
+                </div>
+                <div className="pl-6 space-y-1.5">
+                  {[
+                    { name: 'Atharva', phone: '+91 70280 62213' },
+                    { name: 'Rushikesh', phone: '+91 84462 07529' },
+                    { name: 'Vedant', phone: '+91 77965 97171' },
+                  ].map(({ name, phone }) => (
+                    <div key={name} className="flex items-center justify-between gap-2">
+                      <span className="text-gray-400 text-xs">{name}</span>
+                      <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-amber-400 hover:text-amber-300 text-xs font-mono transition-colors">
+                        {phone}
+                      </a>
+                    </div>
+                  ))}
+                </div>
               </li>
               <li className="flex items-start gap-2.5 text-gray-400 text-sm">
                 <MapPin className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-                340 Madison Ave, New York, NY 10017
+                <span className="text-xs leading-relaxed">
+                  PARSVNATH PRATISHTHA,<br />
+                  Nakshtra Commercial St,<br />
+                  Chinchwad, Pimpri-Chinchwad,<br />
+                  Maharashtra 411019
+                </span>
               </li>
             </ul>
           </div>
