@@ -12,6 +12,9 @@ import BackToTop from './components/BackToTop'
 import WhatsAppButton from './components/WhatsAppButton'
 import PageTransition from './components/PageTransition'
 import MobileBottomNav from './components/MobileBottomNav'
+import CustomCursor from './components/CustomCursor'
+import useSmoothScroll from './hooks/useSmoothScroll'
+import { SkeletonPage } from './components/Skeleton'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
@@ -36,16 +39,29 @@ function PublicLayout({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Loader() {
+function DashboardLoader() {
+  return (
+    <div className="min-h-screen bg-slate-950">
+      <SkeletonPage />
+    </div>
+  )
+}
+
+function PublicLoader() {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 border-2 border-amber-500/20 border-t-amber-500 rounded-full animate-spin" />
+        <p className="text-gray-500 text-sm animate-pulse">Loading...</p>
+      </div>
     </div>
   )
 }
 
 function AnimatedRoutes() {
   const location = useLocation()
+  const isDashboard = location.pathname.startsWith('/dashboard')
+
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
@@ -66,18 +82,27 @@ function AnimatedRoutes() {
   )
 }
 
-export default function App() {
+function AppContent() {
+  useSmoothScroll()
+  const location = useLocation()
+  const isDashboard = location.pathname.startsWith('/dashboard')
+
   return (
     <>
+      <CustomCursor />
       <ScrollToTop />
       <ScrollProgressBar />
       <CookieBanner />
-      <BackToTop />
-      <WhatsAppButton />
+      {!isDashboard && <BackToTop />}
+      {!isDashboard && <WhatsAppButton />}
       <MobileBottomNav />
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
         <AnimatedRoutes />
       </Suspense>
     </>
   )
+}
+
+export default function App() {
+  return <AppContent />
 }

@@ -5,12 +5,77 @@
 @tailwind utilities;
 
 @layer base {
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  * {
+    box-sizing: border-box;
+    cursor: none !important;
+  }
+
+  html { scroll-behavior: auto; }
+
   body {
     background-color: #020617;
     color: #f8fafc;
     font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Re-enable cursor on mobile */
+  @media (max-width: 768px) {
+    * { cursor: auto !important; }
+  }
+
+  /* Smooth image loading */
+  img {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  img:not([src]) {
+    opacity: 0;
+  }
+
+  /* Better focus styles */
+  :focus-visible {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Button press effect */
+  .btn-press {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .btn-press:active {
+    transform: scale(0.97);
+  }
+
+  /* Card hover lift */
+  .card-hover {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Link underline animation */
+  .link-animate {
+    position: relative;
+  }
+  .link-animate::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #f59e0b;
+    transition: width 0.3s ease;
+  }
+  .link-animate:hover::after {
+    width: 100%;
   }
 }
 
@@ -40,47 +105,53 @@
   .glow-card {
     animation: border-pulse 3s ease-in-out infinite;
   }
-
   .glow-card:hover {
     animation: none;
-    box-shadow: 0 0 25px 1px rgba(245, 158, 11, 0.15), 0 0 0 1px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 25px 1px rgba(245,158,11,0.15), 0 0 0 1px rgba(245,158,11,0.3);
   }
 }
 
-/* Marquee */
+/* ── Typewriter cursor ─────────────────────────────────────── */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.typewriter-cursor {
+  animation: blink 1s step-end infinite;
+  color: #f59e0b;
+  margin-left: 2px;
+  font-weight: 300;
+}
+
+/* ── Marquee ───────────────────────────────────────────────── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
-
 .animate-marquee {
   animation: marquee 25s linear infinite;
   display: flex;
   width: max-content;
 }
-
 .animate-marquee:hover {
   animation-play-state: paused;
 }
 
-/* Gradient shift */
+/* ── Gradient shift ────────────────────────────────────────── */
 @keyframes gradient-shift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* Border pulse glow */
+/* ── Border pulse glow ─────────────────────────────────────── */
 @keyframes border-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.05); }
-  50% { box-shadow: 0 0 20px 1px rgba(245, 158, 11, 0.15), 0 0 0 1px rgba(245, 158, 11, 0.2); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(245,158,11,0.05); }
+  50% { box-shadow: 0 0 20px 1px rgba(245,158,11,0.15), 0 0 0 1px rgba(245,158,11,0.2); }
 }
 
-/* Flip card */
-.flip-card {
-  perspective: 1000px;
-}
-
+/* ── Flip card ─────────────────────────────────────────────── */
+.flip-card { perspective: 1000px; }
 .flip-card-inner {
   transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
   transform-style: preserve-3d;
@@ -88,11 +159,7 @@
   width: 100%;
   height: 100%;
 }
-
-.flip-card:hover .flip-card-inner {
-  transform: rotateY(180deg);
-}
-
+.flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
 .flip-card-front,
 .flip-card-back {
   backface-visibility: hidden;
@@ -101,23 +168,75 @@
   inset: 0;
   border-radius: 1rem;
 }
+.flip-card-back { transform: rotateY(180deg); }
 
-.flip-card-back {
-  transform: rotateY(180deg);
+/* ── Shimmer skeleton ──────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
 }
 
-/* Pull to refresh */
-@keyframes pull-refresh {
+/* ── Smooth page transitions ───────────────────────────────── */
+.page-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ── Button ripple ─────────────────────────────────────────── */
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  pointer-events: none;
+}
+
+/* ── Pull to refresh indicator ─────────────────────────────── */
+@keyframes pull-down {
   0% { transform: translateY(-100%); opacity: 0; }
   50% { transform: translateY(0); opacity: 1; }
   100% { transform: translateY(-100%); opacity: 0; }
 }
-
-.pull-refresh {
-  animation: pull-refresh 1.5s ease-in-out;
+.pull-indicator {
+  animation: pull-down 1.5s ease-in-out;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 3px; }
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #f59e0b, #f97316);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+
+/* ── Selection ─────────────────────────────────────────────── */
+::selection {
+  background: rgba(245, 158, 11, 0.3);
+  color: #fff;
+}
