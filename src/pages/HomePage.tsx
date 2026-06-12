@@ -5,7 +5,7 @@ import { ArrowRight, Star, TrendingUp, Users, Rocket, Award, Target, Search, Bar
 import { stats, services, caseStudies, testimonials } from '../data/mockData'
 import ParticleBackground from '../components/ParticleBackground'
 
-// ── Typewriter ──────────────────────────────────────────────
+// ── Smooth Typewriter ─────────────────────────────────────────
 const phrases = [
   'We Build Profit Machines',
   'We Engineer Growth Systems',
@@ -17,34 +17,50 @@ function TypewriterText() {
   const [phraseIndex, setPhraseIndex] = useState(0)
   const [text, setText] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
+    if (isPaused) return
     const phrase = phrases[phraseIndex]!
-    let timeout: ReturnType<typeof setTimeout>
 
     if (!deleting && text.length < phrase.length) {
-      timeout = setTimeout(() => setText(phrase.slice(0, text.length + 1)), 80)
-    } else if (!deleting && text.length === phrase.length) {
-      timeout = setTimeout(() => setDeleting(true), 2200)
-    } else if (deleting && text.length > 0) {
-      timeout = setTimeout(() => setText(phrase.slice(0, text.length - 1)), 40)
-    } else if (deleting && text.length === 0) {
+      const timeout = setTimeout(() => {
+        setText(phrase.slice(0, text.length + 1))
+      }, 55 + Math.random() * 45)
+      return () => clearTimeout(timeout)
+    }
+
+    if (!deleting && text.length === phrase.length) {
+      setIsPaused(true)
+      const timeout = setTimeout(() => {
+        setIsPaused(false)
+        setDeleting(true)
+      }, 2500)
+      return () => clearTimeout(timeout)
+    }
+
+    if (deleting && text.length > 0) {
+      const timeout = setTimeout(() => {
+        setText(phrase.slice(0, text.length - 1))
+      }, 25)
+      return () => clearTimeout(timeout)
+    }
+
+    if (deleting && text.length === 0) {
       setDeleting(false)
       setPhraseIndex((prev) => (prev + 1) % phrases.length)
     }
-
-    return () => clearTimeout(timeout)
-  }, [text, deleting, phraseIndex])
+  }, [text, deleting, phraseIndex, isPaused])
 
   return (
     <span className="animated-gradient-text">
       {text}
-      <span className="animate-pulse text-amber-400">|</span>
+      <span className="typewriter-cursor">|</span>
     </span>
   )
 }
 
-// ── Animated Counter ─────────────────────────────────────────
+// ── Animated Counter ──────────────────────────────────────────
 function AnimatedCounter({ target, suffix, inView }: { target: number; suffix: string; inView: boolean }) {
   const [count, setCount] = useState(0)
 
@@ -98,7 +114,12 @@ const serviceBackColors: Record<string, string> = {
 
 const statIcons = [Users, Rocket, TrendingUp, Award]
 
-const clients = ['TechFlow', 'Meridian', 'Vanguard', 'HealthPath', 'Nexora', 'Stratum', 'Elevate', 'CoreBridge', 'TechFlow', 'Meridian', 'Vanguard', 'HealthPath', 'Nexora', 'Stratum', 'Elevate', 'CoreBridge']
+const clients = [
+  'TechFlow', 'Meridian', 'Vanguard', 'HealthPath',
+  'Nexora', 'Stratum', 'Elevate', 'CoreBridge',
+  'TechFlow', 'Meridian', 'Vanguard', 'HealthPath',
+  'Nexora', 'Stratum', 'Elevate', 'CoreBridge',
+]
 
 const liveStats = [
   { label: 'Total Profit Generated', value: 1600, prefix: '$', suffix: 'M+' },
@@ -156,8 +177,24 @@ export default function HomePage() {
     <div>
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/40" />
+
         <ParticleBackground />
-        <div className="absolute inset-0">
+
+        <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-amber-500/10 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/10 rounded-full blur-3xl" />
         </div>
@@ -178,7 +215,8 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-6 min-h-[1.2em]"
+              className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-6"
+              style={{ minHeight: '1.3em' }}
             >
               <TypewriterText />
             </motion.h1>
@@ -198,11 +236,17 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Link to="/contact" className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25">
+              <Link
+                to="/contact"
+                className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
+              >
                 Start Maximizing Profit
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/portfolio" className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200">
+              <Link
+                to="/portfolio"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200"
+              >
                 See Our Results
               </Link>
             </motion.div>
@@ -231,14 +275,17 @@ export default function HomePage() {
       {/* ── Marquee Client Logos ──────────────────────────────── */}
       <section className="py-12 bg-slate-900/30 border-y border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6">
-          <p className="text-center text-gray-500 text-sm">TRUSTED BY FAST-GROWING COMPANIES</p>
+          <p className="text-center text-gray-500 text-sm tracking-widest">TRUSTED BY FAST-GROWING COMPANIES</p>
         </div>
         <div className="overflow-hidden relative">
           <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-950 to-transparent z-10" />
           <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10" />
           <div className="animate-marquee">
             {clients.map((client, i) => (
-              <span key={i} className="mx-10 text-gray-500 hover:text-amber-400 font-bold text-xl tracking-wide transition-colors cursor-default">
+              <span
+                key={i}
+                className="mx-10 text-gray-500 hover:text-amber-400 font-bold text-xl tracking-wide transition-colors cursor-default select-none"
+              >
                 {client}
               </span>
             ))}
@@ -342,11 +389,10 @@ export default function HomePage() {
                           {serviceIcons[service.title]}
                         </div>
                         <h3 className="text-white font-semibold text-lg mb-2">{service.title}</h3>
-                        <p className="text-gray-400 text-sm leading-relaxed">{service.description}</p>
+                        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{service.description}</p>
                       </div>
                       <p className="text-amber-400 text-xs mt-3">Hover to see what's included →</p>
                     </div>
-
                     {/* Back */}
                     <div className={`flip-card-back p-6 bg-gradient-to-br ${backColor} border flex flex-col justify-center`}>
                       <h3 className="text-white font-bold text-lg mb-4">{service.title}</h3>
@@ -556,7 +602,7 @@ export default function HomePage() {
                   className="w-full flex items-center justify-between p-5 text-left"
                 >
                   <span className="text-white font-medium text-sm md:text-base">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform ${openFaq === i ? 'rotate-180 text-amber-400' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180 text-amber-400' : ''}`} />
                 </button>
                 <AnimatePresence>
                   {openFaq === i && (
@@ -564,10 +610,10 @@ export default function HomePage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 pb-5">
+                      <div className="px-5 pb-5 border-t border-white/5 pt-3">
                         <p className="text-gray-400 text-sm leading-relaxed">{faq.a}</p>
                       </div>
                     </motion.div>
@@ -594,11 +640,17 @@ export default function HomePage() {
               Book a free strategy call and we'll show you exactly how we'd grow your profits in the next 90 days.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/contact" className="group flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25">
+              <Link
+                to="/contact"
+                className="group flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
+              >
                 Book Free Strategy Call
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/portfolio" className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200">
+              <Link
+                to="/portfolio"
+                className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200"
+              >
                 View Case Studies
               </Link>
             </div>
