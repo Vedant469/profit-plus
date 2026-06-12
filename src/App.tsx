@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -15,6 +15,7 @@ import MobileBottomNav from './components/MobileBottomNav'
 import CustomCursor from './components/CustomCursor'
 import useSmoothScroll from './hooks/useSmoothScroll'
 import { SkeletonPage } from './components/Skeleton'
+import IntroAnimation from './components/IntroAnimation'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
@@ -60,7 +61,6 @@ function PublicLoader() {
 
 function AnimatedRoutes() {
   const location = useLocation()
-
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
@@ -85,9 +85,18 @@ function AppContent() {
   useSmoothScroll()
   const location = useLocation()
   const isDashboard = location.pathname.startsWith('/dashboard')
+  const [showIntro, setShowIntro] = useState(() => {
+    return !sessionStorage.getItem('pp-intro-shown')
+  })
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem('pp-intro-shown', 'true')
+    setShowIntro(false)
+  }
 
   return (
     <>
+      {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
       <CustomCursor />
       <ScrollToTop />
       <ScrollProgressBar />
