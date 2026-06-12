@@ -20,41 +20,48 @@ const notifications = [
 ]
 
 function getRandomTime() {
-  const times = ['Just now', '2 min ago', '5 min ago', '8 min ago', '12 min ago', '15 min ago']
-  return times[Math.floor(Math.random() * times.length)]
+  const times = ['Just now', '2 min ago', '5 min ago', '8 min ago', '12 min ago']
+  return times[Math.floor(Math.random() * times.length)]!
 }
 
 export default function SocialProofTicker() {
-  const [current, setCurrent] = useState<{ name: string; location: string; action: string; time: string } | null>(null)
+  const [current, setCurrent] = useState<{
+    name: string
+    location: string
+    action: string
+    time: string
+  } | null>(null)
   const [visible, setVisible] = useState(false)
-  const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    // Show first notification after 5 seconds
-    const initialDelay = setTimeout(() => {
+    let currentIndex = 0
+    let hideTimer: ReturnType<typeof setTimeout>
+    let nextTimer: ReturnType<typeof setTimeout>
+
+    const showNotification = (i: number) => {
+      const notif = notifications[i % notifications.length]!
+      setCurrent({ ...notif, time: getRandomTime() })
+      setVisible(true)
+
+      hideTimer = setTimeout(() => {
+        setVisible(false)
+        nextTimer = setTimeout(() => {
+          currentIndex = (i + 1) % notifications.length
+          showNotification(currentIndex)
+        }, 8000)
+      }, 4000)
+    }
+
+    const initialTimer = setTimeout(() => {
       showNotification(0)
     }, 5000)
 
-    return () => clearTimeout(initialDelay)
+    return () => {
+      clearTimeout(initialTimer)
+      clearTimeout(hideTimer)
+      clearTimeout(nextTimer)
+    }
   }, [])
-
-  const showNotification = (i: number) => {
-    const notif = notifications[i % notifications.length]!
-    setCurrent({ ...notif, time: getRandomTime() })
-    setVisible(true)
-
-    // Hide after 4 seconds
-    setTimeout(() => {
-      setVisible(false)
-
-      // Show next after 8 seconds
-      setTimeout(() => {
-        const nextIndex = (i + 1) % notifications.length
-        setIndex(nextIndex)
-        showNotification(nextIndex)
-      }, 8000)
-    }, 4000)
-  }
 
   return (
     <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-40 max-w-xs w-full pointer-events-none">
@@ -68,16 +75,13 @@ export default function SocialProofTicker() {
             className="bg-slate-900 border border-white/10 rounded-2xl p-4 shadow-2xl shadow-black/50 pointer-events-auto"
           >
             <div className="flex items-start gap-3">
-              {/* Avatar */}
               <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/20">
                 <span className="text-white text-sm font-bold">
                   {current.name[0]}
                 </span>
               </div>
-
-              {/* Content */}
               <div className="flex-1 min-w-0">
-                <p className="text-white text-sm font-semibold truncate">
+                <p className="text-white text-sm font-semibold">
                   {current.name}
                   <span className="text-gray-400 font-normal"> from </span>
                   <span className="text-amber-400">{current.location}</span>
@@ -88,8 +92,6 @@ export default function SocialProofTicker() {
                   <p className="text-gray-500 text-xs">{current.time}</p>
                 </div>
               </div>
-
-              {/* Icon */}
               <div className="w-8 h-8 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <TrendingUp className="w-4 h-4 text-amber-400" />
               </div>
