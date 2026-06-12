@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Download, Clock, CheckCircle, Search } from 'lucide-react'
-import { reports } from '../../data/mockData'
+import { useReports } from '../../hooks/useSupabase'
 
 const typeColors: Record<string, string> = {
   'Quarterly Report': 'text-amber-400 bg-amber-500/10 border-amber-500/20',
@@ -12,11 +12,18 @@ const typeColors: Record<string, string> = {
 }
 
 export default function ReportsPage() {
+  const { data: reports, loading } = useReports()
   const [search, setSearch] = useState('')
 
   const filtered = reports.filter((r) =>
     r.title.toLowerCase().includes(search.toLowerCase()) ||
     r.client.toLowerCase().includes(search.toLowerCase())
+  )
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+    </div>
   )
 
   return (
@@ -60,7 +67,7 @@ export default function ReportsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/10 transition-all group"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/10 transition-all"
           >
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 flex-shrink-0">
@@ -82,7 +89,6 @@ export default function ReportsPage() {
               <span className={`hidden md:inline-flex px-2.5 py-1 rounded-full text-xs font-medium border ${typeColors[report.type] ?? 'text-gray-400 bg-gray-500/10 border-gray-500/20'}`}>
                 {report.type}
               </span>
-
               {report.status === 'ready' ? (
                 <>
                   <button className="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-colors">

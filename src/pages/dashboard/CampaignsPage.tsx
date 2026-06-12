@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Filter } from 'lucide-react'
-import { campaignData } from '../../data/mockData'
+import { useCampaigns } from '../../hooks/useSupabase'
 
 const statusColors: Record<string, string> = {
   active: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
@@ -10,6 +10,7 @@ const statusColors: Record<string, string> = {
 }
 
 export default function CampaignsPage() {
+  const { data: campaignData, loading } = useCampaigns()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
@@ -18,6 +19,12 @@ export default function CampaignsPage() {
     const matchStatus = statusFilter === 'all' || c.status === statusFilter
     return matchSearch && matchStatus
   })
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
 
   return (
     <div className="space-y-6">
@@ -67,7 +74,7 @@ export default function CampaignsPage() {
         </div>
       </div>
 
-      {/* Table - Desktop */}
+      {/* Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -133,7 +140,6 @@ export default function CampaignsPage() {
               ))}
             </tbody>
           </table>
-
           {filtered.length === 0 && (
             <div className="py-12 text-center text-gray-500 text-sm">No campaigns found.</div>
           )}
