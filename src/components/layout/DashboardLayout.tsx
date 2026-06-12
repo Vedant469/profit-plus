@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { TrendingUp, LayoutDashboard, Target, BarChart2, FileText, Settings, LogOut, Menu, Bell, Search, X } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 const sidebarLinks = [
   { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -12,7 +13,29 @@ const sidebarLinks = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    navigate('/login')
+  }
+
+  const userInitial = user?.email?.[0]?.toUpperCase() ?? 'U'
+  const userEmail = user?.email ?? 'Loading...'
 
   return (
     <div className="min-h-screen bg-slate-950 flex">
@@ -31,12 +54,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         ${collapsed ? 'md:w-16' : 'w-60'}
         flex-shrink-0 bg-slate-900 border-r border-white/5 transition-all duration-300 flex flex-col
       `}>
+        {/* Logo */}
         <div className="p-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
               <TrendingUp className="w-4 h-4 text-white" />
             </div>
-            {!collapsed && <span className="font-bold text-white">Profit<span className="text-amber-400">Plus</span></span>}
+            {!collapsed && (
+              <span className="font-bold text-white">
+                Profit<span className="text-amber-400">Plus</span>
+              </span>
+            )}
           </div>
           <button
             className="md:hidden text-gray-400 hover:text-white"
@@ -46,9 +74,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
         </div>
 
+        {/* Nav links */}
         <nav className="flex-1 p-3 space-y-1">
           {sidebarLinks.map(({ label, href, icon: Icon }) => (
-            <Link key={href} to={href}
+            <Link
+              key={href}
+              to={href}
               onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 location.pathname === href
@@ -62,15 +93,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
 
+        {/* Bottom */}
         <div className="p-3 border-t border-white/5 space-y-1">
           <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
             <Settings className="w-4 h-4 flex-shrink-0" />
             {!collapsed && <span>Settings</span>}
           </button>
-          <Link to="/" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+          >
             <LogOut className="w-4 h-4 flex-shrink-0" />
-            {!collapsed && <span>Exit Dashboard</span>}
-          </Link>
+            {!collapsed && <span>Sign Out</span>}
+          </button>
         </div>
       </aside>
 
@@ -110,11 +145,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">SC</span>
+                <span className="text-white text-xs font-bold">{userInitial}</span>
               </div>
               <div className="hidden md:block">
-                <p className="text-white text-sm font-medium">Sarah Chen</p>
-                <p className="text-gray-400 text-xs">TechFlow Inc.</p>
+                <p className="text-white text-sm font-medium">{userEmail}</p>
+                <p className="text-gray-400 text-xs">ProfitPlus Client</p>
               </div>
             </div>
           </div>
