@@ -8,6 +8,15 @@ declare global {
   }
 }
 
+function adjustCrispPosition() {
+  if (window.innerWidth >= 768) return
+  const crispBox = document.getElementById('crisp-chatbox')
+  if (crispBox) {
+    crispBox.style.setProperty('bottom', '80px', 'important')
+    crispBox.style.setProperty('right', '8px', 'important')
+  }
+}
+
 export default function LiveChat() {
   const location = useLocation()
 
@@ -20,12 +29,30 @@ export default function LiveChat() {
     script.async = true
     document.head.appendChild(script)
 
-    // Move to right side and above mobile bottom nav
-    script.onload = () => {
-      window.$crisp.push(['config', 'position:reverse', [false]])
-    }
+    // Watch for Crisp to load and adjust position
+    const observer = new MutationObserver(() => {
+      adjustCrispPosition()
+    })
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class'],
+    })
+
+    // Also adjust on resize
+    window.addEventListener('resize', adjustCrispPosition)
+
+    // Keep adjusting every 500ms for first 5 seconds
+    const intervals = [500, 1000, 1500, 2000, 3000, 5000].map((delay) =>
+      setTimeout(adjustCrispPosition, delay)
+    )
 
     return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', adjustCrispPosition)
+      intervals.forEach(clearTimeout)
       if (document.head.contains(script)) {
         document.head.removeChild(script)
       }
@@ -41,6 +68,7 @@ export default function LiveChat() {
       window.$crisp.push(['do', 'chat:hide'])
     } else {
       window.$crisp.push(['do', 'chat:show'])
+      setTimeout(adjustCrispPosition, 300)
     }
   }, [location.pathname])
 

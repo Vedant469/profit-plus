@@ -21,21 +21,14 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Re-enable cursor on mobile */
   @media (max-width: 768px) {
     * { cursor: auto !important; }
   }
 
-  /* Smooth image loading */
   img {
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
-  img:not([src]) {
-    opacity: 0;
-  }
-
-  /* Better focus styles */
   :focus-visible {
     outline: 2px solid #f59e0b;
     outline-offset: 2px;
@@ -44,7 +37,6 @@
 }
 
 @layer components {
-  /* Button press effect */
   .btn-press {
     transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
@@ -52,7 +44,6 @@
     transform: scale(0.97);
   }
 
-  /* Card hover lift */
   .card-hover {
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
   }
@@ -60,7 +51,6 @@
     transform: translateY(-4px);
   }
 
-  /* Link underline animation */
   .link-animate {
     position: relative;
   }
@@ -181,17 +171,6 @@
   animation: shimmer 1.8s infinite;
 }
 
-/* ── Smooth page transitions ───────────────────────────────── */
-.page-enter {
-  opacity: 0;
-  transform: translateY(8px);
-}
-.page-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
 /* ── Button ripple ─────────────────────────────────────────── */
 @keyframes ripple {
   to { transform: scale(4); opacity: 0; }
@@ -216,16 +195,6 @@
   pointer-events: none;
 }
 
-/* ── Pull to refresh indicator ─────────────────────────────── */
-@keyframes pull-down {
-  0% { transform: translateY(-100%); opacity: 0; }
-  50% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-100%); opacity: 0; }
-}
-.pull-indicator {
-  animation: pull-down 1.5s ease-in-out;
-}
-
 /* ── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -240,20 +209,24 @@
   background: rgba(245, 158, 11, 0.3);
   color: #fff;
 }
-/* Push Crisp chat above mobile bottom nav */
+
+/* ── Crisp chat above mobile bottom nav ────────────────────── */
 @media (max-width: 768px) {
+  #crisp-chatbox {
+    bottom: 80px !important;
+    right: 8px !important;
+    left: auto !important;
+  }
+
   .crisp-client .cc-tlyw {
     bottom: 80px !important;
   }
+
   .crisp-client .cc-kxkl {
     bottom: 80px !important;
   }
-}
-/* Crisp chat — right side, above mobile bottom nav */
-@media (max-width: 768px) {
-  #crisp-chatbox {
-    bottom: 75px !important;
-    right: 10px !important;
-    left: auto !important;
+
+  .crisp-client .cc-nsge {
+    bottom: 80px !important;
   }
 }
