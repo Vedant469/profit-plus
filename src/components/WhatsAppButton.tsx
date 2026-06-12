@@ -19,7 +19,7 @@ export default function WhatsAppButton() {
   }
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3">
+    <div className="fixed bottom-24 left-4 md:bottom-6 md:left-6 z-50 flex flex-col items-start gap-3">
       <AnimatePresence>
         {open && (
           <motion.div
@@ -53,9 +53,7 @@ export default function WhatsAppButton() {
                   className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-green-500/10 border border-white/5 hover:border-green-500/20 rounded-xl transition-all group"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-xs font-bold">
-                      {name[0]}
-                    </span>
+                    <span className="text-white text-xs font-bold">{name[0]}</span>
                   </div>
                   <div className="text-left flex-1">
                     <p className="text-white text-sm font-medium group-hover:text-green-400 transition-colors">{name}</p>
