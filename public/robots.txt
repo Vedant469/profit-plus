@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Disallow dashboard and login from indexing
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /login
+
+# Sitemap location
+Sitemap: https://profit-plus-beta.vercel.app/sitemap.xml

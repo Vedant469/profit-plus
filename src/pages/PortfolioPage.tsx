@@ -1,3 +1,4 @@
+import SEOHead from '../components/SEOHead'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
@@ -6,6 +7,12 @@ import { caseStudies } from '../data/mockData'
 export default function PortfolioPage() {
   return (
     <div className="bg-slate-950 pt-24">
+        <SEOHead
+        title="Case Studies & Results | ProfitPlus Marketing Agency India"
+        description="Real results from real campaigns. See how ProfitPlus helped clients achieve 320% ROI, 12x ROAS, and millions in revenue growth. India's top marketing agency portfolio."
+        keywords="marketing agency case studies india, digital marketing results pune, ROI marketing campaigns india, performance marketing portfolio pune"
+        url="https://profit-plus-beta.vercel.app/portfolio"
+      />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />

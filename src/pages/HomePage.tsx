@@ -1,3 +1,4 @@
+import SEOHead from '../components/SEOHead'
 import { useState, useEffect, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
@@ -141,6 +142,12 @@ export default function HomePage() {
 
   return (
     <div>
+        <SEOHead
+        title="ProfitPlus | #1 Performance Marketing Agency Pune & India"
+        description="India's most profit-driven marketing agency based in Pune. Data-driven campaigns delivering 320%+ average ROI for businesses across India and globally."
+        keywords="marketing agency pune, marketing agency india, performance marketing pune, digital marketing agency india, best marketing agency pune"
+        url="https://profit-plus-beta.vercel.app/"
+      />
       {/* Hero */}
       <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
         <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-20">

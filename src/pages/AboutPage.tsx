@@ -1,3 +1,4 @@
+import SEOHead from '../components/SEOHead'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Award, Heart, Zap, Shield } from 'lucide-react'
@@ -13,6 +14,12 @@ const values = [
 export default function AboutPage() {
   return (
     <div className="bg-slate-950 pt-24">
+      <SEOHead
+        title="About ProfitPlus | Performance Marketing Agency Pune India"
+        description="Meet the team behind ProfitPlus — India's fastest-growing performance marketing agency based in Pune. 240+ clients, $1.6B+ profit generated, 12+ years experience."
+        keywords="about marketing agency pune, profitplus team, digital marketing company india, performance marketing experts pune"
+        url="https://profit-plus-beta.vercel.app/about"
+      />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />

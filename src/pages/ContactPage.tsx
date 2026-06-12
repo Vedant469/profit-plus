@@ -1,3 +1,4 @@
+import SEOHead from '../components/SEOHead'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Send, Check } from 'lucide-react'
@@ -47,6 +48,12 @@ export default function ContactPage() {
 
   return (
     <div className="bg-slate-950 pt-24">
+       <SEOHead
+        title="Contact ProfitPlus | Marketing Agency Pune India"
+        description="Get in touch with ProfitPlus — India's leading performance marketing agency in Pune. Book a free strategy call and discover how we can maximize your profits globally."
+        keywords="contact marketing agency pune, hire digital marketing agency india, book marketing strategy call pune, marketing agency contact india"
+        url="https://profit-plus-beta.vercel.app/contact"
+      />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />

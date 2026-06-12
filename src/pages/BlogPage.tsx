@@ -1,3 +1,4 @@
+import SEOHead from '../components/SEOHead'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, User, ArrowRight, Search } from 'lucide-react'
@@ -28,6 +29,12 @@ export default function BlogPage() {
 
   return (
     <div className="bg-slate-950 pt-24">
+       <SEOHead
+        title="Marketing Insights & Blog | ProfitPlus Agency India"
+        description="Expert marketing insights, case studies and profit-growing strategies from ProfitPlus — India's leading performance marketing agency based in Pune."
+        keywords="marketing blog india, digital marketing insights pune, performance marketing tips india, marketing agency blog pune, ROI marketing strategies india"
+        url="https://profit-plus-beta.vercel.app/blog"
+      />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />

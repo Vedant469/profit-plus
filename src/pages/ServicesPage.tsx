@@ -1,3 +1,4 @@
+import SEOHead from '../components/SEOHead'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Target, Search, Star, BarChart2, Share2, Mail, Check } from 'lucide-react'
@@ -24,6 +25,12 @@ const serviceColors: Record<string, string> = {
 export default function ServicesPage() {
   return (
     <div className="bg-slate-950 pt-24">
+        <SEOHead
+        title="Marketing Services | ProfitPlus Agency Pune India"
+        description="Performance marketing, SEO, brand identity, analytics, social media and email marketing services. Based in Pune, serving clients across India and globally with proven ROI."
+        keywords="performance marketing services pune, SEO agency india, digital marketing services pune, social media marketing india, email marketing agency pune"
+        url="https://profit-plus-beta.vercel.app/services"
+      />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
