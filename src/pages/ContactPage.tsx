@@ -1,8 +1,8 @@
-import SEOHead from '../components/SEOHead'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Send, Check } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import SEOHead from '../components/SEOHead'
 
 const teamContacts = [
   { name: 'Atharva Ratnoji', phone: '+91 70280 62213' },
@@ -25,6 +25,7 @@ export default function ContactPage() {
     e.preventDefault()
     setLoading(true)
     try {
+      // Save to Supabase
       const { error } = await supabase.from('leads').insert([{
         name: form.name,
         email: form.email,
@@ -33,9 +34,17 @@ export default function ContactPage() {
         message: form.message,
       }])
       if (error) throw error
+
+      // Send email notification
+      await fetch('/api/sendEmail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+
       setSubmitted(true)
     } catch (err) {
-      console.error('Error saving lead:', err)
+      console.error('Error:', err)
       setSubmitted(true)
     } finally {
       setLoading(false)
@@ -48,12 +57,13 @@ export default function ContactPage() {
 
   return (
     <div className="bg-slate-950 pt-24">
-       <SEOHead
+      <SEOHead
         title="Contact ProfitPlus | Marketing Agency Pune India"
         description="Get in touch with ProfitPlus — India's leading performance marketing agency in Pune. Book a free strategy call and discover how we can maximize your profits globally."
         keywords="contact marketing agency pune, hire digital marketing agency india, book marketing strategy call pune, marketing agency contact india"
         url="https://profit-plus-beta.vercel.app/contact"
       />
+
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
@@ -169,7 +179,10 @@ export default function ContactPage() {
                     Thanks for reaching out. Our team will review your details and get back to you within 24 hours.
                   </p>
                   <button
-                    onClick={() => { setSubmitted(false); setForm({ name: '', email: '', company: '', budget: '', message: '' }) }}
+                    onClick={() => {
+                      setSubmitted(false)
+                      setForm({ name: '', email: '', company: '', budget: '', message: '' })
+                    }}
                     className="mt-6 px-6 py-2.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium rounded-xl hover:bg-amber-500/20 transition-colors"
                   >
                     Send Another Message
