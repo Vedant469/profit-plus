@@ -13,8 +13,10 @@ const navItems = [
 export default function MobileBottomNav() {
   const location = useLocation()
 
-  // Hide on dashboard and login pages
-  if (location.pathname.startsWith('/dashboard') || location.pathname === '/login') {
+  if (
+    location.pathname.startsWith('/dashboard') ||
+    location.pathname === '/login'
+  ) {
     return null
   }
 
@@ -24,13 +26,20 @@ export default function MobileBottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md border-t border-white/5 pb-safe">
-      <div className="flex items-center justify-around px-2 py-2">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-white/5"
+      style={{
+        background: 'rgba(15, 23, 42, 0.98)',
+        backdropFilter: 'blur(20px)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
+    >
+      <div className="flex items-center justify-around px-1 py-2">
         {navItems.map(({ label, href, icon: Icon }) => (
           <Link
             key={href}
             to={href}
-            className="flex flex-col items-center gap-1 px-3 py-2 rounded-xl relative"
+            className="flex flex-col items-center gap-1 px-3 py-2 rounded-xl relative min-w-0"
           >
             {isActive(href) && (
               <motion.div
@@ -39,10 +48,10 @@ export default function MobileBottomNav() {
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}
-            <Icon className={`w-5 h-5 relative z-10 transition-colors ${
+            <Icon className={`w-5 h-5 relative z-10 transition-colors flex-shrink-0 ${
               isActive(href) ? 'text-amber-400' : 'text-gray-500'
             }`} />
-            <span className={`text-xs relative z-10 transition-colors ${
+            <span className={`text-xs relative z-10 transition-colors truncate ${
               isActive(href) ? 'text-amber-400 font-medium' : 'text-gray-500'
             }`}>
               {label}

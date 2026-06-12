@@ -32,7 +32,7 @@ const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-950 pb-16 md:pb-0">
+    <div className="min-h-screen bg-slate-950 pb-20 md:pb-0">
       <Navbar />
       <main>{children}</main>
       <Footer />

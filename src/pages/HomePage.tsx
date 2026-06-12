@@ -5,7 +5,6 @@ import { ArrowRight, Star, TrendingUp, Users, Rocket, Award, Target, Search, Bar
 import { stats, services, caseStudies, testimonials } from '../data/mockData'
 import ParticleBackground from '../components/ParticleBackground'
 
-// ── Smooth Typewriter ─────────────────────────────────────────
 const phrases = [
   'We Build Profit Machines',
   'We Engineer Growth Systems',
@@ -22,34 +21,19 @@ function TypewriterText() {
   useEffect(() => {
     if (isPaused) return
     const phrase = phrases[phraseIndex]!
-
+    let timeout: ReturnType<typeof setTimeout>
     if (!deleting && text.length < phrase.length) {
-      const timeout = setTimeout(() => {
-        setText(phrase.slice(0, text.length + 1))
-      }, 55 + Math.random() * 45)
-      return () => clearTimeout(timeout)
-    }
-
-    if (!deleting && text.length === phrase.length) {
+      timeout = setTimeout(() => setText(phrase.slice(0, text.length + 1)), 55 + Math.random() * 45)
+    } else if (!deleting && text.length === phrase.length) {
       setIsPaused(true)
-      const timeout = setTimeout(() => {
-        setIsPaused(false)
-        setDeleting(true)
-      }, 2500)
-      return () => clearTimeout(timeout)
-    }
-
-    if (deleting && text.length > 0) {
-      const timeout = setTimeout(() => {
-        setText(phrase.slice(0, text.length - 1))
-      }, 25)
-      return () => clearTimeout(timeout)
-    }
-
-    if (deleting && text.length === 0) {
+      timeout = setTimeout(() => { setIsPaused(false); setDeleting(true) }, 2500)
+    } else if (deleting && text.length > 0) {
+      timeout = setTimeout(() => setText(phrase.slice(0, text.length - 1)), 25)
+    } else if (deleting && text.length === 0) {
       setDeleting(false)
       setPhraseIndex((prev) => (prev + 1) % phrases.length)
     }
+    return () => clearTimeout(timeout)
   }, [text, deleting, phraseIndex, isPaused])
 
   return (
@@ -60,31 +44,22 @@ function TypewriterText() {
   )
 }
 
-// ── Animated Counter ──────────────────────────────────────────
 function AnimatedCounter({ target, suffix, inView }: { target: number; suffix: string; inView: boolean }) {
   const [count, setCount] = useState(0)
-
   useEffect(() => {
     if (!inView) return
     let start = 0
-    const duration = 2000
-    const step = target / (duration / 16)
+    const step = target / (2000 / 16)
     const timer = setInterval(() => {
       start += step
-      if (start >= target) {
-        setCount(target)
-        clearInterval(timer)
-      } else {
-        setCount(Math.floor(start))
-      }
+      if (start >= target) { setCount(target); clearInterval(timer) }
+      else setCount(Math.floor(start))
     }, 16)
     return () => clearInterval(timer)
   }, [inView, target])
-
   return <>{count.toLocaleString()}{suffix}</>
 }
 
-// ── Data ──────────────────────────────────────────────────────
 const serviceIcons: Record<string, React.ReactNode> = {
   'Performance Marketing': <Target className="w-6 h-6" />,
   'SEO & Content Strategy': <Search className="w-6 h-6" />,
@@ -130,38 +105,29 @@ const liveStats = [
 
 const pricing = [
   {
-    name: 'Starter',
-    price: '$2,500',
-    period: '/month',
-    description: 'Perfect for growing businesses ready to scale their marketing.',
-    features: ['Up to 2 ad channels', 'Monthly reporting', 'Campaign management', 'Email support', 'Basic analytics dashboard'],
-    cta: 'Get Started',
-    highlighted: false,
+    name: 'Starter', price: '$2,500', period: '/month',
+    description: 'Perfect for growing businesses ready to scale.',
+    features: ['Up to 2 ad channels', 'Monthly reporting', 'Campaign management', 'Email support', 'Basic analytics'],
+    cta: 'Get Started', highlighted: false,
   },
   {
-    name: 'Growth',
-    price: '$5,500',
-    period: '/month',
+    name: 'Growth', price: '$5,500', period: '/month',
     description: 'For ambitious brands serious about dominating their market.',
     features: ['Up to 4 ad channels', 'Weekly reporting', 'Full funnel strategy', 'SEO & content included', 'Advanced analytics', 'Dedicated account manager'],
-    cta: 'Most Popular',
-    highlighted: true,
+    cta: 'Most Popular', highlighted: true,
   },
   {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: '',
+    name: 'Enterprise', price: 'Custom', period: '',
     description: 'Full-service growth partnership for high-growth companies.',
     features: ['Unlimited channels', 'Daily reporting', 'Custom strategy', 'Creative production', 'Attribution modelling', 'C-suite reporting', 'Priority support'],
-    cta: 'Contact Us',
-    highlighted: false,
+    cta: 'Contact Us', highlighted: false,
   },
 ]
 
 const faqs = [
   { q: 'How quickly will I see results?', a: 'Most clients see measurable improvements within the first 30 days. Significant ROI gains typically compound over 60–90 days as we optimise campaigns.' },
   { q: 'Do you work with businesses in any industry?', a: 'We have deep expertise in SaaS, e-commerce, healthcare, fintech, and professional services. We only take on clients we are confident we can deliver strong results for.' },
-  { q: 'What makes ProfitPlus different from other agencies?', a: 'We are obsessed with profit, not vanity metrics. Every campaign decision is tied to revenue impact. We also give clients full transparency via real-time dashboards.' },
+  { q: 'What makes ProfitPlus different?', a: 'We are obsessed with profit, not vanity metrics. Every campaign decision is tied to revenue impact. We also give clients full transparency via real-time dashboards.' },
   { q: 'Is there a minimum contract length?', a: 'We have a 3-month minimum engagement to allow sufficient time to build, test, and optimise campaigns for peak performance.' },
   { q: 'What budget do I need to get started?', a: 'Our Starter plan begins at $2,500/month in management fees. We recommend a minimum ad spend of $5,000/month on top of that for best results.' },
 ]
@@ -175,31 +141,20 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* ── Hero ─────────────────────────────────────────────── */}
+      {/* Hero */}
       <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
-        {/* Video Background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-20"
-        >
+        <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-20">
           <source src="/hero.mp4" type="video/mp4" />
         </video>
-
-        {/* Gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/90" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/40" />
-
         <ParticleBackground />
-
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-amber-500/10 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-24 md:py-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-36 md:py-32">
           <div className="max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -236,17 +191,11 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Link
-                to="/contact"
-                className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
-              >
+              <Link to="/contact" className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25">
                 Start Maximizing Profit
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link
-                to="/portfolio"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200"
-              >
+              <Link to="/portfolio" className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200">
                 See Our Results
               </Link>
             </motion.div>
@@ -272,7 +221,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Marquee Client Logos ──────────────────────────────── */}
+      {/* Marquee */}
       <section className="py-12 bg-slate-900/30 border-y border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6">
           <p className="text-center text-gray-500 text-sm tracking-widest">TRUSTED BY FAST-GROWING COMPANIES</p>
@@ -282,10 +231,7 @@ export default function HomePage() {
           <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10" />
           <div className="animate-marquee">
             {clients.map((client, i) => (
-              <span
-                key={i}
-                className="mx-10 text-gray-500 hover:text-amber-400 font-bold text-xl tracking-wide transition-colors cursor-default select-none"
-              >
+              <span key={i} className="mx-10 text-gray-500 hover:text-amber-400 font-bold text-xl tracking-wide transition-colors cursor-default select-none">
                 {client}
               </span>
             ))}
@@ -293,7 +239,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Animated Stats ───────────────────────────────────── */}
+      {/* Stats */}
       <section ref={statsRef} className="py-20 bg-slate-900/50 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
@@ -322,7 +268,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Live Results Ticker ──────────────────────────────── */}
+      {/* Live Results Ticker */}
       <section ref={liveRef} className="py-16 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-amber-500/5 border-b border-amber-500/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
@@ -330,9 +276,7 @@ export default function HomePage() {
               <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
               <span className="text-amber-400 text-sm font-medium">Live Results Tracker</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white">
-              Numbers That Speak for Themselves
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-white">Numbers That Speak for Themselves</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {liveStats.map(({ label, value, prefix, suffix }, i) => (
@@ -344,8 +288,7 @@ export default function HomePage() {
                 className="text-center p-6 bg-slate-900/80 border border-amber-500/10 rounded-2xl glow-card"
               >
                 <p className="text-3xl md:text-4xl font-bold text-white mb-1">
-                  {prefix}
-                  <AnimatedCounter target={value} suffix={suffix} inView={liveInView} />
+                  {prefix}<AnimatedCounter target={value} suffix={suffix} inView={liveInView} />
                 </p>
                 <p className="text-gray-400 text-sm">{label}</p>
               </motion.div>
@@ -354,7 +297,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Flip Service Cards ───────────────────────────────── */}
+      {/* Flip Service Cards */}
       <section id="services" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -382,7 +325,6 @@ export default function HomePage() {
                   className="flip-card h-64"
                 >
                   <div className="flip-card-inner">
-                    {/* Front */}
                     <div className="flip-card-front p-6 bg-slate-900 border border-white/5 flex flex-col justify-between">
                       <div>
                         <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${colorClass}`}>
@@ -393,7 +335,6 @@ export default function HomePage() {
                       </div>
                       <p className="text-amber-400 text-xs mt-3">Hover to see what's included →</p>
                     </div>
-                    {/* Back */}
                     <div className={`flip-card-back p-6 bg-gradient-to-br ${backColor} border flex flex-col justify-center`}>
                       <h3 className="text-white font-bold text-lg mb-4">{service.title}</h3>
                       <ul className="space-y-2.5 mb-6">
@@ -404,10 +345,7 @@ export default function HomePage() {
                           </li>
                         ))}
                       </ul>
-                      <Link
-                        to="/contact"
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
-                      >
+                      <Link to="/contact" className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all">
                         Get Started <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -419,7 +357,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Case Studies ─────────────────────────────────────── */}
+      {/* Case Studies */}
       <section id="portfolio" className="py-20 md:py-24 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -432,7 +370,6 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Real Profit for Real Clients</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">Numbers don't lie. Here's what we've achieved.</p>
           </motion.div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {caseStudies.map((cs, i) => (
               <motion.div
@@ -469,7 +406,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Testimonials ─────────────────────────────────────── */}
+      {/* Testimonials */}
       <section id="testimonials" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -481,7 +418,6 @@ export default function HomePage() {
             <p className="text-amber-400 font-medium mb-3">Testimonials</p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">What Our Clients Say</h2>
           </motion.div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {testimonials.map((t, i) => (
               <motion.div
@@ -511,7 +447,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Pricing ──────────────────────────────────────────── */}
+      {/* Pricing */}
       <section id="pricing" className="py-20 md:py-24 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -524,7 +460,6 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">No hidden fees. No long-term lock-ins. Just results.</p>
           </motion.div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {pricing.map((plan, i) => (
               <motion.div
@@ -533,11 +468,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`relative p-6 md:p-8 rounded-2xl border transition-all ${
-                  plan.highlighted
-                    ? 'bg-gradient-to-b from-amber-500/10 to-slate-900 border-amber-500/30 glow-card'
-                    : 'bg-slate-900 border-white/5 hover:border-white/10'
-                }`}
+                className={`relative p-6 md:p-8 rounded-2xl border transition-all ${plan.highlighted ? 'bg-gradient-to-b from-amber-500/10 to-slate-900 border-amber-500/30 glow-card' : 'bg-slate-900 border-white/5 hover:border-white/10'}`}
               >
                 {plan.highlighted && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-500 text-slate-950 text-xs font-bold rounded-full">
@@ -558,14 +489,7 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  to="/contact"
-                  className={`block text-center px-6 py-3 rounded-xl font-semibold text-sm transition-all ${
-                    plan.highlighted
-                      ? 'bg-amber-500 hover:bg-amber-400 text-slate-950'
-                      : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'
-                  }`}
-                >
+                <Link to="/contact" className={`block text-center px-6 py-3 rounded-xl font-semibold text-sm transition-all ${plan.highlighted ? 'bg-amber-500 hover:bg-amber-400 text-slate-950' : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'}`}>
                   {plan.cta}
                 </Link>
               </motion.div>
@@ -574,7 +498,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FAQ ──────────────────────────────────────────────── */}
+      {/* FAQ */}
       <section id="faq" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -586,7 +510,6 @@ export default function HomePage() {
             <p className="text-amber-400 font-medium mb-3">FAQ</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Frequently Asked Questions</h2>
           </motion.div>
-
           <div className="space-y-3">
             {faqs.map((faq, i) => (
               <motion.div
@@ -625,7 +548,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
+      {/* CTA */}
       <section className="py-20 md:py-24 bg-slate-900/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
@@ -640,17 +563,11 @@ export default function HomePage() {
               Book a free strategy call and we'll show you exactly how we'd grow your profits in the next 90 days.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link
-                to="/contact"
-                className="group flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
-              >
+              <Link to="/contact" className="group flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25">
                 Book Free Strategy Call
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link
-                to="/portfolio"
-                className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200"
-              >
+              <Link to="/portfolio" className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200">
                 View Case Studies
               </Link>
             </div>
