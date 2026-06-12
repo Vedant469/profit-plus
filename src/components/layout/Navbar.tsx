@@ -98,7 +98,6 @@ export default function Navbar() {
                   {link.label}
                 </span>
 
-                {/* Animated glowing underbar */}
                 {isActive(link.href) && (
                   <>
                     <motion.div
@@ -110,7 +109,6 @@ export default function Navbar() {
                   </>
                 )}
 
-                {/* Hover dot */}
                 {!isActive(link.href) && (
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-400 rounded-full opacity-0 group-hover:opacity-60 transition-opacity" />
                 )}
@@ -120,7 +118,7 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link
-              to="/dashboard"
+              to="/login"
               className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors"
             >
               <TrendingUp className="w-4 h-4" />
@@ -169,10 +167,16 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-4 mt-2 border-t border-white/10 flex flex-col gap-3">
-                <Link to="/dashboard" className="text-gray-400 hover:text-white text-sm text-center py-2">
+                <Link
+                  to="/login"
+                  className="text-gray-400 hover:text-white text-sm text-center py-2"
+                >
                   Client Login
                 </Link>
-                <Link to="/contact" className="px-4 py-3 bg-amber-500 text-slate-950 text-sm font-bold rounded-lg text-center">
+                <Link
+                  to="/contact"
+                  className="px-4 py-3 bg-amber-500 text-slate-950 text-sm font-bold rounded-lg text-center"
+                >
                   Get Started
                 </Link>
               </div>
