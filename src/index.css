@@ -240,3 +240,12 @@
   background: rgba(245, 158, 11, 0.3);
   color: #fff;
 }
+/* Push Crisp chat above mobile bottom nav */
+@media (max-width: 768px) {
+  .crisp-client .cc-tlyw {
+    bottom: 80px !important;
+  }
+  .crisp-client .cc-kxkl {
+    bottom: 80px !important;
+  }
+}

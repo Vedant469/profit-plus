@@ -14,7 +14,8 @@ export default function LiveChat() {
   useEffect(() => {
     // Load Crisp
     window.$crisp = []
-    window.CRISP_WEBSITE_ID = '8092ad39-cc75-481f-a9ce-3be9b9039546'
+window.CRISP_WEBSITE_ID = '8092ad39-cc75-481f-a9ce-3be9b9039546'
+window.$crisp.push(['config', 'position:reverse', [true]])
 
     const script = document.createElement('script')
     script.src = 'https://client.crisp.chat/l.js'
@@ -36,4 +37,4 @@ export default function LiveChat() {
   }, [location.pathname])
 
   return null
-}
+}   

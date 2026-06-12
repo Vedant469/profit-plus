@@ -64,7 +64,7 @@ export default function SocialProofTicker() {
   }, [])
 
   return (
-    <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-40 max-w-xs w-full pointer-events-none">
+    <div className="fixed bottom-36 right-4 md:bottom-8 md:right-8 z-40 max-w-xs w-full pointer-events-none">
       <AnimatePresence>
         {visible && current && (
           <motion.div
