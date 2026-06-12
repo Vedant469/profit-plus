@@ -1,9 +1,74 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Star, TrendingUp, Users, Rocket, Award, Target, Search, BarChart2, Share2, Mail, Check, ChevronDown } from 'lucide-react'
 import { stats, services, caseStudies, testimonials } from '../data/mockData'
+import ParticleBackground from '../components/ParticleBackground'
 
+// ── Typewriter ──────────────────────────────────────────────
+const phrases = [
+  'We Build Profit Machines',
+  'We Engineer Growth Systems',
+  'We Maximize Your ROI',
+  'We Transform Ad Spend',
+]
+
+function TypewriterText() {
+  const [phraseIndex, setPhraseIndex] = useState(0)
+  const [text, setText] = useState('')
+  const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => {
+    const phrase = phrases[phraseIndex]!
+    let timeout: ReturnType<typeof setTimeout>
+
+    if (!deleting && text.length < phrase.length) {
+      timeout = setTimeout(() => setText(phrase.slice(0, text.length + 1)), 80)
+    } else if (!deleting && text.length === phrase.length) {
+      timeout = setTimeout(() => setDeleting(true), 2200)
+    } else if (deleting && text.length > 0) {
+      timeout = setTimeout(() => setText(phrase.slice(0, text.length - 1)), 40)
+    } else if (deleting && text.length === 0) {
+      setDeleting(false)
+      setPhraseIndex((prev) => (prev + 1) % phrases.length)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [text, deleting, phraseIndex])
+
+  return (
+    <span className="animated-gradient-text">
+      {text}
+      <span className="animate-pulse text-amber-400">|</span>
+    </span>
+  )
+}
+
+// ── Animated Counter ─────────────────────────────────────────
+function AnimatedCounter({ target, suffix, inView }: { target: number; suffix: string; inView: boolean }) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (!inView) return
+    let start = 0
+    const duration = 2000
+    const step = target / (duration / 16)
+    const timer = setInterval(() => {
+      start += step
+      if (start >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(start))
+      }
+    }, 16)
+    return () => clearInterval(timer)
+  }, [inView, target])
+
+  return <>{count.toLocaleString()}{suffix}</>
+}
+
+// ── Data ──────────────────────────────────────────────────────
 const serviceIcons: Record<string, React.ReactNode> = {
   'Performance Marketing': <Target className="w-6 h-6" />,
   'SEO & Content Strategy': <Search className="w-6 h-6" />,
@@ -22,9 +87,25 @@ const serviceColors: Record<string, string> = {
   cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
 }
 
+const serviceBackColors: Record<string, string> = {
+  blue: 'from-blue-600/20 to-blue-800/20 border-blue-500/30',
+  violet: 'from-violet-600/20 to-violet-800/20 border-violet-500/30',
+  emerald: 'from-emerald-600/20 to-emerald-800/20 border-emerald-500/30',
+  amber: 'from-amber-600/20 to-amber-800/20 border-amber-500/30',
+  pink: 'from-pink-600/20 to-pink-800/20 border-pink-500/30',
+  cyan: 'from-cyan-600/20 to-cyan-800/20 border-cyan-500/30',
+}
+
 const statIcons = [Users, Rocket, TrendingUp, Award]
 
-const clients = ['TechFlow', 'Meridian', 'Vanguard', 'HealthPath', 'Nexora', 'Stratum', 'Elevate', 'CoreBridge']
+const clients = ['TechFlow', 'Meridian', 'Vanguard', 'HealthPath', 'Nexora', 'Stratum', 'Elevate', 'CoreBridge', 'TechFlow', 'Meridian', 'Vanguard', 'HealthPath', 'Nexora', 'Stratum', 'Elevate', 'CoreBridge']
+
+const liveStats = [
+  { label: 'Total Profit Generated', value: 1600, prefix: '$', suffix: 'M+' },
+  { label: 'Campaigns Running', value: 1800, prefix: '', suffix: '+' },
+  { label: 'Average ROAS', value: 472, prefix: '', suffix: '%' },
+  { label: 'Happy Clients', value: 240, prefix: '', suffix: '+' },
+]
 
 const pricing = [
   {
@@ -66,15 +147,19 @@ const faqs = [
 
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const statsRef = useRef(null)
+  const liveRef = useRef(null)
+  const statsInView = useInView(statsRef, { once: true, margin: '-100px' })
+  const liveInView = useInView(liveRef, { once: true, margin: '-100px' })
 
   return (
     <div>
-      {/* Hero */}
+      {/* ── Hero ─────────────────────────────────────────────── */}
       <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
+        <ParticleBackground />
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-amber-500/10 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-amber-600/5 rounded-full blur-3xl" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-24 md:py-32">
@@ -93,10 +178,9 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-6"
+              className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-6 min-h-[1.2em]"
             >
-              We Don't Run Ads —{' '}
-              <span className="gradient-text">We Build Profit Machines</span>
+              <TypewriterText />
             </motion.h1>
 
             <motion.p
@@ -144,13 +228,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Client Logos */}
-      <section className="py-12 bg-slate-900/30 border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <p className="text-center text-gray-500 text-sm mb-8">TRUSTED BY FAST-GROWING COMPANIES</p>
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
-            {clients.map((client) => (
-              <span key={client} className="text-gray-500 hover:text-gray-300 font-bold text-lg tracking-wide transition-colors cursor-default">
+      {/* ── Marquee Client Logos ──────────────────────────────── */}
+      <section className="py-12 bg-slate-900/30 border-y border-white/5 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6">
+          <p className="text-center text-gray-500 text-sm">TRUSTED BY FAST-GROWING COMPANIES</p>
+        </div>
+        <div className="overflow-hidden relative">
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-950 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+          <div className="animate-marquee">
+            {clients.map((client, i) => (
+              <span key={i} className="mx-10 text-gray-500 hover:text-amber-400 font-bold text-xl tracking-wide transition-colors cursor-default">
                 {client}
               </span>
             ))}
@@ -158,25 +246,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-20 bg-slate-900/50 border-b border-white/5">
+      {/* ── Animated Stats ───────────────────────────────────── */}
+      <section ref={statsRef} className="py-20 bg-slate-900/50 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {stats.map(({ value, suffix, label }, i) => {
               const Icon = statIcons[i]!
+              const numericValue = parseInt(String(value).replace(/[^0-9]/g, ''))
               return (
                 <motion.div
                   key={label}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={statsInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="text-center"
+                  className="text-center glow-card p-6 bg-slate-900 border border-white/5 rounded-2xl"
                 >
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-4 text-amber-400">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <p className="text-3xl md:text-4xl font-bold text-white mb-1">{value}{suffix}</p>
+                  <p className="text-3xl md:text-4xl font-bold text-white mb-1">
+                    <AnimatedCounter target={numericValue} suffix={suffix} inView={statsInView} />
+                  </p>
                   <p className="text-gray-400 text-sm">{label}</p>
                 </motion.div>
               )
@@ -185,7 +275,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services */}
+      {/* ── Live Results Ticker ──────────────────────────────── */}
+      <section ref={liveRef} className="py-16 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-amber-500/5 border-b border-amber-500/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full mb-3">
+              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+              <span className="text-amber-400 text-sm font-medium">Live Results Tracker</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-white">
+              Numbers That Speak for Themselves
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {liveStats.map(({ label, value, prefix, suffix }, i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={liveInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="text-center p-6 bg-slate-900/80 border border-amber-500/10 rounded-2xl glow-card"
+              >
+                <p className="text-3xl md:text-4xl font-bold text-white mb-1">
+                  {prefix}
+                  <AnimatedCounter target={value} suffix={suffix} inView={liveInView} />
+                </p>
+                <p className="text-gray-400 text-sm">{label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Flip Service Cards ───────────────────────────────── */}
       <section id="services" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -196,12 +318,13 @@ export default function HomePage() {
           >
             <p className="text-amber-400 font-medium mb-3">What We Do</p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Services That Drive Profit</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">Every service is engineered around one goal — maximizing your profit.</p>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">Hover over each card to see what's included.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, i) => {
               const colorClass = serviceColors[service.color] ?? serviceColors['blue']!
+              const backColor = serviceBackColors[service.color] ?? serviceBackColors['blue']!
               return (
                 <motion.div
                   key={service.id}
@@ -209,17 +332,39 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="p-6 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/20 transition-all duration-300 group"
+                  className="flip-card h-64"
                 >
-                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${colorClass}`}>
-                    {serviceIcons[service.title]}
-                  </div>
-                  <h3 className="text-white font-semibold text-lg mb-2">{service.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed mb-4">{service.description}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {service.features.map((f) => (
-                      <span key={f} className="px-2.5 py-1 bg-white/5 rounded-full text-gray-400 text-xs">{f}</span>
-                    ))}
+                  <div className="flip-card-inner">
+                    {/* Front */}
+                    <div className="flip-card-front p-6 bg-slate-900 border border-white/5 flex flex-col justify-between">
+                      <div>
+                        <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${colorClass}`}>
+                          {serviceIcons[service.title]}
+                        </div>
+                        <h3 className="text-white font-semibold text-lg mb-2">{service.title}</h3>
+                        <p className="text-gray-400 text-sm leading-relaxed">{service.description}</p>
+                      </div>
+                      <p className="text-amber-400 text-xs mt-3">Hover to see what's included →</p>
+                    </div>
+
+                    {/* Back */}
+                    <div className={`flip-card-back p-6 bg-gradient-to-br ${backColor} border flex flex-col justify-center`}>
+                      <h3 className="text-white font-bold text-lg mb-4">{service.title}</h3>
+                      <ul className="space-y-2.5 mb-6">
+                        {service.features.map((f) => (
+                          <li key={f} className="flex items-center gap-2.5">
+                            <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                            <span className="text-gray-200 text-sm">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Link
+                        to="/contact"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
+                      >
+                        Get Started <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </motion.div>
               )
@@ -228,7 +373,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Case Studies */}
+      {/* ── Case Studies ─────────────────────────────────────── */}
       <section id="portfolio" className="py-20 md:py-24 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -250,10 +395,10 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-white/10 transition-all duration-300"
+                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-amber-500/20 transition-all duration-300 glow-card"
               >
                 <div className="relative h-44 md:h-48 overflow-hidden">
-                  <img src={cs.image} alt={cs.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img loading="lazy" src={cs.image} alt={cs.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className={`absolute inset-0 bg-gradient-to-t ${cs.gradient} opacity-60`} />
                   <div className="absolute top-4 left-4">
                     <span className="px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white text-xs font-medium">{cs.industry}</span>
@@ -266,7 +411,7 @@ export default function HomePage() {
                   <div className="grid grid-cols-3 gap-4">
                     {cs.metrics.map((m) => (
                       <div key={m.label}>
-                        <p className="text-white font-bold text-base md:text-lg">{m.value}</p>
+                        <p className="text-amber-400 font-bold text-base md:text-lg">{m.value}</p>
                         <p className="text-gray-500 text-xs">{m.label}</p>
                       </div>
                     ))}
@@ -278,7 +423,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* ── Testimonials ─────────────────────────────────────── */}
       <section id="testimonials" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -299,7 +444,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-6 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/10 transition-all"
+                className="p-6 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/20 transition-all glow-card"
               >
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: t.rating }).map((_, j) => (
@@ -308,7 +453,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-300 leading-relaxed mb-6">"{t.quote}"</p>
                 <div className="flex items-center gap-3">
-                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                  <img loading="lazy" src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
                   <div>
                     <p className="text-white font-medium text-sm">{t.name}</p>
                     <p className="text-gray-400 text-xs">{t.role} · {t.company}</p>
@@ -320,7 +465,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* ── Pricing ──────────────────────────────────────────── */}
       <section id="pricing" className="py-20 md:py-24 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -344,7 +489,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className={`relative p-6 md:p-8 rounded-2xl border transition-all ${
                   plan.highlighted
-                    ? 'bg-gradient-to-b from-amber-500/10 to-slate-900 border-amber-500/30'
+                    ? 'bg-gradient-to-b from-amber-500/10 to-slate-900 border-amber-500/30 glow-card'
                     : 'bg-slate-900 border-white/5 hover:border-white/10'
                 }`}
               >
@@ -383,7 +528,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* ── FAQ ──────────────────────────────────────────────── */}
       <section id="faq" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -404,27 +549,37 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-slate-900 border border-white/5 rounded-xl overflow-hidden"
+                className="bg-slate-900 border border-white/5 rounded-xl overflow-hidden hover:border-amber-500/10 transition-all"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex items-center justify-between p-5 text-left"
                 >
                   <span className="text-white font-medium text-sm md:text-base">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform ${openFaq === i ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform ${openFaq === i ? 'rotate-180 text-amber-400' : ''}`} />
                 </button>
-                {openFaq === i && (
-                  <div className="px-5 pb-5">
-                    <p className="text-gray-400 text-sm leading-relaxed">{faq.a}</p>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {openFaq === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5">
+                        <p className="text-gray-400 text-sm leading-relaxed">{faq.a}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ── CTA ──────────────────────────────────────────────── */}
       <section className="py-20 md:py-24 bg-slate-900/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
