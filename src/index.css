@@ -249,3 +249,11 @@
     bottom: 80px !important;
   }
 }
+/* Crisp chat — right side, above mobile bottom nav */
+@media (max-width: 768px) {
+  #crisp-chatbox {
+    bottom: 75px !important;
+    right: 10px !important;
+    left: auto !important;
+  }
+}
