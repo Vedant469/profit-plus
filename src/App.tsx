@@ -16,6 +16,9 @@ import CustomCursor from './components/CustomCursor'
 import useSmoothScroll from './hooks/useSmoothScroll'
 import { SkeletonPage } from './components/Skeleton'
 import IntroAnimation from './components/IntroAnimation'
+import ExitIntentPopup from './components/ExitIntentPopup'
+import SocialProofTicker from './components/SocialProofTicker'
+import LiveChat from './components/LiveChat'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
@@ -29,6 +32,8 @@ const DashboardOverview = lazy(() => import('./pages/dashboard/DashboardOverview
 const CampaignsPage = lazy(() => import('./pages/dashboard/CampaignsPage'))
 const AnalyticsPage = lazy(() => import('./pages/dashboard/AnalyticsPage'))
 const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
+const LeadsPage = lazy(() => import('./pages/dashboard/LeadsPage'))
+const ReferralPage = lazy(() => import('./pages/dashboard/ReferralPage'))
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -75,6 +80,8 @@ function AnimatedRoutes() {
         <Route path="/dashboard/campaigns" element={<ProtectedRoute><DashboardLayout><PageTransition><CampaignsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/analytics" element={<ProtectedRoute><DashboardLayout><PageTransition><AnalyticsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/reports" element={<ProtectedRoute><DashboardLayout><PageTransition><ReportsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
+        <Route path="/dashboard/leads" element={<ProtectedRoute><DashboardLayout><PageTransition><LeadsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
+        <Route path="/dashboard/referral" element={<ProtectedRoute><DashboardLayout><PageTransition><ReferralPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
       </Routes>
     </AnimatePresence>
@@ -101,8 +108,11 @@ function AppContent() {
       <ScrollToTop />
       <ScrollProgressBar />
       <CookieBanner />
+      <LiveChat />
       {!isDashboard && <BackToTop />}
       {!isDashboard && <WhatsAppButton />}
+      {!isDashboard && <SocialProofTicker />}
+      {!isDashboard && <ExitIntentPopup />}
       <MobileBottomNav />
       <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
         <AnimatedRoutes />
