@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Send, Check } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 const teamContacts = [
   { name: 'Atharva Ratnoji', phone: '+91 70280 62213' },
@@ -10,6 +11,7 @@ const teamContacts = [
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -18,9 +20,25 @@ export default function ContactPage() {
     message: '',
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    setLoading(true)
+    try {
+      const { error } = await supabase.from('leads').insert([{
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        budget: form.budget,
+        message: form.message,
+      }])
+      if (error) throw error
+      setSubmitted(true)
+    } catch (err) {
+      console.error('Error saving lead:', err)
+      setSubmitted(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -74,7 +92,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-gray-400 text-xs mb-1">Email</p>
-                  <p className="text-white font-medium text-sm">profitplus025@gmail.com</p>
+                  <a href="mailto:profitplus025@gmail.com" className="text-white font-medium text-sm hover:text-amber-400 transition-colors">
+                    profitplus025@gmail.com
+                  </a>
                 </div>
               </div>
 
@@ -103,7 +123,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-3">
                   {teamContacts.map(({ name, phone }) => (
-                    <div key={name} className="flex items-center justify-between">
+                    <div key={name} className="flex items-center justify-between gap-2">
                       <span className="text-gray-300 text-sm font-medium">{name}</span>
                       <a
                         href={`tel:${phone.replace(/\s/g, '')}`}
@@ -142,7 +162,7 @@ export default function ContactPage() {
                     Thanks for reaching out. Our team will review your details and get back to you within 24 hours.
                   </p>
                   <button
-                    onClick={() => setSubmitted(false)}
+                    onClick={() => { setSubmitted(false); setForm({ name: '', email: '', company: '', budget: '', message: '' }) }}
                     className="mt-6 px-6 py-2.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium rounded-xl hover:bg-amber-500/20 transition-colors"
                   >
                     Send Another Message
@@ -195,13 +215,13 @@ export default function ContactPage() {
                         name="budget"
                         value={form.budget}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 transition-colors text-sm"
                       >
-                        <option value="" className="bg-slate-900">Select budget</option>
-                        <option value="5k-10k" className="bg-slate-900">₹50K – ₹1L / month</option>
-                        <option value="10k-25k" className="bg-slate-900">₹1L – ₹2.5L / month</option>
-                        <option value="25k-50k" className="bg-slate-900">₹2.5L – ₹5L / month</option>
-                        <option value="50k+" className="bg-slate-900">₹5L+ / month</option>
+                        <option value="">Select budget</option>
+                        <option value="50k-1L">₹50K – ₹1L / month</option>
+                        <option value="1L-2.5L">₹1L – ₹2.5L / month</option>
+                        <option value="2.5L-5L">₹2.5L – ₹5L / month</option>
+                        <option value="5L+">₹5L+ / month</option>
                       </select>
                     </div>
                   </div>
@@ -221,10 +241,20 @@ export default function ContactPage() {
 
                   <button
                     type="submit"
-                    className="group w-full flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
+                    disabled={loading}
+                    className="group w-full flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 disabled:opacity-70 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
                   >
-                    Send Message
-                    <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send Message
+                        <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
                   </button>
                 </form>
               )}
