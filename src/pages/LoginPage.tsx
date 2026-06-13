@@ -1,17 +1,23 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react'
+import { TrendingUp, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, User } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
+
+type Mode = 'login' | 'signup' | 'forgot'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState('')
+  const [company, setCompany] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [mode, setMode] = useState<'login' | 'forgot'>('login')
+  const [mode, setMode] = useState<Mode>('login')
   const [resetSent, setResetSent] = useState(false)
+  const [signupSuccess, setSignupSuccess] = useState(false)
   const navigate = useNavigate()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -24,6 +30,43 @@ export default function LoginPage() {
       navigate('/dashboard')
     } catch (err: any) {
       setError(err.message ?? 'Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      setLoading(false)
+      return
+    }
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            company,
+          },
+        },
+      })
+      if (error) throw error
+      setSignupSuccess(true)
+    } catch (err: any) {
+      setError(err.message ?? 'Failed to create account')
     } finally {
       setLoading(false)
     }
@@ -46,8 +89,27 @@ export default function LoginPage() {
     }
   }
 
+  const switchMode = (newMode: Mode) => {
+    setMode(newMode)
+    setError('')
+    setResetSent(false)
+    setSignupSuccess(false)
+  }
+
+  const titles = {
+    login: 'Client Portal',
+    signup: 'Create Account',
+    forgot: 'Reset Password',
+  }
+
+  const subtitles = {
+    login: 'Sign in to access your campaign dashboard',
+    signup: 'Create your ProfitPlus client account',
+    forgot: 'Enter your email to receive a reset link',
+  }
+
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
@@ -69,38 +131,66 @@ export default function LoginPage() {
               Profit<span className="text-amber-400">Plus</span>
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">
-            {mode === 'login' ? 'Client Portal' : 'Reset Password'}
-          </h1>
-          <p className="text-gray-400 text-sm">
-            {mode === 'login'
-              ? 'Sign in to access your campaign dashboard'
-              : 'Enter your email to receive a reset link'}
-          </p>
+          <h1 className="text-2xl font-bold text-white mb-2">{titles[mode]}</h1>
+          <p className="text-gray-400 text-sm">{subtitles[mode]}</p>
         </div>
 
         {/* Card */}
         <div className="p-8 bg-slate-900 border border-white/5 rounded-2xl">
 
-          {/* Reset sent success */}
-          {resetSent ? (
-            <div className="flex flex-col items-center text-center gap-4 py-4">
+          {/* Signup Success */}
+          {signupSuccess ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center text-center gap-4 py-4"
+            >
+              <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-emerald-400" />
+              </div>
+              <h3 className="text-white font-bold text-lg">Account Created! 🎉</h3>
+              <p className="text-gray-400 text-sm max-w-xs">
+                Your account has been created successfully. You can now sign in to your dashboard.
+              </p>
+              <button
+                onClick={() => switchMode('login')}
+                className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all"
+              >
+                Sign In Now
+              </button>
+            </motion.div>
+          ) : resetSent ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center text-center gap-4 py-4"
+            >
               <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-8 h-8 text-emerald-400" />
               </div>
               <h3 className="text-white font-bold text-lg">Check Your Email!</h3>
               <p className="text-gray-400 text-sm max-w-xs">
-                We sent a password reset link to <span className="text-amber-400">{email}</span>. Check your inbox and follow the instructions.
+                We sent a password reset link to{' '}
+                <span className="text-amber-400">{email}</span>.
               </p>
               <button
-                onClick={() => { setMode('login'); setResetSent(false) }}
+                onClick={() => switchMode('login')}
                 className="mt-2 text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors"
               >
                 ← Back to Sign In
               </button>
-            </div>
+            </motion.div>
           ) : (
-            <form onSubmit={mode === 'login' ? handleLogin : handleForgotPassword} className="space-y-5">
+            <form
+              onSubmit={
+                mode === 'login'
+                  ? handleLogin
+                  : mode === 'signup'
+                  ? handleSignup
+                  : handleForgotPassword
+              }
+              className="space-y-4"
+            >
               {/* Error */}
               {error && (
                 <div className="flex items-center gap-2.5 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
@@ -109,9 +199,42 @@ export default function LoginPage() {
                 </div>
               )}
 
+              {/* Sign up extra fields */}
+              {mode === 'signup' && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">Full Name *</label>
+                    <div className="relative">
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="text"
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="John Smith"
+                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">Company Name</label>
+                    <div className="relative">
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="text"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        placeholder="Acme Inc."
+                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
               {/* Email */}
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Email Address</label>
+                <label className="block text-gray-400 text-sm mb-2">Email Address *</label>
                 <div className="relative">
                   <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                   <input
@@ -125,10 +248,10 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Password (login only) */}
-              {mode === 'login' && (
+              {/* Password */}
+              {mode !== 'forgot' && (
                 <div>
-                  <label className="block text-gray-400 text-sm mb-2">Password</label>
+                  <label className="block text-gray-400 text-sm mb-2">Password *</label>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                     <input
@@ -147,14 +270,34 @@ export default function LoginPage() {
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
-                  <div className="text-right mt-2">
-                    <button
-                      type="button"
-                      onClick={() => { setMode('forgot'); setError('') }}
-                      className="text-amber-400 hover:text-amber-300 text-xs transition-colors"
-                    >
-                      Forgot password?
-                    </button>
+                  {mode === 'login' && (
+                    <div className="text-right mt-2">
+                      <button
+                        type="button"
+                        onClick={() => switchMode('forgot')}
+                        className="text-amber-400 hover:text-amber-300 text-xs transition-colors"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Confirm Password (signup only) */}
+              {mode === 'signup' && (
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">Confirm Password *</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                    />
                   </div>
                 </div>
               )}
@@ -163,23 +306,22 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-70 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-amber-500/25"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-70 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-amber-500/25 mt-2"
               >
                 {loading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                    {mode === 'login' ? 'Signing in...' : 'Sending...'}
+                    {mode === 'login' ? 'Signing in...' : mode === 'signup' ? 'Creating account...' : 'Sending...'}
                   </>
                 ) : (
-                  mode === 'login' ? 'Sign In to Dashboard' : 'Send Reset Link'
+                  mode === 'login' ? 'Sign In to Dashboard' : mode === 'signup' ? 'Create Account' : 'Send Reset Link'
                 )}
               </button>
 
-              {/* Toggle mode */}
               {mode === 'forgot' && (
                 <button
                   type="button"
-                  onClick={() => { setMode('login'); setError('') }}
+                  onClick={() => switchMode('login')}
                   className="w-full text-center text-gray-400 hover:text-white text-sm transition-colors"
                 >
                   ← Back to Sign In
@@ -189,8 +331,35 @@ export default function LoginPage() {
           )}
         </div>
 
-        <p className="text-center text-gray-500 text-sm mt-6">
-          Don't have access?{' '}
+        {/* Toggle Login/Signup */}
+        {mode !== 'forgot' && !signupSuccess && (
+          <p className="text-center text-gray-500 text-sm mt-6">
+            {mode === 'login' ? (
+              <>
+                Don't have an account?{' '}
+                <button
+                  onClick={() => switchMode('signup')}
+                  className="text-amber-400 hover:text-amber-300 transition-colors font-medium"
+                >
+                  Create one
+                </button>
+              </>
+            ) : (
+              <>
+                Already have an account?{' '}
+                <button
+                  onClick={() => switchMode('login')}
+                  className="text-amber-400 hover:text-amber-300 transition-colors font-medium"
+                >
+                  Sign in
+                </button>
+              </>
+            )}
+          </p>
+        )}
+
+        <p className="text-center text-gray-600 text-sm mt-3">
+          Need access?{' '}
           <a href="/contact" className="text-amber-400 hover:text-amber-300 transition-colors">
             Contact us
           </a>
