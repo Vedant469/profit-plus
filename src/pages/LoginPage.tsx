@@ -137,7 +137,7 @@ export default function LoginPage() {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
+          <a href="/" className="inline-flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #00ff88, #00cc6a)', boxShadow: '0 0 20px rgba(0,255,136,0.4)' }}
@@ -147,7 +147,10 @@ export default function LoginPage() {
             <span className="font-bold text-white text-xl">
               Profit<span style={{ color: '#00ff88' }}>Plus</span>
             </span>
-          </div>
+          </a>
+          <a href="/" className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-300 text-xs mb-4 transition-colors">
+            ← Back to Home
+          </a>
           <h1 className="text-2xl font-bold text-white mb-2">
             {mode === 'login' ? 'Welcome Back' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
           </h1>
