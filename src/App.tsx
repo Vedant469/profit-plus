@@ -19,7 +19,6 @@ import { useAdaptiveQuality } from './hooks/useAdaptiveQuality'
 import { SkeletonPage } from './components/Skeleton'
 import IntroAnimation from './components/IntroAnimation'
 import ExitIntentPopup from './components/ExitIntentPopup'
-import SocialProofTicker from './components/SocialProofTicker'
 import LiveChat from './components/LiveChat'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
