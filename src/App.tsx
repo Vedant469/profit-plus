@@ -57,7 +57,6 @@ function PublicLoader() {
 
 function AnimatedRoutes() {
   const location = useLocation()
-  const isDashboard = location.pathname.startsWith('/dashboard')
 
   return (
     <AnimatePresence mode="wait">

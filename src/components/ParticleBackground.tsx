@@ -19,7 +19,7 @@ export default function ParticleBackground() {
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
-    const isMobile = window.innerWidth < 768
+    const isMobile = false // Enable particles on all devices
     const isLowEnd = navigator.hardwareConcurrency <= 4
 
     // Green color palette
@@ -94,11 +94,9 @@ export default function ParticleBackground() {
         ctx.fill()
         ctx.globalAlpha = 1
 
-        if (!isMobile) {
-          for (let j = i + 1; j < particles.length; j++) {
-            drawConnections(p, particles[j]!)
-          }
-        }
+        for (let j = i + 1; j < particles.length; j++) {
+  drawConnections(p, particles[j]!)
+}
       })
     }
 
