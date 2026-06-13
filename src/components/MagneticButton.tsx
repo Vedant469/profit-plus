@@ -6,7 +6,8 @@ interface MagneticButtonProps {
   className?: string
   strength?: number
   onClick?: () => void
-  as?: 'button' | 'div'
+    as?: 'button' | 'div' // reserved for future use
+
 }
 
 export default function MagneticButton({
@@ -14,7 +15,7 @@ export default function MagneticButton({
   className = '',
   strength = 0.3,
   onClick,
-  as: Tag = 'div',
+  as: _Tag = 'div',
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [position, setPosition] = useState({ x: 0, y: 0 })
