@@ -122,7 +122,6 @@ function AppContent() {
 
       {isPublic && !shouldReduceMotion && <BackToTop />}
       {isPublic && <WhatsAppButton />}
-      {isPublic && !shouldReduceMotion && <SocialProofTicker />}
       {isPublic && <ExitIntentPopup />}
     </>
   )

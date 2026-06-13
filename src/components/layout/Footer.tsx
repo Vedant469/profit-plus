@@ -107,20 +107,23 @@ export default function Footer() {
                   <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                   <span className="text-gray-500 text-xs">Direct Contacts</span>
                 </div>
-                <div className="pl-6 space-y-1.5">
-                  {[
-                    { name: 'Atharva', phone: '+91 70280 62213' },
-                    { name: 'Rushikesh', phone: '+91 84462 07529' },
-                    { name: 'Vedant', phone: '+91 77965 97171' },
-                  ].map(({ name, phone }) => (
-                    <div key={name} className="flex items-center justify-between gap-2">
-                      <span className="text-gray-400 text-xs">{name}</span>
-                      <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-emerald-400 hover:text-emerald-300 text-xs font-mono transition-colors">
-                        {phone}
-                      </a>
-                    </div>
-                  ))}
-                </div>
+                <div className="pl-6 space-y-2">
+  {[
+    { name: 'Atharva', phone: '+91 70280 62213' },
+    { name: 'Rushikesh', phone: '+91 84462 07529' },
+    { name: 'Vedant', phone: '+91 77965 97171' },
+  ].map(({ name, phone }) => (
+    <div key={name} className="flex flex-col gap-0.5">
+      <span className="text-gray-500 text-xs">{name}</span>
+      <a
+        href={`tel:${phone.replace(/\s/g, '')}`}
+        className="text-emerald-400 hover:text-emerald-300 text-xs font-mono transition-colors whitespace-nowrap"
+      >
+        {phone}
+      </a>
+    </div>
+  ))}
+</div>
               </li>
               <li className="flex items-start gap-2.5 text-gray-400 text-sm">
                 <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
