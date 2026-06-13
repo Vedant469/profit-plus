@@ -6,15 +6,11 @@ import { stats, services, caseStudies, testimonials } from '../data/mockData'
 import ParticleBackground from '../components/ParticleBackground'
 import AuroraBackground from '../components/AuroraBackground'
 import MagneticButton from '../components/MagneticButton'
-import TiltCard from '../components/TiltCard'
-import SplitText from '../components/SplitText'
-import GlitchText from '../components/GlitchText'
 import LiquidShape from '../components/LiquidShape'
 import ProgressiveImage from '../components/ProgressiveImage'
 import { useAdaptiveQuality } from '../hooks/useAdaptiveQuality'
 import { useHaptic } from '../hooks/useHaptic'
 
-// ── 60fps RAF Typewriter ──────────────────────────────────────
 const phrases = [
   'We Build Profit Machines',
   'We Engineer Growth Systems',
@@ -59,7 +55,6 @@ function TypewriterText() {
 
       if (timestamp - s.lastUpdate >= interval) {
         s.lastUpdate = timestamp
-
         if (!s.deleting) {
           if (s.charIndex < phrase.length) {
             s.charIndex++
@@ -77,7 +72,6 @@ function TypewriterText() {
           }
         }
       }
-
       rafId = requestAnimationFrame(animate)
     }
 
@@ -93,18 +87,15 @@ function TypewriterText() {
   )
 }
 
-// ── Animated Counter ──────────────────────────────────────────
 function AnimatedCounter({ target, suffix, inView }: { target: number; suffix: string; inView: boolean }) {
   const [count, setCount] = useState(0)
   const rafRef = useRef<number>()
-  const startRef = useRef<number>(0)
   const startTimeRef = useRef<number>(0)
 
   useEffect(() => {
     if (!inView) return
-    const duration = 2000
-    startRef.current = 0
     startTimeRef.current = 0
+    const duration = 2000
 
     const animate = (timestamp: number) => {
       if (!startTimeRef.current) startTimeRef.current = timestamp
@@ -126,7 +117,6 @@ function AnimatedCounter({ target, suffix, inView }: { target: number; suffix: s
   return <>{count.toLocaleString()}{suffix}</>
 }
 
-// ── Data ──────────────────────────────────────────────────────
 const serviceIcons: Record<string, React.ReactNode> = {
   'Performance Marketing': <Target className="w-6 h-6" />,
   'SEO & Content Strategy': <Search className="w-6 h-6" />,
@@ -205,7 +195,7 @@ export default function HomePage() {
   const liveRef = useRef(null)
   const statsInView = useInView(statsRef, { once: true, margin: '-100px' })
   const liveInView = useInView(liveRef, { once: true, margin: '-100px' })
-   const { isHighEnd } = useAdaptiveQuality()
+  const { isHighEnd } = useAdaptiveQuality()
   const haptic = useHaptic()
 
   const toggleFaq = useCallback((i: number) => {
@@ -217,37 +207,17 @@ export default function HomePage() {
     <div>
       {/* Hero */}
       <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
-        <video
-          autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-20"
-          style={{ willChange: 'auto' }}
-        >
+        <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-20">
           <source src="/hero.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/90" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/40" />
-
-        
-        <ParticleBackground />
-
-         {/* Aurora background */}
         <AuroraBackground />
-
-        {/* Liquid shapes */}
+        <ParticleBackground />
         {isHighEnd && (
           <>
-            <LiquidShape
-              className="absolute top-20 left-10 md:left-20"
-              color="rgba(0,255,136,0.06)"
-              size={400}
-              speed={10}
-            />
-            <LiquidShape
-              className="absolute bottom-20 right-10 md:right-20"
-              color="rgba(0,200,100,0.05)"
-              size={500}
-              speed={14}
-            />
+            <LiquidShape className="absolute top-20 left-10 md:left-20" color="rgba(0,255,136,0.06)" size={400} speed={10} />
+            <LiquidShape className="absolute bottom-20 right-10 md:right-20" color="rgba(0,200,100,0.05)" size={500} speed={14} />
           </>
         )}
 
@@ -282,7 +252,7 @@ export default function HomePage() {
               Data-engineered campaigns that turn every dollar of marketing spend into measurable, compounding profit. No vanity metrics — just real returns.
             </motion.p>
 
-               <motion.div
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -377,7 +347,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Live Results Ticker */}
+      {/* Live Ticker */}
       <section ref={liveRef} className="py-16 bg-gradient-to-r from-emerald-500/5 via-green-500/5 to-emerald-500/5 border-b border-emerald-500/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
@@ -406,7 +376,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Flip Service Cards */}
+      {/* Services */}
       <section id="services" className="py-20 md:py-24 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -419,7 +389,6 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Services That Drive Profit</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">Hover over each card to see what's included.</p>
           </motion.div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, i) => {
               const colorClass = serviceColors[service.color] ?? serviceColors['blue']!
@@ -487,10 +456,10 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all duration-300 glow-card holo-card"
+                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all duration-300 glow-card holo-card"
               >
                 <div className="relative h-44 md:h-48 overflow-hidden">
-                                  <ProgressiveImage src={cs.image} alt={cs.title} className="w-full h-full" />
+                  <ProgressiveImage src={cs.image} alt={cs.title} className="w-full h-full" />
                   <div className={`absolute inset-0 bg-gradient-to-t ${cs.gradient} opacity-60`} />
                   <div className="absolute top-4 left-4">
                     <span className="px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white text-xs font-medium">{cs.industry}</span>
@@ -544,7 +513,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-300 leading-relaxed mb-6">"{t.quote}"</p>
                 <div className="flex items-center gap-3">
-                                    <ProgressiveImage src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full" />
+                  <ProgressiveImage src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full" />
                   <div>
                     <p className="text-white font-medium text-sm">{t.name}</p>
                     <p className="text-gray-400 text-xs">{t.role} · {t.company}</p>

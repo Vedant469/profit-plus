@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { TrendingUp, LayoutDashboard, Target, BarChart2, FileText, Settings, LogOut, Menu, Bell, Search, X, Users, Gift, Download, Smartphone } from 'lucide-react'
+import { TrendingUp, LayoutDashboard, Target, BarChart2, FileText, Settings, LogOut, Menu, Bell, Search, X, Users, Smartphone } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { usePWAInstall } from '../../hooks/usePWAInstall'
 
@@ -42,22 +42,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-slate-950 flex">
-      {/* Mobile overlay */}
       {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-40 md:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
+        <div className="fixed inset-0 bg-black/60 z-40 md:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
-      {/* Sidebar */}
       <aside className={`
         fixed md:relative z-50 md:z-auto h-full md:h-auto
         ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         ${collapsed ? 'md:w-16' : 'w-60'}
         flex-shrink-0 bg-slate-900 border-r border-white/5 transition-all duration-300 flex flex-col
       `}>
-        {/* Logo */}
         <div className="p-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -69,15 +63,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </span>
             )}
           </div>
-          <button
-            className="md:hidden text-gray-400 hover:text-white"
-            onClick={() => setMobileOpen(false)}
-          >
+          <button className="md:hidden text-gray-400 hover:text-white" onClick={() => setMobileOpen(false)}>
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Nav links */}
         <nav className="flex-1 p-3 space-y-1">
           {sidebarLinks.map(({ label, href, icon: Icon }) => (
             <Link
@@ -96,12 +86,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
 
-        {/* Install App Button */}
         {!isInstalled && canInstall && (
           <div className="px-3 pb-2">
             <button
               onClick={install}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20`}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20"
             >
               <Smartphone className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span>Install App</span>}
@@ -111,14 +100,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {isInstalled && (
           <div className="px-3 pb-2">
-            <div className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-emerald-400`}>
-              <Download className="w-4 h-4 flex-shrink-0" />
+            <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-emerald-400">
+              <Smartphone className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span>App Installed ✓</span>}
             </div>
           </div>
         )}
 
-        {/* Bottom */}
         <div className="p-3 border-t border-white/5 space-y-1">
           <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
             <Settings className="w-4 h-4 flex-shrink-0" />
@@ -134,35 +122,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
         <header className="h-16 bg-slate-900/50 border-b border-white/5 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="md:hidden text-gray-400 hover:text-white transition-colors"
-            >
+            <button onClick={() => setMobileOpen(true)} className="md:hidden text-gray-400 hover:text-white transition-colors">
               <Menu className="w-5 h-5" />
             </button>
-            <button
-              onClick={() => setCollapsed(!collapsed)}
-              className="hidden md:block text-gray-400 hover:text-white transition-colors"
-            >
+            <button onClick={() => setCollapsed(!collapsed)} className="hidden md:block text-gray-400 hover:text-white transition-colors">
               <Menu className="w-5 h-5" />
             </button>
             <div className="hidden sm:flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
               <Search className="w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search campaigns..."
-                className="bg-transparent text-sm text-gray-300 placeholder-gray-500 outline-none w-32 md:w-48"
-              />
+              <input type="text" placeholder="Search campaigns..." className="bg-transparent text-sm text-gray-300 placeholder-gray-500 outline-none w-32 md:w-48" />
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Install button in header for mobile */}
             {!isInstalled && canInstall && (
               <button
                 onClick={install}
@@ -172,7 +147,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <span className="hidden sm:inline">Install App</span>
               </button>
             )}
-
             <button className="relative text-gray-400 hover:text-white transition-colors">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full" />
@@ -188,8 +162,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </div>
         </header>
-
-        {/* Page content */}
         <main className="flex-1 overflow-auto p-4 sm:p-6">{children}</main>
       </div>
     </div>
