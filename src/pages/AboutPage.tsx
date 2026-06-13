@@ -5,7 +5,7 @@ import { ArrowRight, Award, Heart, Zap, Shield } from 'lucide-react'
 import { team } from '../data/mockData'
 
 const values = [
-  { icon: Zap, title: 'Profit First', description: 'Every decision we make is tied to one metric — your profit. Not impressions, not clicks, not vanity. Profit.', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+  { icon: Zap, title: 'Profit First', description: 'Every decision we make is tied to one metric — your profit. Not impressions, not clicks, not vanity. Profit.', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
   { icon: Heart, title: 'Client Obsessed', description: 'We treat your business like our own. Your profit growth is our growth. Your wins are our wins.', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
   { icon: Shield, title: 'Radical Transparency', description: 'No vanity metrics, no fluff. Honest reporting, real numbers, and clear communication at every step.', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
   { icon: Award, title: 'Relentless Optimisation', description: 'We test, learn, and optimise constantly. What drove profit yesterday might not be enough tomorrow.', color: 'text-violet-400 bg-violet-500/10 border-violet-500/20' },
@@ -22,7 +22,7 @@ export default function AboutPage() {
       />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -30,7 +30,7 @@ export default function AboutPage() {
             transition={{ duration: 0.6 }}
             className="max-w-3xl"
           >
-            <p className="text-amber-400 font-medium mb-3">About Us</p>
+            <p className="text-emerald-400 font-medium mb-3">About Us</p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               The Profit Growth Team{' '}
               <span className="gradient-text">You Always Needed</span>
@@ -54,7 +54,7 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <p className="text-amber-400 font-medium mb-3">Our Values</p>
+            <p className="text-emerald-400 font-medium mb-3">Our Values</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">What We Stand For</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               These aren't words on a wall — they guide every campaign, every report, every client relationship.
@@ -69,7 +69,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-6 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/10 transition-all"
+                className="p-6 bg-slate-900 border border-white/5 rounded-2xl hover:border-emerald-500/10 transition-all"
               >
                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${value.color}`}>
                   <value.icon className="w-6 h-6" />
@@ -100,7 +100,7 @@ export default function AboutPage() {
                 transition={{ delay: i * 0.1 }}
                 className="text-center p-6 bg-slate-900 border border-white/5 rounded-2xl"
               >
-                <p className="text-2xl md:text-3xl font-bold text-amber-400 mb-2">{stat.value}</p>
+                <p className="text-2xl md:text-3xl font-bold text-emerald-400 mb-2">{stat.value}</p>
                 <p className="text-gray-400 text-sm">{stat.label}</p>
               </motion.div>
             ))}
@@ -117,7 +117,7 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <p className="text-amber-400 font-medium mb-3">Our Team</p>
+            <p className="text-emerald-400 font-medium mb-3">Our Team</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">The People Behind Your Profit</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Seasoned specialists who have been in the trenches and know what it takes to win.
@@ -132,15 +132,15 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-6 bg-slate-900 border border-white/5 rounded-2xl text-center group hover:border-amber-500/20 transition-all"
+                className="p-6 bg-slate-900 border border-white/5 rounded-2xl text-center group hover:border-emerald-500/20 transition-all"
               >
                 <img
                   src={member.avatar}
                   alt={member.name}
-                  className="w-20 h-20 rounded-full object-cover mx-auto mb-4 ring-2 ring-white/10 group-hover:ring-amber-500/30 transition-all"
+                  className="w-20 h-20 rounded-full object-cover mx-auto mb-4 ring-2 ring-white/10 group-hover:ring-emerald-500/30 transition-all"
                 />
                 <h3 className="text-white font-semibold mb-1">{member.name}</h3>
-                <p className="text-amber-400 text-sm mb-3">{member.role}</p>
+                <p className="text-emerald-400 text-sm mb-3">{member.role}</p>
                 <p className="text-gray-400 text-sm leading-relaxed">{member.bio}</p>
               </motion.div>
             ))}
@@ -164,7 +164,7 @@ export default function AboutPage() {
             </p>
             <Link
               to="/contact"
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25"
             >
               Let's Talk Profit
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

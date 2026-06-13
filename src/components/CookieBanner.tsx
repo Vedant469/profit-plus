@@ -36,8 +36,8 @@ export default function CookieBanner() {
           <div className="bg-slate-900 border border-white/10 rounded-2xl p-5 shadow-2xl shadow-black/50">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Cookie className="w-4 h-4 text-amber-400" />
+                <div className="w-8 h-8 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Cookie className="w-4 h-4 text-emerald-400" />
                 </div>
                 <h3 className="text-white font-semibold text-sm">We use cookies</h3>
               </div>
@@ -67,7 +67,7 @@ export default function CookieBanner() {
               </button>
               <button
                 onClick={handleAccept}
-                className="flex-1 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-amber-500/25"
+                className="flex-1 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25"
               >
                 Accept All
               </button>

@@ -80,7 +80,7 @@ export default function CustomCursor() {
       >
         <div className={`w-10 h-10 rounded-full border-2 transition-colors duration-200 ${
           isHovering
-            ? 'border-amber-400 bg-amber-400/10'
+            ? 'border-emerald-400 bg-emerald-400/10'
             : 'border-white/40 bg-transparent'
         }`} />
       </motion.div>
@@ -101,7 +101,7 @@ export default function CustomCursor() {
           opacity: { duration: 0.15 },
         }}
       >
-        <div className="w-2 h-2 rounded-full bg-amber-400 shadow-lg shadow-amber-400/50" />
+        <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50" />
       </motion.div>
 
       {/* Glow trail */}
@@ -118,7 +118,7 @@ export default function CustomCursor() {
           opacity: { duration: 0.3 },
         }}
       >
-        <div className="w-16 h-16 rounded-full bg-amber-400 blur-xl" />
+        <div className="w-16 h-16 rounded-full bg-emerald-400 blur-xl" />
       </motion.div>
     </>
   )

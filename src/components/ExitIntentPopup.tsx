@@ -67,7 +67,7 @@ export default function ExitIntentPopup() {
           >
             <div className="relative bg-slate-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
               {/* Top gradient bar */}
-              <div className="h-1 bg-gradient-to-r from-amber-400 to-orange-500" />
+              <div className="h-1 bg-gradient-to-r from-emerald-400 to-orange-500" />
 
               {/* Close button */}
               <button
@@ -84,16 +84,16 @@ export default function ExitIntentPopup() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center py-4"
                   >
-                    <div className="w-16 h-16 bg-amber-500/20 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <TrendingUp className="w-8 h-8 text-amber-400" />
+                    <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <TrendingUp className="w-8 h-8 text-emerald-400" />
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2">You're In! 🎉</h3>
                     <p className="text-gray-400 text-sm mb-6">
-                      We'll send your free profit audit to <span className="text-amber-400">{email}</span> within 24 hours.
+                      We'll send your free profit audit to <span className="text-emerald-400">{email}</span> within 24 hours.
                     </p>
                     <button
                       onClick={() => setVisible(false)}
-                      className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm rounded-xl transition-all"
+                      className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-xl transition-all"
                     >
                       Continue Browsing
                     </button>
@@ -101,8 +101,8 @@ export default function ExitIntentPopup() {
                 ) : (
                   <>
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 text-xs font-medium mb-6">
-                      <span className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse" />
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-medium mb-6">
+                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                       Wait — Don't Leave Yet!
                     </div>
 
@@ -124,8 +124,8 @@ export default function ExitIntentPopup() {
                         'Competitor analysis & benchmarking',
                       ].map((item) => (
                         <div key={item} className="flex items-center gap-2.5">
-                          <div className="w-4 h-4 bg-amber-500/20 border border-amber-500/30 rounded-full flex items-center justify-center flex-shrink-0">
-                            <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
+                          <div className="w-4 h-4 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center flex-shrink-0">
+                            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
                           </div>
                           <span className="text-gray-300 text-sm">{item}</span>
                         </div>
@@ -140,11 +140,11 @@ export default function ExitIntentPopup() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email address"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                       />
                       <button
                         type="submit"
-                        className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-amber-500/25"
+                        className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25"
                       >
                         Claim My Free Audit
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -156,7 +156,7 @@ export default function ExitIntentPopup() {
                       <Link
                         to="/contact"
                         onClick={() => setVisible(false)}
-                        className="text-amber-400 hover:text-amber-300 text-xs transition-colors"
+                        className="text-emerald-400 hover:text-amber-300 text-xs transition-colors"
                       >
                         Book a call instead →
                       </Link>

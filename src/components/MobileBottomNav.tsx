@@ -44,15 +44,15 @@ export default function MobileBottomNav() {
             {isActive(href) && (
               <motion.div
                 layoutId="mobileNav"
-                className="absolute inset-0 bg-amber-500/10 border border-amber-500/20 rounded-xl"
+                className="absolute inset-0 bg-emerald-500/10 border border-emerald-500/20 rounded-xl"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}
             <Icon className={`w-5 h-5 relative z-10 transition-colors flex-shrink-0 ${
-              isActive(href) ? 'text-amber-400' : 'text-gray-500'
+              isActive(href) ? 'text-emerald-400' : 'text-gray-500'
             }`} />
             <span className={`text-xs relative z-10 transition-colors truncate ${
-              isActive(href) ? 'text-amber-400 font-medium' : 'text-gray-500'
+              isActive(href) ? 'text-emerald-400 font-medium' : 'text-gray-500'
             }`}>
               {label}
             </span>

@@ -5,7 +5,7 @@ import { useCampaigns } from '../../hooks/useSupabase'
 
 const statusColors: Record<string, string> = {
   active: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  paused: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  paused: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   completed: 'text-gray-400 bg-gray-500/10 border-gray-500/20',
 }
 
@@ -22,7 +22,7 @@ export default function CampaignsPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -37,10 +37,10 @@ export default function CampaignsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: 'Active', count: campaignData.filter(c => c.status === 'active').length, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-          { label: 'Paused', count: campaignData.filter(c => c.status === 'paused').length, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+          { label: 'Paused', count: campaignData.filter(c => c.status === 'paused').length, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
           { label: 'Completed', count: campaignData.filter(c => c.status === 'completed').length, color: 'text-gray-400 bg-gray-500/10 border-gray-500/20' },
         ].map(({ label, count, color }) => (
-          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-between hover:border-amber-500/10 transition-all">
+          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-between hover:border-emerald-500/10 transition-all">
             <span className="text-gray-400 text-sm">{label} Campaigns</span>
             <span className={`px-3 py-1 rounded-full text-sm font-bold border ${color}`}>{count}</span>
           </div>
@@ -122,7 +122,7 @@ export default function CampaignsPage() {
                       <span className="text-gray-300 text-sm">${campaign.spent.toLocaleString()}</span>
                       <div className="w-16 h-1 bg-white/10 rounded-full mt-1 ml-auto">
                         <div
-                          className="h-1 bg-amber-500 rounded-full"
+                          className="h-1 bg-emerald-500 rounded-full"
                           style={{ width: `${Math.min((campaign.spent / campaign.budget) * 100, 100)}%` }}
                         />
                       </div>
@@ -132,7 +132,7 @@ export default function CampaignsPage() {
                     <span className="text-gray-300 text-sm">{campaign.conversions.toLocaleString()}</span>
                   </td>
                   <td className="px-4 md:px-6 py-4 text-right">
-                    <span className={`text-sm font-bold ${campaign.roas >= 5 ? 'text-emerald-400' : campaign.roas >= 3 ? 'text-amber-400' : 'text-red-400'}`}>
+                    <span className={`text-sm font-bold ${campaign.roas >= 5 ? 'text-emerald-400' : campaign.roas >= 3 ? 'text-emerald-400' : 'text-red-400'}`}>
                       {campaign.roas}x
                     </span>
                   </td>

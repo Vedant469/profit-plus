@@ -74,7 +74,7 @@ const serviceColors: Record<string, string> = {
   blue: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
   violet: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
   emerald: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  amber: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  amber: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   pink: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
   cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
 }
@@ -83,7 +83,7 @@ const serviceBackColors: Record<string, string> = {
   blue: 'from-blue-600/20 to-blue-800/20 border-blue-500/30',
   violet: 'from-violet-600/20 to-violet-800/20 border-violet-500/30',
   emerald: 'from-emerald-600/20 to-emerald-800/20 border-emerald-500/30',
-  amber: 'from-amber-600/20 to-amber-800/20 border-amber-500/30',
+  amber: 'from-emerald-600/20 to-amber-800/20 border-emerald-500/30',
   pink: 'from-pink-600/20 to-pink-800/20 border-pink-500/30',
   cyan: 'from-cyan-600/20 to-cyan-800/20 border-cyan-500/30',
 }
@@ -157,7 +157,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/40" />
         <ParticleBackground />
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-amber-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-emerald-500/10 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/10 rounded-full blur-3xl" />
         </div>
 
@@ -167,9 +167,9 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-sm font-medium mb-6"
             >
-              <span className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse" />
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
               Profit-Driven Marketing Agency
             </motion.div>
 
@@ -198,7 +198,7 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Link to="/contact" className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25">
+              <Link to="/contact" className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25">
                 Start Maximizing Profit
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -238,7 +238,7 @@ export default function HomePage() {
           <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10" />
           <div className="animate-marquee">
             {clients.map((client, i) => (
-              <span key={i} className="mx-10 text-gray-500 hover:text-amber-400 font-bold text-xl tracking-wide transition-colors cursor-default select-none">
+              <span key={i} className="mx-10 text-gray-500 hover:text-emerald-400 font-bold text-xl tracking-wide transition-colors cursor-default select-none">
                 {client}
               </span>
             ))}
@@ -261,7 +261,7 @@ export default function HomePage() {
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                   className="text-center glow-card p-6 bg-slate-900 border border-white/5 rounded-2xl"
                 >
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-4 text-amber-400">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 mb-4 text-emerald-400">
                     <Icon className="w-6 h-6" />
                   </div>
                   <p className="text-3xl md:text-4xl font-bold text-white mb-1">
@@ -276,12 +276,12 @@ export default function HomePage() {
       </section>
 
       {/* Live Results Ticker */}
-      <section ref={liveRef} className="py-16 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-amber-500/5 border-b border-amber-500/10">
+      <section ref={liveRef} className="py-16 bg-gradient-to-r from-emerald-500/5 via-orange-500/5 to-emerald-500/5 border-b border-emerald-500/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-3">
               <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-amber-400 text-sm font-medium">Live Results Tracker</span>
+              <span className="text-emerald-400 text-sm font-medium">Live Results Tracker</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-white">Numbers That Speak for Themselves</h2>
           </div>
@@ -292,7 +292,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={liveInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="text-center p-6 bg-slate-900/80 border border-amber-500/10 rounded-2xl glow-card"
+                className="text-center p-6 bg-slate-900/80 border border-emerald-500/10 rounded-2xl glow-card"
               >
                 <p className="text-3xl md:text-4xl font-bold text-white mb-1">
                   {prefix}<AnimatedCounter target={value} suffix={suffix} inView={liveInView} />
@@ -313,7 +313,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <p className="text-amber-400 font-medium mb-3">What We Do</p>
+            <p className="text-emerald-400 font-medium mb-3">What We Do</p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Services That Drive Profit</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">Hover over each card to see what's included.</p>
           </motion.div>
@@ -340,19 +340,19 @@ export default function HomePage() {
                         <h3 className="text-white font-semibold text-lg mb-2">{service.title}</h3>
                         <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{service.description}</p>
                       </div>
-                      <p className="text-amber-400 text-xs mt-3">Hover to see what's included →</p>
+                      <p className="text-emerald-400 text-xs mt-3">Hover to see what's included →</p>
                     </div>
                     <div className={`flip-card-back p-6 bg-gradient-to-br ${backColor} border flex flex-col justify-center`}>
                       <h3 className="text-white font-bold text-lg mb-4">{service.title}</h3>
                       <ul className="space-y-2.5 mb-6">
                         {service.features.map((f) => (
                           <li key={f} className="flex items-center gap-2.5">
-                            <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                            <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                             <span className="text-gray-200 text-sm">{f}</span>
                           </li>
                         ))}
                       </ul>
-                      <Link to="/contact" className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all">
+                      <Link to="/contact" className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all">
                         Get Started <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -373,7 +373,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <p className="text-amber-400 font-medium mb-3">Our Work</p>
+            <p className="text-emerald-400 font-medium mb-3">Our Work</p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Real Profit for Real Clients</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">Numbers don't lie. Here's what we've achieved.</p>
           </motion.div>
@@ -385,7 +385,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-amber-500/20 transition-all duration-300 glow-card"
+                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all duration-300 glow-card"
               >
                 <div className="relative h-44 md:h-48 overflow-hidden">
                   <img loading="lazy" src={cs.image} alt={cs.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -401,7 +401,7 @@ export default function HomePage() {
                   <div className="grid grid-cols-3 gap-4">
                     {cs.metrics.map((m) => (
                       <div key={m.label}>
-                        <p className="text-amber-400 font-bold text-base md:text-lg">{m.value}</p>
+                        <p className="text-emerald-400 font-bold text-base md:text-lg">{m.value}</p>
                         <p className="text-gray-500 text-xs">{m.label}</p>
                       </div>
                     ))}
@@ -422,7 +422,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <p className="text-amber-400 font-medium mb-3">Testimonials</p>
+            <p className="text-emerald-400 font-medium mb-3">Testimonials</p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">What Our Clients Say</h2>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -433,11 +433,11 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-6 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/20 transition-all glow-card"
+                className="p-6 bg-slate-900 border border-white/5 rounded-2xl hover:border-emerald-500/20 transition-all glow-card"
               >
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <Star key={j} className="w-4 h-4 text-emerald-400 fill-emerald-400" />
                   ))}
                 </div>
                 <p className="text-gray-300 leading-relaxed mb-6">"{t.quote}"</p>
@@ -463,7 +463,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <p className="text-amber-400 font-medium mb-3">Pricing</p>
+            <p className="text-emerald-400 font-medium mb-3">Pricing</p>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">No hidden fees. No long-term lock-ins. Just results.</p>
           </motion.div>
@@ -475,10 +475,10 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`relative p-6 md:p-8 rounded-2xl border transition-all ${plan.highlighted ? 'bg-gradient-to-b from-amber-500/10 to-slate-900 border-amber-500/30 glow-card' : 'bg-slate-900 border-white/5 hover:border-white/10'}`}
+                className={`relative p-6 md:p-8 rounded-2xl border transition-all ${plan.highlighted ? 'bg-gradient-to-b from-emerald-500/10 to-slate-900 border-emerald-500/30 glow-card' : 'bg-slate-900 border-white/5 hover:border-white/10'}`}
               >
                 {plan.highlighted && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-500 text-slate-950 text-xs font-bold rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-emerald-500 text-slate-950 text-xs font-bold rounded-full">
                     MOST POPULAR
                   </div>
                 )}
@@ -491,12 +491,12 @@ export default function HomePage() {
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5">
-                      <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                      <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                       <span className="text-gray-300 text-sm">{f}</span>
                     </li>
                   ))}
                 </ul>
-                <Link to="/contact" className={`block text-center px-6 py-3 rounded-xl font-semibold text-sm transition-all ${plan.highlighted ? 'bg-amber-500 hover:bg-amber-400 text-slate-950' : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'}`}>
+                <Link to="/contact" className={`block text-center px-6 py-3 rounded-xl font-semibold text-sm transition-all ${plan.highlighted ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950' : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'}`}>
                   {plan.cta}
                 </Link>
               </motion.div>
@@ -514,7 +514,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <p className="text-amber-400 font-medium mb-3">FAQ</p>
+            <p className="text-emerald-400 font-medium mb-3">FAQ</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Frequently Asked Questions</h2>
           </motion.div>
           <div className="space-y-3">
@@ -525,14 +525,14 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-slate-900 border border-white/5 rounded-xl overflow-hidden hover:border-amber-500/10 transition-all"
+                className="bg-slate-900 border border-white/5 rounded-xl overflow-hidden hover:border-emerald-500/10 transition-all"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex items-center justify-between p-5 text-left"
                 >
                   <span className="text-white font-medium text-sm md:text-base">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180 text-amber-400' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180 text-emerald-400' : ''}`} />
                 </button>
                 <AnimatePresence>
                   {openFaq === i && (
@@ -570,7 +570,7 @@ export default function HomePage() {
               Book a free strategy call and we'll show you exactly how we'd grow your profits in the next 90 days.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/contact" className="group flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25">
+              <Link to="/contact" className="group flex items-center justify-center gap-2 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25">
                 Book Free Strategy Call
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>

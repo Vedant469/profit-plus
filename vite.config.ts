@@ -12,7 +12,7 @@ export default defineConfig({
         name: 'ProfitPlus - Marketing Agency',
         short_name: 'ProfitPlus',
         description: "India's #1 Profit-Driven Marketing Agency. 320%+ average ROI.",
-        theme_color: '#f59e0b',
+        theme_color: '#10b981',
         background_color: '#020617',
         display: 'standalone',
         orientation: 'portrait-primary',

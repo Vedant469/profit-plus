@@ -37,11 +37,11 @@ function LogoTypewriter({ active }: { active: boolean }) {
       {profitPart}
       <span
         style={{
-          background: 'linear-gradient(135deg, #fbbf24, #f97316)',
+          background: 'linear-gradient(135deg, #34d399, #059669)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
-          filter: 'drop-shadow(0 0 20px rgba(245,158,11,0.6))',
+          filter: 'drop-shadow(0 0 20px rgba(16,185,129,0.6))',
         }}
       >
         {plusPart}
@@ -276,18 +276,18 @@ export default function IntroAnimation({ onComplete }: Props) {
               </feMerge>
             </filter>
             <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.2" />
-              <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#fde68a" stopOpacity="1" />
+              <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="	#6ee7b7" stopOpacity="1" />
             </linearGradient>
             <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+              <stop offset="0%" stopColor="#10b981" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="scanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0" />
-              <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+              <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
+              <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -326,23 +326,23 @@ export default function IntroAnimation({ onComplete }: Props) {
 
           {/* Arrow */}
           <g ref={arrowRef} filter="url(#softGlow)">
-            <line x1="460" y1="50" x2="444" y2="64" stroke="#fde68a" strokeWidth="2.5" strokeLinecap="round" />
-            <line x1="460" y1="50" x2="460" y2="68" stroke="#fde68a" strokeWidth="2.5" strokeLinecap="round" />
+            <line x1="460" y1="50" x2="444" y2="64" stroke="	#6ee7b7" strokeWidth="2.5" strokeLinecap="round" />
+            <line x1="460" y1="50" x2="460" y2="68" stroke="	#6ee7b7" strokeWidth="2.5" strokeLinecap="round" />
           </g>
 
           {/* Pulse */}
           <circle ref={pulseRingRef} cx="460" cy="50" r="5"
-            fill="none" stroke="#f59e0b" strokeWidth="1.5"
+            fill="none" stroke="#10b981" strokeWidth="1.5"
           />
 
           {/* Dot glow */}
           <circle ref={dotGlowRef} cx="30" cy="250" r="16"
-            fill="#f59e0b" opacity="0.2" filter="url(#dotGlow)"
+            fill="#10b981" opacity="0.2" filter="url(#dotGlow)"
           />
 
           {/* Dot */}
           <circle ref={dotRef} cx="30" cy="250" r="5"
-            fill="#fde68a" filter="url(#softGlow)"
+            fill="	#6ee7b7" filter="url(#softGlow)"
           />
         </svg>
 
@@ -352,8 +352,8 @@ export default function IntroAnimation({ onComplete }: Props) {
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
               style={{
-                background: 'linear-gradient(135deg, #fbbf24, #f97316)',
-                boxShadow: '0 0 40px rgba(245,158,11,0.5), 0 0 80px rgba(245,158,11,0.2)',
+                background: 'linear-gradient(135deg, #34d399, #059669)',
+                boxShadow: '0 0 40px rgba(16,185,129,0.5), 0 0 80px rgba(16,185,129,0.2)',
               }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="white"

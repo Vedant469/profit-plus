@@ -14,7 +14,7 @@ export default function PendingApprovalPage() {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-20 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
       </div>
 
@@ -24,17 +24,17 @@ export default function PendingApprovalPage() {
         className="relative z-10 w-full max-w-md text-center"
       >
         <div className="inline-flex items-center gap-2 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-xl flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
           <span className="font-bold text-white text-xl">
-            Profit<span className="text-amber-400">Plus</span>
+            Profit<span className="text-emerald-400">Plus</span>
           </span>
         </div>
 
         <div className="p-8 bg-slate-900 border border-white/5 rounded-2xl">
-          <div className="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Clock className="w-10 h-10 text-amber-400" />
+          <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Clock className="w-10 h-10 text-emerald-400" />
           </div>
 
           <h1 className="text-2xl font-bold text-white mb-3">
@@ -56,12 +56,12 @@ export default function PendingApprovalPage() {
                   done
                     ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
                     : i === 1
-                    ? 'bg-amber-500/20 border border-amber-500/30 text-amber-400'
+                    ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
                     : 'bg-white/5 border border-white/10 text-gray-500'
                 }`}>
                   {done ? '✓' : i + 1}
                 </div>
-                <span className={`text-sm ${done ? 'text-emerald-400' : i === 1 ? 'text-amber-400' : 'text-gray-500'}`}>
+                <span className={`text-sm ${done ? 'text-emerald-400' : i === 1 ? 'text-emerald-400' : 'text-gray-500'}`}>
                   {label}
                 </span>
               </div>
@@ -70,7 +70,7 @@ export default function PendingApprovalPage() {
 
           <a
             href="mailto:profitplus025@gmail.com"
-            className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium rounded-xl hover:bg-amber-500/20 transition-all mb-3"
+            className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium rounded-xl hover:bg-emerald-500/20 transition-all mb-3"
           >
             <Mail className="w-4 h-4" />
             Contact Us to Speed Up Approval

@@ -6,7 +6,7 @@ import { useLeads } from '../../hooks/useSupabase'
 const budgetColors: Record<string, string> = {
   '50k-1L': 'text-blue-400 bg-blue-500/10 border-blue-500/20',
   '1L-2.5L': 'text-violet-400 bg-violet-500/10 border-violet-500/20',
-  '2.5L-5L': 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  '2.5L-5L': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   '5L+': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
 }
 
@@ -43,7 +43,7 @@ export default function LeadsPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -56,7 +56,7 @@ export default function LeadsPage() {
         </div>
         <button
           onClick={exportCSV}
-          className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
         >
           <Download className="w-4 h-4" />
           Export CSV
@@ -66,12 +66,12 @@ export default function LeadsPage() {
       {/* Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total Leads', value: leads.length, color: 'text-amber-400' },
+          { label: 'Total Leads', value: leads.length, color: 'text-emerald-400' },
           { label: 'This Week', value: leads.filter(l => new Date(l.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length, color: 'text-blue-400' },
           { label: 'High Budget', value: leads.filter(l => l.budget === '5L+').length, color: 'text-emerald-400' },
           { label: 'Today', value: leads.filter(l => new Date(l.created_at).toDateString() === new Date().toDateString()).length, color: 'text-violet-400' },
         ].map(({ label, value, color }) => (
-          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/10 transition-all">
+          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-emerald-500/10 transition-all">
             <p className={`text-2xl font-bold ${color}`}>{value}</p>
             <p className="text-gray-400 text-sm mt-1">{label}</p>
           </div>
@@ -103,10 +103,10 @@ export default function LeadsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04 }}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/10 transition-all"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-emerald-500/10 transition-all"
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white text-sm font-bold">{lead.name?.[0]?.toUpperCase()}</span>
                 </div>
                 <div>
@@ -136,14 +136,14 @@ export default function LeadsPage() {
                 )}
                 <button
                   onClick={() => setSelected(lead)}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/20 text-gray-400 hover:text-amber-400 text-xs font-medium rounded-xl transition-all"
+                  className="flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/20 text-gray-400 hover:text-emerald-400 text-xs font-medium rounded-xl transition-all"
                 >
                   <Eye className="w-3.5 h-3.5" />
                   View
                 </button>
                 <a
                   href={`mailto:${lead.email}`}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl transition-all"
+                  className="flex items-center gap-1.5 px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-xl transition-all"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   Reply
@@ -178,7 +178,7 @@ export default function LeadsPage() {
                 { icon: Calendar, label: 'Submitted', value: new Date(selected.created_at).toLocaleString('en-IN') },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
-                  <Icon className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                  <Icon className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-gray-400 text-xs">{label}</p>
                     <p className="text-white text-sm font-medium">{value}</p>
@@ -188,7 +188,7 @@ export default function LeadsPage() {
 
               <div className="p-3 bg-white/5 rounded-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare className="w-4 h-4 text-amber-400" />
+                  <MessageSquare className="w-4 h-4 text-emerald-400" />
                   <p className="text-gray-400 text-xs">Message</p>
                 </div>
                 <p className="text-white text-sm leading-relaxed">{selected.message}</p>
@@ -204,7 +204,7 @@ export default function LeadsPage() {
               </button>
               <a
                 href={`mailto:${selected.email}`}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
               >
                 <Mail className="w-4 h-4" />
                 Reply Now

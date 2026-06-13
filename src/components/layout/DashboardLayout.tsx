@@ -61,12 +61,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="p-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
               <TrendingUp className="w-4 h-4 text-white" />
             </div>
             {!collapsed && (
               <span className="font-bold text-white">
-                Profit<span className="text-amber-400">Plus</span>
+                Profit<span className="text-emerald-400">Plus</span>
               </span>
             )}
           </div>
@@ -87,7 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 location.pathname === href
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -102,7 +102,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="px-3 pb-2">
             <button
               onClick={install}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-amber-500/10 border border-amber-500/20 text-amber-400 hover:bg-amber-500/20`}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20`}
             >
               <Smartphone className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span>Install App</span>}
@@ -167,7 +167,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {!isInstalled && canInstall && (
               <button
                 onClick={install}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium rounded-lg hover:bg-amber-500/20 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium rounded-lg hover:bg-emerald-500/20 transition-all"
               >
                 <Smartphone className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Install App</span>
@@ -176,10 +176,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             <button className="relative text-gray-400 hover:text-white transition-colors">
               <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-orange-500 flex items-center justify-center">
                 <span className="text-white text-xs font-bold">{userInitial}</span>
               </div>
               <div className="hidden md:block">

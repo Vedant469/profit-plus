@@ -66,14 +66,14 @@ export default function ContactPage() {
 
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-amber-400 font-medium mb-3">Get In Touch</p>
+            <p className="text-emerald-400 font-medium mb-3">Get In Touch</p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               Let's Build Your{' '}
               <span className="gradient-text">Profit Engine</span>
@@ -103,21 +103,21 @@ export default function ContactPage() {
               </div>
 
               {/* Email */}
-              <div className="flex items-start gap-4 p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/20 transition-all">
-                <div className="w-10 h-10 rounded-lg border flex items-center justify-center flex-shrink-0 text-amber-400 bg-amber-500/10 border-amber-500/20">
+              <div className="flex items-start gap-4 p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-emerald-500/20 transition-all">
+                <div className="w-10 h-10 rounded-lg border flex items-center justify-center flex-shrink-0 text-emerald-400 bg-emerald-500/10 border-emerald-500/20">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
                   <p className="text-gray-400 text-xs mb-1">Email</p>
-                  <a href="mailto:profitplus025@gmail.com" className="text-white font-medium text-sm hover:text-amber-400 transition-colors">
+                  <a href="mailto:profitplus025@gmail.com" className="text-white font-medium text-sm hover:text-emerald-400 transition-colors">
                     profitplus025@gmail.com
                   </a>
                 </div>
               </div>
 
               {/* Address */}
-              <div className="flex items-start gap-4 p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/20 transition-all">
-                <div className="w-10 h-10 rounded-lg border flex items-center justify-center flex-shrink-0 text-amber-400 bg-amber-500/10 border-amber-500/20 mt-0.5">
+              <div className="flex items-start gap-4 p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-emerald-500/20 transition-all">
+                <div className="w-10 h-10 rounded-lg border flex items-center justify-center flex-shrink-0 text-emerald-400 bg-emerald-500/10 border-emerald-500/20 mt-0.5">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
@@ -133,9 +133,9 @@ export default function ContactPage() {
               </div>
 
               {/* Team Contacts */}
-              <div className="p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/20 transition-all">
+              <div className="p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-emerald-500/20 transition-all">
                 <div className="flex items-center gap-2 mb-3">
-                  <Phone className="w-4 h-4 text-amber-400" />
+                  <Phone className="w-4 h-4 text-emerald-400" />
                   <p className="text-gray-400 text-xs">Direct Contacts</p>
                 </div>
                 <div className="space-y-3">
@@ -144,7 +144,7 @@ export default function ContactPage() {
                       <span className="text-gray-300 text-sm font-medium">{name}</span>
                       <a
                         href={`tel:${phone.replace(/\s/g, '')}`}
-                        className="text-amber-400 hover:text-amber-300 text-sm font-mono transition-colors"
+                        className="text-emerald-400 hover:text-amber-300 text-sm font-mono transition-colors"
                       >
                         {phone}
                       </a>
@@ -154,7 +154,7 @@ export default function ContactPage() {
               </div>
 
               {/* Office Hours */}
-              <div className="p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl">
+              <div className="p-4 bg-gradient-to-br from-emerald-500/10 to-orange-500/10 border border-emerald-500/20 rounded-xl">
                 <h3 className="text-white font-semibold mb-2 text-sm">Office Hours (IST)</h3>
                 <p className="text-gray-400 text-sm">Monday – Friday: 9:00 AM – 6:00 PM IST</p>
                 <p className="text-gray-400 text-sm">Saturday: 10:00 AM – 2:00 PM IST</p>
@@ -171,8 +171,8 @@ export default function ContactPage() {
             >
               {submitted ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-10 md:p-12 bg-slate-900 border border-white/5 rounded-2xl">
-                  <div className="w-16 h-16 bg-amber-500/20 border border-amber-500/30 rounded-full flex items-center justify-center mb-6">
-                    <Check className="w-8 h-8 text-amber-400" />
+                  <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center mb-6">
+                    <Check className="w-8 h-8 text-emerald-400" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-3">Message Sent!</h3>
                   <p className="text-gray-400 max-w-sm">
@@ -183,7 +183,7 @@ export default function ContactPage() {
                       setSubmitted(false)
                       setForm({ name: '', email: '', company: '', budget: '', message: '' })
                     }}
-                    className="mt-6 px-6 py-2.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium rounded-xl hover:bg-amber-500/20 transition-colors"
+                    className="mt-6 px-6 py-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium rounded-xl hover:bg-emerald-500/20 transition-colors"
                   >
                     Send Another Message
                   </button>
@@ -200,7 +200,7 @@ export default function ContactPage() {
                         value={form.name}
                         onChange={handleChange}
                         placeholder="John Smith"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -212,7 +212,7 @@ export default function ContactPage() {
                         value={form.email}
                         onChange={handleChange}
                         placeholder="john@company.com"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                       />
                     </div>
                   </div>
@@ -226,7 +226,7 @@ export default function ContactPage() {
                         value={form.company}
                         onChange={handleChange}
                         placeholder="Acme Inc."
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -235,7 +235,7 @@ export default function ContactPage() {
                         name="budget"
                         value={form.budget}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl text-white focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                       >
                         <option value="">Select budget</option>
                         <option value="50k-1L">₹50K – ₹1L / month</option>
@@ -255,14 +255,14 @@ export default function ContactPage() {
                       value={form.message}
                       onChange={handleChange}
                       placeholder="What are you looking to achieve? What channels are you currently using? What's your biggest marketing challenge?"
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors resize-none text-sm"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors resize-none text-sm"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group w-full flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 disabled:opacity-70 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
+                    className="group w-full flex items-center justify-center gap-2 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-70 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25"
                   >
                     {loading ? (
                       <>

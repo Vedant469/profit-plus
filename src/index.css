@@ -30,7 +30,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid #f59e0b;
+    outline: 2px solid #10b981;
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -61,7 +61,7 @@
     left: 0;
     width: 0;
     height: 1px;
-    background: #f59e0b;
+    background: #10b981;
     transition: width 0.3s ease;
   }
   .link-animate:hover::after {
@@ -71,14 +71,14 @@
 
 @layer utilities {
   .gradient-text {
-    background: linear-gradient(to right, #fbbf24, #f97316);
+    background: linear-gradient(to right, #34d399, #10b981);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .animated-gradient-text {
-    background: linear-gradient(270deg, #fbbf24, #f97316, #ef4444, #f97316, #fbbf24);
+ .animated-gradient-text {
+    background: linear-gradient(270deg, #34d399, #10b981, #059669, #10b981, #34d399);
     background-size: 300% 300%;
     animation: gradient-shift 4s ease infinite;
     -webkit-background-clip: text;
@@ -97,7 +97,7 @@
   }
   .glow-card:hover {
     animation: none;
-    box-shadow: 0 0 25px 1px rgba(245,158,11,0.15), 0 0 0 1px rgba(245,158,11,0.3);
+    box-shadow: 0 0 25px 1px rgba(16,185,129,0.15), 0 0 0 1px rgba(16,185,129,0.3);
   }
 }
 
@@ -108,7 +108,7 @@
 }
 .typewriter-cursor {
   animation: blink 1s step-end infinite;
-  color: #f59e0b;
+  color: #10b981;
   margin-left: 2px;
   font-weight: 300;
 }
@@ -136,8 +136,8 @@
 
 /* ── Border pulse glow ─────────────────────────────────────── */
 @keyframes border-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(245,158,11,0.05); }
-  50% { box-shadow: 0 0 20px 1px rgba(245,158,11,0.15), 0 0 0 1px rgba(245,158,11,0.2); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(16,185,129,0.05); }
+  50% { box-shadow: 0 0 20px 1px rgba(16,185,129,0.15), 0 0 0 1px rgba(16,185,129,0.2); }
 }
 
 /* ── Flip card ─────────────────────────────────────────────── */
@@ -199,14 +199,14 @@
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #f59e0b, #f97316);
+  background: linear-gradient(to bottom, #10b981, #059669);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+::-webkit-scrollbar-thumb:hover { background: #10b981; }
 
 /* ── Selection ─────────────────────────────────────────────── */
 ::selection {
-  background: rgba(245, 158, 11, 0.3);
+  background: rgba(16, 185, 129, 0.3);
   color: #fff;
 }
 

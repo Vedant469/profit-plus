@@ -111,7 +111,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-20 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
       </div>
 
@@ -124,11 +124,11 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-xl flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-white text-xl">
-              Profit<span className="text-amber-400">Plus</span>
+              Profit<span className="text-emerald-400">Plus</span>
             </span>
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">{titles[mode]}</h1>
@@ -154,7 +154,7 @@ export default function LoginPage() {
               </p>
               <button
                 onClick={() => switchMode('login')}
-                className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all"
+                className="w-full px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all"
               >
                 Sign In Now
               </button>
@@ -171,11 +171,11 @@ export default function LoginPage() {
               <h3 className="text-white font-bold text-lg">Check Your Email!</h3>
               <p className="text-gray-400 text-sm max-w-xs">
                 We sent a password reset link to{' '}
-                <span className="text-amber-400">{email}</span>.
+                <span className="text-emerald-400">{email}</span>.
               </p>
               <button
                 onClick={() => switchMode('login')}
-                className="mt-2 text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors"
+                className="mt-2 text-emerald-400 hover:text-amber-300 text-sm font-medium transition-colors"
               >
                 ← Back to Sign In
               </button>
@@ -212,7 +212,7 @@ export default function LoginPage() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="John Smith"
-                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                       />
                     </div>
                   </div>
@@ -225,7 +225,7 @@ export default function LoginPage() {
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
                         placeholder="Acme Inc."
-                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                       />
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                   />
                 </div>
               </div>
@@ -260,7 +260,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                      className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                     />
                     <button
                       type="button"
@@ -275,7 +275,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => switchMode('forgot')}
-                        className="text-amber-400 hover:text-amber-300 text-xs transition-colors"
+                        className="text-emerald-400 hover:text-amber-300 text-xs transition-colors"
                       >
                         Forgot password?
                       </button>
@@ -296,7 +296,7 @@ export default function LoginPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
                     />
                   </div>
                 </div>
@@ -306,7 +306,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-70 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-amber-500/25 mt-2"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-70 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25 mt-2"
               >
                 {loading ? (
                   <>
@@ -339,7 +339,7 @@ export default function LoginPage() {
                 Don't have an account?{' '}
                 <button
                   onClick={() => switchMode('signup')}
-                  className="text-amber-400 hover:text-amber-300 transition-colors font-medium"
+                  className="text-emerald-400 hover:text-amber-300 transition-colors font-medium"
                 >
                   Create one
                 </button>
@@ -349,7 +349,7 @@ export default function LoginPage() {
                 Already have an account?{' '}
                 <button
                   onClick={() => switchMode('login')}
-                  className="text-amber-400 hover:text-amber-300 transition-colors font-medium"
+                  className="text-emerald-400 hover:text-amber-300 transition-colors font-medium"
                 >
                   Sign in
                 </button>
@@ -360,7 +360,7 @@ export default function LoginPage() {
 
         <p className="text-center text-gray-600 text-sm mt-3">
           Need access?{' '}
-          <a href="/contact" className="text-amber-400 hover:text-amber-300 transition-colors">
+          <a href="/contact" className="text-emerald-400 hover:text-amber-300 transition-colors">
             Contact us
           </a>
         </p>

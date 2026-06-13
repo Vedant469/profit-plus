@@ -8,7 +8,7 @@ const categories = ['All', 'Case Study', 'Performance Marketing', 'SEO', 'Email 
 
 const categoryColors: Record<string, string> = {
   'Case Study': 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-  'Performance Marketing': 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  'Performance Marketing': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   'SEO': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   'Email Marketing': 'text-rose-400 bg-rose-500/10 border-rose-500/20',
   'Analytics': 'text-violet-400 bg-violet-500/10 border-violet-500/20',
@@ -37,14 +37,14 @@ export default function BlogPage() {
       />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-amber-400 font-medium mb-3">Blog & Insights</p>
+            <p className="text-emerald-400 font-medium mb-3">Blog & Insights</p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               Profit-Growing <span className="gradient-text">Knowledge Hub</span>
             </h1>
@@ -62,7 +62,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-amber-500/20 transition-all group"
+            className="relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all group"
           >
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="relative h-64 lg:h-auto overflow-hidden">
@@ -73,7 +73,7 @@ export default function BlogPage() {
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r ${featured.color} opacity-50`} />
                 <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-amber-500 text-slate-950 text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 bg-emerald-500 text-slate-950 text-xs font-bold rounded-full">
                     Featured
                   </span>
                 </div>
@@ -96,7 +96,7 @@ export default function BlogPage() {
                     {featured.readTime}
                   </div>
                 </div>
-                <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all w-fit">
+                <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all w-fit">
                   Read Article
                   <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </button>
@@ -118,7 +118,7 @@ export default function BlogPage() {
                   onClick={() => setActiveCategory(cat)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     activeCategory === cat
-                      ? 'bg-amber-500 text-slate-950'
+                      ? 'bg-emerald-500 text-slate-950'
                       : 'bg-slate-900 border border-white/5 text-gray-400 hover:text-white hover:border-white/10'
                   }`}
                 >
@@ -156,7 +156,7 @@ export default function BlogPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-amber-500/20 transition-all duration-300"
+                  className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-emerald-500/20 transition-all duration-300"
                 >
                   <div className="relative h-48 overflow-hidden">
                     <img
@@ -173,7 +173,7 @@ export default function BlogPage() {
                       </span>
                       <span className="text-gray-500 text-xs">{post.date}</span>
                     </div>
-                    <h3 className="text-white font-bold text-lg mb-2 leading-tight group-hover:text-amber-400 transition-colors">
+                    <h3 className="text-white font-bold text-lg mb-2 leading-tight group-hover:text-emerald-400 transition-colors">
                       {post.title}
                     </h3>
                     <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">
@@ -190,7 +190,7 @@ export default function BlogPage() {
                           {post.readTime}
                         </div>
                       </div>
-                      <button className="text-amber-400 hover:text-amber-300 transition-colors">
+                      <button className="text-emerald-400 hover:text-amber-300 transition-colors">
                         <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>

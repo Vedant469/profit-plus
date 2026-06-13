@@ -15,14 +15,14 @@ export default function PortfolioPage() {
       />
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-amber-400 font-medium mb-3">Our Work</p>
+            <p className="text-emerald-400 font-medium mb-3">Our Work</p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               Proof Is in the <span className="gradient-text">Profit</span>
             </h1>
@@ -50,7 +50,7 @@ export default function PortfolioPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <p className="text-2xl md:text-3xl font-bold text-amber-400">{stat.value}</p>
+                <p className="text-2xl md:text-3xl font-bold text-emerald-400">{stat.value}</p>
                 <p className="text-gray-400 text-sm mt-1">{stat.label}</p>
               </motion.div>
             ))}
@@ -69,7 +69,7 @@ export default function PortfolioPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-amber-500/20 transition-all duration-300"
+                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all duration-300"
               >
                 <div className="relative h-48 md:h-56 overflow-hidden">
                   <img
@@ -93,7 +93,7 @@ export default function PortfolioPage() {
                   <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-white/5 rounded-xl">
                     {cs.metrics.map((m) => (
                       <div key={m.label} className="text-center">
-                        <p className="text-amber-400 font-bold text-base md:text-lg">{m.value}</p>
+                        <p className="text-emerald-400 font-bold text-base md:text-lg">{m.value}</p>
                         <p className="text-gray-500 text-xs mt-0.5">{m.label}</p>
                       </div>
                     ))}
@@ -129,7 +129,7 @@ export default function PortfolioPage() {
             </p>
             <Link
               to="/contact"
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/25"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25"
             >
               Start Your Profit Journey
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

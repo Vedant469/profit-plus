@@ -19,7 +19,7 @@ export default function ParticleBackground() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const colors = ['#f59e0b', '#fb923c', '#fbbf24', '#fdba74', '#ffffff']
+    const colors = ['#10b981', '#fb923c', '#34d399', '#fdba74', '#ffffff']
     const particles: Particle[] = []
     let animationId: number
 
@@ -53,7 +53,7 @@ export default function ParticleBackground() {
       const dist = Math.sqrt(dx * dx + dy * dy)
       if (dist < 120) {
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(245, 158, 11, ${0.08 * (1 - dist / 120)})`
+        ctx.strokeStyle = `rgba(16, 185, 129, ${0.08 * (1 - dist / 120)})`
         ctx.lineWidth = 0.5
         ctx.moveTo(p1.x, p1.y)
         ctx.lineTo(p2.x, p2.y)

@@ -43,7 +43,7 @@ export default function ReferralPage() {
   const howItWorks = [
     { step: '1', title: 'Share Your Link', desc: 'Share your unique referral link with friends and business contacts.', icon: Share2, color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
     { step: '2', title: 'They Sign Up', desc: 'When they visit your link and book a strategy call with ProfitPlus.', icon: Users, color: 'text-violet-400 bg-violet-500/10 border-violet-500/20' },
-    { step: '3', title: 'You Both Win', desc: 'You get ₹5,000 credit and they get 10% off their first month.', icon: Gift, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+    { step: '3', title: 'You Both Win', desc: 'You get ₹5,000 credit and they get 10% off their first month.', icon: Gift, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
   ]
 
   const rewards = [
@@ -64,17 +64,17 @@ export default function ReferralPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden p-6 md:p-8 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-slate-900 border border-amber-500/20 rounded-2xl"
+        className="relative overflow-hidden p-6 md:p-8 bg-gradient-to-br from-emerald-500/10 via-orange-500/5 to-slate-900 border border-emerald-500/20 rounded-2xl"
       >
-        <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-amber-500/20 border border-amber-500/30 rounded-2xl flex items-center justify-center">
-              <Gift className="w-6 h-6 text-amber-400" />
+            <div className="w-12 h-12 bg-emerald-500/20 border border-emerald-500/30 rounded-2xl flex items-center justify-center">
+              <Gift className="w-6 h-6 text-emerald-400" />
             </div>
             <div>
               <h2 className="text-white font-bold text-xl">Refer & Earn</h2>
-              <p className="text-amber-400 text-sm">Earn ₹5,000 for every successful referral</p>
+              <p className="text-emerald-400 text-sm">Earn ₹5,000 for every successful referral</p>
             </div>
           </div>
 
@@ -82,13 +82,13 @@ export default function ReferralPage() {
           <div className="bg-slate-950/50 border border-white/10 rounded-xl p-4 mb-4">
             <p className="text-gray-400 text-xs mb-2">Your unique referral link</p>
             <div className="flex items-center gap-3">
-              <code className="flex-1 text-amber-400 text-sm font-mono truncate">{referralLink}</code>
+              <code className="flex-1 text-emerald-400 text-sm font-mono truncate">{referralLink}</code>
               <button
                 onClick={copyLink}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
                   copied
                     ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
-                    : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                    : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
                 }`}
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -139,7 +139,7 @@ export default function ReferralPage() {
               <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl border mb-4 ${color}`}>
                 <Icon className="w-7 h-7" />
               </div>
-              <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-950 text-xs font-bold">
+              <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-950 text-xs font-bold">
                 {step}
               </div>
               <h3 className="text-white font-semibold mb-2">{title}</h3>
@@ -161,11 +161,11 @@ export default function ReferralPage() {
           {rewards.map(({ referrals, reward, badge }) => (
             <div
               key={badge}
-              className="p-4 bg-white/5 border border-white/5 rounded-xl text-center hover:border-amber-500/20 transition-all"
+              className="p-4 bg-white/5 border border-white/5 rounded-xl text-center hover:border-emerald-500/20 transition-all"
             >
               <p className="text-2xl mb-2">{badge.split(' ')[0]}</p>
               <p className="text-white font-semibold text-sm mb-1">{badge.split(' ')[1]}</p>
-              <p className="text-amber-400 font-bold text-lg mb-1">{reward}</p>
+              <p className="text-emerald-400 font-bold text-lg mb-1">{reward}</p>
               <p className="text-gray-500 text-xs">{referrals} referral{referrals > 1 ? 's' : ''}</p>
             </div>
           ))}
@@ -181,10 +181,10 @@ export default function ReferralPage() {
       >
         {[
           { label: 'Total Referrals', value: '0', icon: Users, color: 'text-blue-400' },
-          { label: 'Pending Rewards', value: '₹0', icon: Gift, color: 'text-amber-400' },
+          { label: 'Pending Rewards', value: '₹0', icon: Gift, color: 'text-emerald-400' },
           { label: 'Total Earned', value: '₹0', icon: TrendingUp, color: 'text-emerald-400' },
         ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="p-5 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/10 transition-all">
+          <div key={label} className="p-5 bg-slate-900 border border-white/5 rounded-xl hover:border-emerald-500/10 transition-all">
             <Icon className={`w-5 h-5 ${color} mb-3`} />
             <p className={`text-2xl font-bold ${color} mb-1`}>{value}</p>
             <p className="text-gray-400 text-sm">{label}</p>

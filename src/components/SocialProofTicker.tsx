@@ -75,7 +75,7 @@ export default function SocialProofTicker() {
             className="bg-slate-900 border border-white/10 rounded-2xl p-4 shadow-2xl shadow-black/50 pointer-events-auto"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/20">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
                 <span className="text-white text-sm font-bold">
                   {current.name[0]}
                 </span>
@@ -84,7 +84,7 @@ export default function SocialProofTicker() {
                 <p className="text-white text-sm font-semibold">
                   {current.name}
                   <span className="text-gray-400 font-normal"> from </span>
-                  <span className="text-amber-400">{current.location}</span>
+                  <span className="text-emerald-400">{current.location}</span>
                 </p>
                 <p className="text-gray-400 text-xs mt-0.5">{current.action}</p>
                 <div className="flex items-center gap-1.5 mt-1.5">
@@ -92,8 +92,8 @@ export default function SocialProofTicker() {
                   <p className="text-gray-500 text-xs">{current.time}</p>
                 </div>
               </div>
-              <div className="w-8 h-8 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-4 h-4 text-amber-400" />
+              <div className="w-8 h-8 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-4 h-4 text-emerald-400" />
               </div>
             </div>
           </motion.div>

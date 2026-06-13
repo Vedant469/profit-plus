@@ -6,7 +6,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts'
 
-const COLORS = ['#f59e0b', '#8b5cf6', '#10b981', '#3b82f6', '#ef4444', '#06b6d4']
+const COLORS = ['#10b981', '#8b5cf6', '#10b981', '#3b82f6', '#ef4444', '#06b6d4']
 
 export default function AnalyticsPage() {
   return (
@@ -19,7 +19,7 @@ export default function AnalyticsPage() {
       {/* Top Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Impressions', value: '109.8M', change: '+22%', icon: Eye, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+          { label: 'Total Impressions', value: '109.8M', change: '+22%', icon: Eye, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
           { label: 'Total Clicks', value: '1.29M', change: '+18%', icon: MousePointer, color: 'text-violet-400 bg-violet-500/10 border-violet-500/20' },
           { label: 'Total Conversions', value: '36.3K', change: '+31%', icon: ShoppingCart, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
           { label: 'Avg. ROAS', value: '4.72x', change: '+0.8x', icon: TrendingUp, color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
@@ -29,7 +29,7 @@ export default function AnalyticsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="p-4 md:p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/10 transition-all"
+            className="p-4 md:p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-emerald-500/10 transition-all"
           >
             <div className={`w-10 h-10 rounded-xl border flex items-center justify-center mb-3 ${color}`}>
               <Icon className="w-5 h-5" />
@@ -59,7 +59,7 @@ export default function AnalyticsPage() {
             <YAxis stroke="#6b7280" tick={{ fill: '#6b7280', fontSize: 11 }} />
             <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#f8fafc' }} />
             <Legend wrapperStyle={{ color: '#9ca3af', fontSize: '12px' }} />
-            <Line type="monotone" dataKey="clicks" name="Clicks" stroke="#f59e0b" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="clicks" name="Clicks" stroke="#10b981" strokeWidth={2} dot={false} />
             <Line type="monotone" dataKey="conversions" name="Conversions" stroke="#10b981" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
@@ -85,7 +85,7 @@ export default function AnalyticsPage() {
               <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#f8fafc' }} />
               <Legend wrapperStyle={{ color: '#9ca3af', fontSize: '12px' }} />
               <Bar dataKey="spend" name="Spend" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
-              <Bar dataKey="revenue" name="Revenue" fill="#f59e0b" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="revenue" name="Revenue" fill="#10b981" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>

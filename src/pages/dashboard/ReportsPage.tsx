@@ -4,7 +4,7 @@ import { FileText, Download, Clock, CheckCircle, Search } from 'lucide-react'
 import { useReports } from '../../hooks/useSupabase'
 
 const typeColors: Record<string, string> = {
-  'Quarterly Report': 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  'Quarterly Report': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   'Monthly Report': 'text-violet-400 bg-violet-500/10 border-violet-500/20',
   'Campaign Report': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   'Audit Report': 'text-blue-400 bg-blue-500/10 border-blue-500/20',
@@ -22,7 +22,7 @@ export default function ReportsPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -36,11 +36,11 @@ export default function ReportsPage() {
       {/* Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Total Reports', value: reports.length, color: 'text-amber-400' },
+          { label: 'Total Reports', value: reports.length, color: 'text-emerald-400' },
           { label: 'Ready to Download', value: reports.filter(r => r.status === 'ready').length, color: 'text-emerald-400' },
           { label: 'Generating', value: reports.filter(r => r.status === 'generating').length, color: 'text-violet-400' },
         ].map(({ label, value, color }) => (
-          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-between hover:border-amber-500/10 transition-all">
+          <div key={label} className="p-4 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-between hover:border-emerald-500/10 transition-all">
             <span className="text-gray-400 text-sm">{label}</span>
             <span className={`text-2xl font-bold ${color}`}>{value}</span>
           </div>
@@ -67,10 +67,10 @@ export default function ReportsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-amber-500/10 transition-all"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-emerald-500/10 transition-all"
           >
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 flex-shrink-0">
+              <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 flex-shrink-0">
                 <FileText className="w-5 h-5" />
               </div>
               <div>
@@ -91,7 +91,7 @@ export default function ReportsPage() {
               </span>
               {report.status === 'ready' ? (
                 <>
-                  <button className="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-colors">
+                  <button className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-colors">
                     <Download className="w-4 h-4" />
                     <span>Download</span>
                   </button>

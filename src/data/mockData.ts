@@ -17,7 +17,7 @@ export const services = [
 export const caseStudies = [
   { id: 1, client: 'TechFlow Inc.', industry: 'SaaS', title: 'Scaling MRR by 280% in 6 Months', description: 'Paid acquisition + SEO strategy that transformed their growth trajectory.', metrics: [{ label: 'MRR Growth', value: '+280%' }, { label: 'CAC Reduction', value: '-42%' }, { label: 'Organic Traffic', value: '+195%' }], image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&q=80', tags: ['SaaS', 'Performance', 'SEO'], gradient: 'from-blue-600 to-violet-600' },
   { id: 2, client: 'Meridian Retail', industry: 'E-Commerce', title: '12x Return on Ad Spend', description: 'Rebuilt their paid media structure with advanced audience segmentation.', metrics: [{ label: 'ROAS', value: '12x' }, { label: 'Revenue Growth', value: '+340%' }, { label: 'Conversion Rate', value: '+67%' }], image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80', tags: ['E-Commerce', 'Google Ads', 'Meta'], gradient: 'from-emerald-600 to-cyan-600' },
-  { id: 3, client: 'Vanguard Finance', industry: 'FinTech', title: 'Dominating Organic Search', description: 'Full-scale SEO + content that made them the authority in their space.', metrics: [{ label: 'Keyword Rankings', value: '#1 × 320' }, { label: 'Organic Leads', value: '+420%' }, { label: 'Domain Authority', value: '72 DA' }], image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80', tags: ['FinTech', 'SEO', 'Content'], gradient: 'from-amber-500 to-orange-600' },
+  { id: 3, client: 'Vanguard Finance', industry: 'FinTech', title: 'Dominating Organic Search', description: 'Full-scale SEO + content that made them the authority in their space.', metrics: [{ label: 'Keyword Rankings', value: '#1 × 320' }, { label: 'Organic Leads', value: '+420%' }, { label: 'Domain Authority', value: '72 DA' }], image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80', tags: ['FinTech', 'SEO', 'Content'], gradient: 'from-emerald-500 to-orange-600' },
   { id: 4, client: 'HealthPath', industry: 'Healthcare', title: 'Patient Acquisition at Scale', description: 'HIPAA-compliant digital strategy that tripled patient inquiries.', metrics: [{ label: 'Patient Inquiries', value: '+300%' }, { label: 'Cost Per Lead', value: '-58%' }, { label: 'Appointment Rate', value: '+89%' }], image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80', tags: ['Healthcare', 'Lead Gen', 'Compliance'], gradient: 'from-rose-500 to-pink-600' },
 ]
 
@@ -100,7 +100,7 @@ export const blogPosts = [
     date: 'June 15, 2024',
     readTime: '6 min read',
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80',
-    color: 'from-amber-500 to-orange-600',
+    color: 'from-emerald-500 to-orange-600',
     slug: 'paid-media-mistakes',
   },
   {
