@@ -10,7 +10,6 @@ const sidebarLinks = [
   { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart2 },
   { label: 'Reports', href: '/dashboard/reports', icon: FileText },
   { label: 'Leads', href: '/dashboard/leads', icon: Users },
-  { label: 'Referral', href: '/dashboard/referral', icon: Gift },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

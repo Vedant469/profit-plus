@@ -4,6 +4,15 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Star, TrendingUp, Users, Rocket, Award, Target, Search, BarChart2, Share2, Mail, Check, ChevronDown } from 'lucide-react'
 import { stats, services, caseStudies, testimonials } from '../data/mockData'
 import ParticleBackground from '../components/ParticleBackground'
+import AuroraBackground from '../components/AuroraBackground'
+import MagneticButton from '../components/MagneticButton'
+import TiltCard from '../components/TiltCard'
+import SplitText from '../components/SplitText'
+import GlitchText from '../components/GlitchText'
+import LiquidShape from '../components/LiquidShape'
+import ProgressiveImage from '../components/ProgressiveImage'
+import { useAdaptiveQuality } from '../hooks/useAdaptiveQuality'
+import { useHaptic } from '../hooks/useHaptic'
 
 // ── 60fps RAF Typewriter ──────────────────────────────────────
 const phrases = [
@@ -196,9 +205,13 @@ export default function HomePage() {
   const liveRef = useRef(null)
   const statsInView = useInView(statsRef, { once: true, margin: '-100px' })
   const liveInView = useInView(liveRef, { once: true, margin: '-100px' })
+   const { isHighEnd } = useAdaptiveQuality()
+  const haptic = useHaptic()
+
   const toggleFaq = useCallback((i: number) => {
+    haptic.light()
     setOpenFaq(prev => prev === i ? null : i)
-  }, [])
+  }, [haptic])
 
   return (
     <div>
@@ -217,10 +230,26 @@ export default function HomePage() {
         
         <ParticleBackground />
 
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-emerald-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-green-500/10 rounded-full blur-3xl" />
-        </div>
+         {/* Aurora background */}
+        <AuroraBackground />
+
+        {/* Liquid shapes */}
+        {isHighEnd && (
+          <>
+            <LiquidShape
+              className="absolute top-20 left-10 md:left-20"
+              color="rgba(0,255,136,0.06)"
+              size={400}
+              speed={10}
+            />
+            <LiquidShape
+              className="absolute bottom-20 right-10 md:right-20"
+              color="rgba(0,200,100,0.05)"
+              size={500}
+              speed={14}
+            />
+          </>
+        )}
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-36 md:py-32">
           <div className="max-w-3xl">
@@ -253,19 +282,31 @@ export default function HomePage() {
               Data-engineered campaigns that turn every dollar of marketing spend into measurable, compounding profit. No vanity metrics — just real returns.
             </motion.p>
 
-            <motion.div
+               <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Link to="/contact" className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25">
-                Start Maximizing Profit
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link to="/portfolio" className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all duration-200">
-                See Our Results
-              </Link>
+              <MagneticButton>
+                <Link
+                  to="/contact"
+                  className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition-all duration-200 neon-btn"
+                  onClick={() => haptic.medium()}
+                >
+                  Start Maximizing Profit
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </MagneticButton>
+              <MagneticButton>
+                <Link
+                  to="/portfolio"
+                  className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-500/30 text-white font-semibold rounded-xl transition-all duration-200"
+                  onClick={() => haptic.light()}
+                >
+                  See Our Results
+                </Link>
+              </MagneticButton>
             </motion.div>
 
             <motion.div
@@ -446,10 +487,10 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all duration-300 glow-card"
+                                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all duration-300 glow-card holo-card"
               >
                 <div className="relative h-44 md:h-48 overflow-hidden">
-                  <img loading="lazy" src={cs.image} alt={cs.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                  <ProgressiveImage src={cs.image} alt={cs.title} className="w-full h-full" />
                   <div className={`absolute inset-0 bg-gradient-to-t ${cs.gradient} opacity-60`} />
                   <div className="absolute top-4 left-4">
                     <span className="px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white text-xs font-medium">{cs.industry}</span>
@@ -503,7 +544,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-300 leading-relaxed mb-6">"{t.quote}"</p>
                 <div className="flex items-center gap-3">
-                  <img loading="lazy" src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                                    <ProgressiveImage src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full" />
                   <div>
                     <p className="text-white font-medium text-sm">{t.name}</p>
                     <p className="text-gray-400 text-xs">{t.role} · {t.company}</p>

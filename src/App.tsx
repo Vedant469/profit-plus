@@ -36,7 +36,6 @@ const CampaignsPage = lazy(() => import('./pages/dashboard/CampaignsPage'))
 const AnalyticsPage = lazy(() => import('./pages/dashboard/AnalyticsPage'))
 const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
 const LeadsPage = lazy(() => import('./pages/dashboard/LeadsPage'))
-const ReferralPage = lazy(() => import('./pages/dashboard/ReferralPage'))
 
 function DashboardLoader() {
   return (
@@ -78,7 +77,6 @@ function AnimatedRoutes() {
         <Route path="/dashboard/analytics" element={<ProtectedRoute><DashboardLayout><PageTransition><AnalyticsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/reports" element={<ProtectedRoute><DashboardLayout><PageTransition><ReportsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/leads" element={<ProtectedRoute><DashboardLayout><PageTransition><LeadsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/referral" element={<ProtectedRoute><DashboardLayout><PageTransition><ReferralPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
       </Routes>
     </AnimatePresence>
