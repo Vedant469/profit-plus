@@ -196,8 +196,6 @@ export default function HomePage() {
   const liveRef = useRef(null)
   const statsInView = useInView(statsRef, { once: true, margin: '-100px' })
   const liveInView = useInView(liveRef, { once: true, margin: '-100px' })
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-
   const toggleFaq = useCallback((i: number) => {
     setOpenFaq(prev => prev === i ? null : i)
   }, [])
@@ -216,8 +214,8 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/90" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/40" />
 
-        {/* Only show particles on desktop */}
-        {!isMobile && <ParticleBackground />}
+        
+        <ParticleBackground />
 
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-emerald-500/10 rounded-full blur-3xl" />

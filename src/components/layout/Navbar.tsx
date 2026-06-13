@@ -21,21 +21,25 @@ const sectionToNav: Record<string, string> = {
   faq: '/',
 }
 
+const sectionIds = ['hero', 'services', 'portfolio', 'testimonials', 'pricing', 'faq']
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('/')
   const location = useLocation()
 
+  // Scroll detection for navbar background
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Close mobile menu on route change
   useEffect(() => setMobileOpen(false), [location])
 
-  // Reset active section when navigating away from home
+  // Set active section based on route
   useEffect(() => {
     if (location.pathname !== '/') {
       setActiveSection(location.pathname)
@@ -44,36 +48,36 @@ export default function Navbar() {
     }
   }, [location.pathname])
 
-  // Intersection observer for homepage sections
+  // Scroll-based active section tracking for homepage
   useEffect(() => {
     if (location.pathname !== '/') return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const nav = sectionToNav[entry.target.id]
-            if (nav) setActiveSection(nav)
-          }
-        })
-      },
-      { threshold: 0.3, rootMargin: '-80px 0px -30% 0px' }
-    )
+    const updateActive = () => {
+      // Use 1/3 from top of viewport as detection point
+      const scrollY = window.scrollY + window.innerHeight / 3
 
-    const ids = ['hero', 'services', 'portfolio', 'testimonials', 'pricing', 'faq']
-    ids.forEach((id) => {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    })
+      let current = 'hero'
 
-    return () => observer.disconnect()
+      for (const id of sectionIds) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        const top = el.getBoundingClientRect().top + window.scrollY
+        if (scrollY >= top) {
+          current = id
+        }
+      }
+
+      const nav = sectionToNav[current]
+      if (nav) setActiveSection(nav)
+    }
+
+    // Run immediately and on scroll
+    updateActive()
+    window.addEventListener('scroll', updateActive, { passive: true })
+    return () => window.removeEventListener('scroll', updateActive)
   }, [location.pathname])
 
-  const isActive = (href: string) => {
-    if (location.pathname === '/') return activeSection === href
-    if (href === '/') return location.pathname === '/'
-    return location.pathname.startsWith(href)
-  }
+  const isActive = (href: string) => activeSection === href
 
   return (
     <>
@@ -98,7 +102,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop nav — LayoutGroup ensures smooth sliding */}
+          {/* Desktop nav */}
           <LayoutGroup>
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
@@ -115,26 +119,24 @@ export default function Navbar() {
                     {link.label}
                   </span>
 
-                  {/* Sliding underbar with layoutId */}
+                  {/* Sliding green underbar */}
                   {isActive(link.href) && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full"
-                      style={{
-                        background: 'linear-gradient(to right, #34d399, #059669)',
-                      }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 400,
-                        damping: 35,
-                        mass: 0.8,
-                      }}
-                    />
-                  )}
-
-                  {/* Glow under active */}
-                  {isActive(link.href) && (
-                    <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-emerald-400 blur-sm opacity-70 rounded-full" />
+                    <>
+                      <motion.div
+                        layoutId="nav-indicator"
+                        className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full"
+                        style={{
+                          background: 'linear-gradient(to right, #34d399, #059669)',
+                        }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 350,
+                          damping: 30,
+                          mass: 0.8,
+                        }}
+                      />
+                      <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-emerald-400 blur-sm opacity-70 rounded-full" />
+                    </>
                   )}
 
                   {/* Hover dot */}
@@ -146,7 +148,7 @@ export default function Navbar() {
             </div>
           </LayoutGroup>
 
-          {/* CTA */}
+          {/* CTA buttons */}
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/login"
