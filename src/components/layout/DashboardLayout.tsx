@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { TrendingUp, LayoutDashboard, Target, BarChart2, FileText, Settings, LogOut, Menu, Bell, Search, X } from 'lucide-react'
+import { TrendingUp, LayoutDashboard, Target, BarChart2, FileText, Settings, LogOut, Menu, Bell, Search, X, Users, Gift, Download, Smartphone } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { usePWAInstall } from '../../hooks/usePWAInstall'
 
 const sidebarLinks = [
   { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Campaigns', href: '/dashboard/campaigns', icon: Target },
   { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart2 },
   { label: 'Reports', href: '/dashboard/reports', icon: FileText },
+  { label: 'Leads', href: '/dashboard/leads', icon: Users },
+  { label: 'Referral', href: '/dashboard/referral', icon: Gift },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -16,6 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [user, setUser] = useState<any>(null)
   const location = useLocation()
   const navigate = useNavigate()
+  const { install, canInstall, isInstalled } = usePWAInstall()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -93,6 +97,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
 
+        {/* Install App Button */}
+        {!isInstalled && canInstall && (
+          <div className="px-3 pb-2">
+            <button
+              onClick={install}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-amber-500/10 border border-amber-500/20 text-amber-400 hover:bg-amber-500/20`}
+            >
+              <Smartphone className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span>Install App</span>}
+            </button>
+          </div>
+        )}
+
+        {isInstalled && (
+          <div className="px-3 pb-2">
+            <div className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-emerald-400`}>
+              <Download className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span>App Installed ✓</span>}
+            </div>
+          </div>
+        )}
+
         {/* Bottom */}
         <div className="p-3 border-t border-white/5 space-y-1">
           <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
@@ -114,14 +140,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Top bar */}
         <header className="h-16 bg-slate-900/50 border-b border-white/5 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
           <div className="flex items-center gap-3">
-            {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(true)}
               className="md:hidden text-gray-400 hover:text-white transition-colors"
             >
               <Menu className="w-5 h-5" />
             </button>
-            {/* Desktop collapse button */}
             <button
               onClick={() => setCollapsed(!collapsed)}
               className="hidden md:block text-gray-400 hover:text-white transition-colors"
@@ -139,6 +163,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Install button in header for mobile */}
+            {!isInstalled && canInstall && (
+              <button
+                onClick={install}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium rounded-lg hover:bg-amber-500/20 transition-all"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Install App</span>
+              </button>
+            )}
+
             <button className="relative text-gray-400 hover:text-white transition-colors">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full" />
