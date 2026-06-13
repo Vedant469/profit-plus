@@ -13,7 +13,9 @@ import WhatsAppButton from './components/WhatsAppButton'
 import PageTransition from './components/PageTransition'
 import MobileBottomNav from './components/MobileBottomNav'
 import CustomCursor from './components/CustomCursor'
+import PullToRefresh from './components/PullToRefresh'
 import useSmoothScroll from './hooks/useSmoothScroll'
+import { useAdaptiveQuality } from './hooks/useAdaptiveQuality'
 import { SkeletonPage } from './components/Skeleton'
 import IntroAnimation from './components/IntroAnimation'
 import ExitIntentPopup from './components/ExitIntentPopup'
@@ -48,7 +50,10 @@ function PublicLoader() {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-10 h-10 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+        <div
+          className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
+          style={{ borderColor: 'rgba(0,255,136,0.2)', borderTopColor: '#00ff88' }}
+        />
         <p className="text-gray-500 text-sm animate-pulse">Loading...</p>
       </div>
     </div>
@@ -57,30 +62,23 @@ function PublicLoader() {
 
 function AnimatedRoutes() {
   const location = useLocation()
-
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Public pages — no PublicLayout wrapper so Navbar persists */}
         <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
         <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
         <Route path="/services" element={<PageTransition><ServicesPage /></PageTransition>} />
         <Route path="/portfolio" element={<PageTransition><PortfolioPage /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
         <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
-
-        {/* Auth pages */}
         <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
         <Route path="/pending-approval" element={<PageTransition><PendingApprovalPage /></PageTransition>} />
-
-        {/* Dashboard */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><PageTransition><DashboardOverview /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/campaigns" element={<ProtectedRoute><DashboardLayout><PageTransition><CampaignsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/analytics" element={<ProtectedRoute><DashboardLayout><PageTransition><AnalyticsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/reports" element={<ProtectedRoute><DashboardLayout><PageTransition><ReportsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/leads" element={<ProtectedRoute><DashboardLayout><PageTransition><LeadsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/referral" element={<ProtectedRoute><DashboardLayout><PageTransition><ReferralPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
-
         <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
       </Routes>
     </AnimatePresence>
@@ -90,8 +88,9 @@ function AnimatedRoutes() {
 function AppContent() {
   useSmoothScroll()
   const location = useLocation()
-  const isDashboard = location.pathname.startsWith('/dashboard')
+  const { shouldReduceMotion, shouldDisable3D } = useAdaptiveQuality()
   const isSpecialPage = ['/login', '/pending-approval'].includes(location.pathname)
+  const isDashboard = location.pathname.startsWith('/dashboard')
   const isPublic = !isDashboard && !isSpecialPage
 
   const [showIntro, setShowIntro] = useState(() => {
@@ -106,17 +105,16 @@ function AppContent() {
   return (
     <>
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
-      <CustomCursor />
+      {!shouldDisable3D && <CustomCursor />}
       <ScrollToTop />
       <ScrollProgressBar />
       <CookieBanner />
       <LiveChat />
       <MobileBottomNav />
+      <PullToRefresh />
 
-      {/* Navbar persists across all public pages — fixes sliding animation */}
       {isPublic && <Navbar />}
 
-      {/* Main content */}
       <div className={isPublic ? 'min-h-screen bg-slate-950 pb-20 md:pb-0' : ''}>
         <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
           <AnimatedRoutes />
@@ -124,10 +122,9 @@ function AppContent() {
         {isPublic && <Footer />}
       </div>
 
-      {/* Floating buttons — public only */}
-      {isPublic && <BackToTop />}
+      {isPublic && !shouldReduceMotion && <BackToTop />}
       {isPublic && <WhatsAppButton />}
-      {isPublic && <SocialProofTicker />}
+      {isPublic && !shouldReduceMotion && <SocialProofTicker />}
       {isPublic && <ExitIntentPopup />}
     </>
   )

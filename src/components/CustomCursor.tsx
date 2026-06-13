@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 
 export default function CustomCursor() {
@@ -7,6 +7,7 @@ export default function CustomCursor() {
   const [isClicking, setIsClicking] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const spotlightRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
@@ -21,6 +22,12 @@ export default function CustomCursor() {
     const updatePosition = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY })
       setIsVisible(true)
+
+      // Update spotlight position directly via DOM for performance
+      if (spotlightRef.current) {
+        spotlightRef.current.style.left = `${e.clientX}px`
+        spotlightRef.current.style.top = `${e.clientY}px`
+      }
     }
 
     const handleMouseOver = (e: MouseEvent) => {
@@ -41,8 +48,8 @@ export default function CustomCursor() {
     const handleMouseLeave = () => setIsVisible(false)
     const handleMouseEnter = () => setIsVisible(true)
 
-    window.addEventListener('mousemove', updatePosition)
-    window.addEventListener('mouseover', handleMouseOver)
+    window.addEventListener('mousemove', updatePosition, { passive: true })
+    window.addEventListener('mouseover', handleMouseOver, { passive: true })
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)
     document.addEventListener('mouseleave', handleMouseLeave)
@@ -62,6 +69,22 @@ export default function CustomCursor() {
 
   return (
     <>
+      {/* Spotlight effect */}
+      <div
+        ref={spotlightRef}
+        className="fixed pointer-events-none hidden md:block"
+        style={{
+          zIndex: 9990,
+          width: '400px',
+          height: '400px',
+          transform: 'translate(-50%, -50%)',
+          background: 'radial-gradient(circle, rgba(0,255,136,0.04) 0%, transparent 70%)',
+          borderRadius: '50%',
+          transition: 'opacity 0.3s ease',
+          opacity: isVisible ? 1 : 0,
+        }}
+      />
+
       {/* Outer ring */}
       <motion.div
         className="fixed top-0 left-0 z-[9998] pointer-events-none hidden md:block"
@@ -78,11 +101,18 @@ export default function CustomCursor() {
           opacity: { duration: 0.2 },
         }}
       >
-        <div className={`w-10 h-10 rounded-full border-2 transition-colors duration-200 ${
-          isHovering
-            ? 'border-emerald-400 bg-emerald-400/10'
-            : 'border-white/40 bg-transparent'
-        }`} />
+        <div
+          className={`w-10 h-10 rounded-full border-2 transition-all duration-200 ${
+            isHovering
+              ? 'border-[#00ff88] bg-[#00ff88]/10'
+              : 'border-white/30 bg-transparent'
+          }`}
+          style={{
+            boxShadow: isHovering
+              ? '0 0 15px rgba(0,255,136,0.4), inset 0 0 15px rgba(0,255,136,0.1)'
+              : 'none',
+          }}
+        />
       </motion.div>
 
       {/* Inner dot */}
@@ -101,7 +131,12 @@ export default function CustomCursor() {
           opacity: { duration: 0.15 },
         }}
       >
-        <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50" />
+        <div
+          className="w-2 h-2 rounded-full bg-[#00ff88]"
+          style={{
+            boxShadow: '0 0 10px rgba(0,255,136,0.8), 0 0 20px rgba(0,255,136,0.4)',
+          }}
+        />
       </motion.div>
 
       {/* Glow trail */}
@@ -110,7 +145,7 @@ export default function CustomCursor() {
         animate={{
           x: position.x - 30,
           y: position.y - 30,
-          opacity: isVisible ? (isHovering ? 0.3 : 0.1) : 0,
+          opacity: isVisible ? (isHovering ? 0.4 : 0.15) : 0,
         }}
         transition={{
           x: { type: 'spring', stiffness: 60, damping: 15, mass: 1 },
@@ -118,7 +153,13 @@ export default function CustomCursor() {
           opacity: { duration: 0.3 },
         }}
       >
-        <div className="w-16 h-16 rounded-full bg-emerald-400 blur-xl" />
+        <div
+          className="w-16 h-16 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(0,255,136,0.6) 0%, transparent 70%)',
+            filter: 'blur(8px)',
+          }}
+        />
       </motion.div>
     </>
   )
