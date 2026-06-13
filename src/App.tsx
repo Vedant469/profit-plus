@@ -28,6 +28,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const BlogPage = lazy(() => import('./pages/BlogPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const PendingApprovalPage = lazy(() => import('./pages/PendingApprovalPage'))
 const DashboardOverview = lazy(() => import('./pages/dashboard/DashboardOverview'))
 const CampaignsPage = lazy(() => import('./pages/dashboard/CampaignsPage'))
 const AnalyticsPage = lazy(() => import('./pages/dashboard/AnalyticsPage'))
@@ -69,6 +70,7 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Public routes */}
         <Route path="/" element={<PublicLayout><PageTransition><HomePage /></PageTransition></PublicLayout>} />
         <Route path="/about" element={<PublicLayout><PageTransition><AboutPage /></PageTransition></PublicLayout>} />
         <Route path="/services" element={<PublicLayout><PageTransition><ServicesPage /></PageTransition></PublicLayout>} />
@@ -76,12 +78,17 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<PublicLayout><PageTransition><ContactPage /></PageTransition></PublicLayout>} />
         <Route path="/blog" element={<PublicLayout><PageTransition><BlogPage /></PageTransition></PublicLayout>} />
         <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
+        <Route path="/pending-approval" element={<PageTransition><PendingApprovalPage /></PageTransition>} />
+
+        {/* Protected dashboard routes */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><PageTransition><DashboardOverview /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/campaigns" element={<ProtectedRoute><DashboardLayout><PageTransition><CampaignsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/analytics" element={<ProtectedRoute><DashboardLayout><PageTransition><AnalyticsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/reports" element={<ProtectedRoute><DashboardLayout><PageTransition><ReportsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/leads" element={<ProtectedRoute><DashboardLayout><PageTransition><LeadsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/referral" element={<ProtectedRoute><DashboardLayout><PageTransition><ReferralPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
+
+        {/* 404 */}
         <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
       </Routes>
     </AnimatePresence>

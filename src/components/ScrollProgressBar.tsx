@@ -1,31 +1,26 @@
-import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { useState, useEffect } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true)
-  const [authenticated, setAuthenticated] = useState(false)
+export default function ScrollProgressBar() {
+  const [visible, setVisible] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  })
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuthenticated(!!session)
-      setLoading(false)
-    })
+    const unsub = scrollYProgress.on('change', (v) => setVisible(v > 0.01))
+    return () => unsub()
+  }, [scrollYProgress])
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAuthenticated(!!session)
-    })
+  if (!visible) return null
 
-    return () => subscription.unsubscribe()
-  }, [])
-
-  if (loading) return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-    </div>
+  return (
+    <motion.div
+      style={{ scaleX }}
+      className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-400 to-orange-500 origin-left z-[100] shadow-lg shadow-amber-500/50"
+    />
   )
-
-  if (!authenticated) return <Navigate to="/login" replace />
-
-  return <>{children}</>
 }
