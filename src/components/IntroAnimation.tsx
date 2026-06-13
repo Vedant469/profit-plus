@@ -1,23 +1,33 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
-// ── Logo Typewriter ───────────────────────────────────────────
+// ── 60fps RAF Logo Typewriter ─────────────────────────────────
 function LogoTypewriter({ active }: { active: boolean }) {
   const [text, setText] = useState('')
   const fullText = 'ProfitPlus'
+  const stateRef = useRef({ charIndex: 0, lastTime: 0 })
+  const rafRef = useRef<number>()
 
   useEffect(() => {
     if (!active) return
-    let i = 0
-    const timer = setInterval(() => {
-      if (i < fullText.length) {
-        setText(fullText.slice(0, i + 1))
-        i++
-      } else {
-        clearInterval(timer)
+    const CHAR_INTERVAL = 85
+
+    const animate = (timestamp: number) => {
+      const s = stateRef.current
+      if (timestamp - s.lastTime >= CHAR_INTERVAL) {
+        s.lastTime = timestamp
+        if (s.charIndex < fullText.length) {
+          s.charIndex++
+          setText(fullText.slice(0, s.charIndex))
+        }
       }
-    }, 85)
-    return () => clearInterval(timer)
+      if (stateRef.current.charIndex < fullText.length) {
+        rafRef.current = requestAnimationFrame(animate)
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
   }, [active])
 
   const profitPart = text.slice(0, Math.min(text.length, 6))
@@ -29,19 +39,19 @@ function LogoTypewriter({ active }: { active: boolean }) {
       style={{
         fontSize: 'clamp(2.5rem, 6vw, 4rem)',
         color: '#ffffff',
-        textShadow: '0 0 40px rgba(255,255,255,0.1)',
         minWidth: '320px',
         display: 'inline-block',
+        willChange: 'contents',
       }}
     >
       {profitPart}
       <span
         style={{
-          background: 'linear-gradient(135deg, #34d399, #059669)',
+          background: 'linear-gradient(135deg, #00ff88, #00cc6a)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
-          filter: 'drop-shadow(0 0 20px rgba(16,185,129,0.6))',
+          filter: 'drop-shadow(0 0 20px rgba(0,255,136,0.6))',
         }}
       >
         {plusPart}
@@ -53,23 +63,33 @@ function LogoTypewriter({ active }: { active: boolean }) {
   )
 }
 
-// ── Tagline Typewriter ────────────────────────────────────────
+// ── 60fps RAF Tagline Typewriter ──────────────────────────────
 function TaglineTypewriter({ active }: { active: boolean }) {
   const [text, setText] = useState('')
   const fullText = 'Profit-Driven Marketing Agency'
+  const stateRef = useRef({ charIndex: 0, lastTime: 0 })
+  const rafRef = useRef<number>()
 
   useEffect(() => {
     if (!active) return
-    let i = 0
-    const timer = setInterval(() => {
-      if (i < fullText.length) {
-        setText(fullText.slice(0, i + 1))
-        i++
-      } else {
-        clearInterval(timer)
+    const CHAR_INTERVAL = 38
+
+    const animate = (timestamp: number) => {
+      const s = stateRef.current
+      if (timestamp - s.lastTime >= CHAR_INTERVAL) {
+        s.lastTime = timestamp
+        if (s.charIndex < fullText.length) {
+          s.charIndex++
+          setText(fullText.slice(0, s.charIndex))
+        }
       }
-    }, 40)
-    return () => clearInterval(timer)
+      if (stateRef.current.charIndex < fullText.length) {
+        rafRef.current = requestAnimationFrame(animate)
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
   }, [active])
 
   return (
@@ -78,7 +98,7 @@ function TaglineTypewriter({ active }: { active: boolean }) {
       {text.length < fullText.length && (
         <span
           className="typewriter-cursor"
-          style={{ color: 'rgba(255,255,255,0.3)' }}
+          style={{ color: 'rgba(0,255,136,0.5)' }}
         >
           |
         </span>
@@ -124,10 +144,7 @@ export default function IntroAnimation({ onComplete }: Props) {
     const pathLength = path.getTotalLength()
 
     // ── Initial states ──────────────────────────────────────
-    gsap.set(path, {
-      strokeDasharray: pathLength,
-      strokeDashoffset: pathLength,
-    })
+    gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength })
     gsap.set(arrow, { opacity: 0, scale: 0, transformOrigin: '460px 50px' })
     gsap.set(pulse, { opacity: 0, scale: 0, transformOrigin: '460px 50px' })
     gsap.set(logoBox, { opacity: 0 })
@@ -146,13 +163,13 @@ export default function IntroAnimation({ onComplete }: Props) {
     const dotProgress = { value: 0 }
     tl.to(path, {
       strokeDashoffset: 0,
-      duration: 2.8,
-      ease: 'power3.inOut',
+      duration: 2.5,
+      ease: 'power2.inOut',
     })
     tl.to(dotProgress, {
       value: pathLength,
-      duration: 2.8,
-      ease: 'power3.inOut',
+      duration: 2.5,
+      ease: 'power2.inOut',
       onUpdate() {
         const pt = path.getPointAtLength(dotProgress.value)
         gsap.set([dot, dotGlow], {
@@ -166,18 +183,18 @@ export default function IntroAnimation({ onComplete }: Props) {
     tl.to(arrow, {
       opacity: 1,
       scale: 1,
-      duration: 0.4,
+      duration: 0.35,
       ease: 'back.out(2.5)',
     }, '-=0.08')
 
-    tl.to([dot, dotGlow], { opacity: 0, duration: 0.25 }, '-=0.15')
+    tl.to([dot, dotGlow], { opacity: 0, duration: 0.2 }, '-=0.15')
 
     // Phase 3 — Scan line
-    tl.to(scanLine, { opacity: 0.6, duration: 0.1 })
+    tl.to(scanLine, { opacity: 0.5, duration: 0.1 })
     tl.to(scanLine, {
       attr: { x1: 480, x2: 480 },
       opacity: 0,
-      duration: 0.5,
+      duration: 0.45,
       ease: 'power2.inOut',
     })
 
@@ -186,47 +203,47 @@ export default function IntroAnimation({ onComplete }: Props) {
     tl.to(pulse, {
       scale: 8,
       opacity: 0,
-      duration: 1.1,
+      duration: 1.0,
       ease: 'power2.out',
     })
 
-    // Phase 5 — Reveal logo + trigger typewriter exactly on reveal
+    // Phase 5 — Reveal logo + trigger RAF typewriters
     tl.to(logoBox, {
       opacity: 1,
       duration: 0.3,
       ease: 'power2.out',
       onStart: () => setTypingLogoActive(true),
-    }, '-=0.7')
+    }, '-=0.6')
 
     tl.to(tagline, {
       opacity: 1,
       duration: 0.3,
       ease: 'power2.out',
       onStart: () => setTypingTaglineActive(true),
-    }, '+=0.7')
+    }, '+=0.75')
 
     // Phase 6 — Breathe
-    tl.to(wrapper, { scale: 1.03, duration: 0.6, ease: 'power2.inOut' }, '+=0.5')
-    tl.to(wrapper, { scale: 1, duration: 0.5, ease: 'power2.inOut' })
+    tl.to(wrapper, { scale: 1.02, duration: 0.5, ease: 'power2.inOut' }, '+=0.6')
+    tl.to(wrapper, { scale: 1, duration: 0.4, ease: 'power2.inOut' })
 
     // Phase 7 — Hold
     tl.to({}, { duration: 1.0 })
 
-    // Phase 8 — Shrink and dock to navbar
+    // Phase 8 — Dock to navbar
     tl.to(wrapper, {
       scale: 0.055,
       x: () => -window.innerWidth * 0.43,
       y: () => -window.innerHeight * 0.45,
-      duration: 1.1,
+      duration: 1.0,
       ease: 'power4.inOut',
     })
 
     // Phase 9 — Fade overlay
     tl.to(overlay, {
       opacity: 0,
-      duration: 0.5,
+      duration: 0.45,
       ease: 'power2.inOut',
-    }, '-=0.4')
+    }, '-=0.35')
 
     return () => { tl.kill() }
   }, [onComplete])
@@ -235,19 +252,26 @@ export default function IntroAnimation({ onComplete }: Props) {
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[99999] flex items-center justify-center"
-      style={{ background: 'radial-gradient(ellipse at center, #0a0f1e 0%, #020617 70%)' }}
+      style={{
+        background: 'radial-gradient(ellipse at center, #050f1a 0%, #020617 70%)',
+        willChange: 'opacity',
+      }}
     >
-      {/* Noise texture */}
+      {/* Noise */}
       <div
-        className="absolute inset-0 opacity-30 pointer-events-none"
+        className="absolute inset-0 opacity-20 pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E")`,
           backgroundSize: '128px 128px',
         }}
       />
 
-      <div ref={wrapperRef} className="flex flex-col items-center gap-10">
-        {/* ── SVG Chart ──────────────────────────────────────── */}
+      <div
+        ref={wrapperRef}
+        className="flex flex-col items-center gap-10"
+        style={{ willChange: 'transform' }}
+      >
+        {/* SVG Chart */}
         <svg
           viewBox="0 0 500 280"
           className="overflow-visible"
@@ -276,29 +300,29 @@ export default function IntroAnimation({ onComplete }: Props) {
               </feMerge>
             </filter>
             <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
-              <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="	#6ee7b7" stopOpacity="1" />
+              <stop offset="0%" stopColor="#00ff88" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#00ff88" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#00ff88" stopOpacity="1" />
             </linearGradient>
             <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+              <stop offset="0%" stopColor="#00ff88" stopOpacity="0.1" />
+              <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="scanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
-              <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+              <stop offset="0%" stopColor="#00ff88" stopOpacity="0" />
+              <stop offset="50%" stopColor="#00ff88" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
             </linearGradient>
           </defs>
 
           {/* Grid */}
           {[65, 115, 165, 215].map((y) => (
             <line key={y} x1="20" y1={y} x2="480" y2={y}
-              stroke="rgba(255,255,255,0.035)" strokeWidth="1" strokeDasharray="3 6"
+              stroke="rgba(0,255,136,0.06)" strokeWidth="1" strokeDasharray="3 6"
             />
           ))}
 
-          {/* Area fill */}
+          {/* Area */}
           <path
             d="M 30 250 L 80 228 L 118 244 L 162 203 L 202 218 L 248 173 L 288 186 L 328 146 L 368 157 L 412 107 L 442 80 L 460 50 L 460 262 L 30 262 Z"
             fill="url(#areaGrad)"
@@ -326,34 +350,34 @@ export default function IntroAnimation({ onComplete }: Props) {
 
           {/* Arrow */}
           <g ref={arrowRef} filter="url(#softGlow)">
-            <line x1="460" y1="50" x2="444" y2="64" stroke="	#6ee7b7" strokeWidth="2.5" strokeLinecap="round" />
-            <line x1="460" y1="50" x2="460" y2="68" stroke="	#6ee7b7" strokeWidth="2.5" strokeLinecap="round" />
+            <line x1="460" y1="50" x2="444" y2="64" stroke="#00ff88" strokeWidth="2.5" strokeLinecap="round" />
+            <line x1="460" y1="50" x2="460" y2="68" stroke="#00ff88" strokeWidth="2.5" strokeLinecap="round" />
           </g>
 
-          {/* Pulse */}
+          {/* Pulse ring */}
           <circle ref={pulseRingRef} cx="460" cy="50" r="5"
-            fill="none" stroke="#10b981" strokeWidth="1.5"
+            fill="none" stroke="#00ff88" strokeWidth="1.5"
           />
 
           {/* Dot glow */}
           <circle ref={dotGlowRef} cx="30" cy="250" r="16"
-            fill="#10b981" opacity="0.2" filter="url(#dotGlow)"
+            fill="#00ff88" opacity="0.15" filter="url(#dotGlow)"
           />
 
           {/* Dot */}
           <circle ref={dotRef} cx="30" cy="250" r="5"
-            fill="	#6ee7b7" filter="url(#softGlow)"
+            fill="#00ff88" filter="url(#softGlow)"
           />
         </svg>
 
-        {/* ── Logo ───────────────────────────────────────────── */}
+        {/* Logo */}
         <div ref={logoBoxRef} className="flex flex-col items-center gap-1">
           <div className="flex items-center gap-4">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
               style={{
-                background: 'linear-gradient(135deg, #34d399, #059669)',
-                boxShadow: '0 0 40px rgba(16,185,129,0.5), 0 0 80px rgba(16,185,129,0.2)',
+                background: 'linear-gradient(135deg, #00ff88, #00cc6a)',
+                boxShadow: '0 0 40px rgba(0,255,136,0.5), 0 0 80px rgba(0,255,136,0.2)',
               }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="white"
@@ -368,11 +392,11 @@ export default function IntroAnimation({ onComplete }: Props) {
           </div>
         </div>
 
-        {/* ── Tagline ─────────────────────────────────────────── */}
+        {/* Tagline */}
         <p
           ref={taglineRef}
           className="text-xs tracking-[0.3em] uppercase"
-          style={{ color: 'rgba(255,255,255,0.3)' }}
+          style={{ color: 'rgba(0,255,136,0.4)' }}
         >
           <TaglineTypewriter active={typingTaglineActive} />
         </p>
