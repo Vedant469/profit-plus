@@ -75,7 +75,7 @@ export default function SocialProofTicker() {
             className="bg-slate-900 border border-white/10 rounded-2xl p-4 shadow-2xl shadow-black/50 pointer-events-auto"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
                 <span className="text-white text-sm font-bold">
                   {current.name[0]}
                 </span>

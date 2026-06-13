@@ -1,11 +1,11 @@
-import SEOHead from '../components/SEOHead'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Star, TrendingUp, Users, Rocket, Award, Target, Search, BarChart2, Share2, Mail, Check, ChevronDown } from 'lucide-react'
 import { stats, services, caseStudies, testimonials } from '../data/mockData'
 import ParticleBackground from '../components/ParticleBackground'
 
+// ── 60fps RAF Typewriter ──────────────────────────────────────
 const phrases = [
   'We Build Profit Machines',
   'We Engineer Growth Systems',
@@ -14,53 +14,110 @@ const phrases = [
 ]
 
 function TypewriterText() {
-  const [phraseIndex, setPhraseIndex] = useState(0)
-  const [text, setText] = useState('')
-  const [deleting, setDeleting] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
+  const [displayText, setDisplayText] = useState('')
+  const animState = useRef({
+    phraseIndex: 0,
+    charIndex: 0,
+    deleting: false,
+    paused: false,
+    pauseStart: 0,
+    lastUpdate: 0,
+  })
 
   useEffect(() => {
-    if (isPaused) return
-    const phrase = phrases[phraseIndex]!
-    let timeout: ReturnType<typeof setTimeout>
-    if (!deleting && text.length < phrase.length) {
-      timeout = setTimeout(() => setText(phrase.slice(0, text.length + 1)), 55 + Math.random() * 45)
-    } else if (!deleting && text.length === phrase.length) {
-      setIsPaused(true)
-      timeout = setTimeout(() => { setIsPaused(false); setDeleting(true) }, 2500)
-    } else if (deleting && text.length > 0) {
-      timeout = setTimeout(() => setText(phrase.slice(0, text.length - 1)), 25)
-    } else if (deleting && text.length === 0) {
-      setDeleting(false)
-      setPhraseIndex((prev) => (prev + 1) % phrases.length)
+    let rafId: number
+    const TYPING_MS = 80
+    const DELETE_MS = 35
+    const PAUSE_MS = 2800
+
+    const animate = (timestamp: number) => {
+      const s = animState.current
+      const phrase = phrases[s.phraseIndex]!
+
+      if (s.paused) {
+        if (!s.pauseStart) s.pauseStart = timestamp
+        if (timestamp - s.pauseStart >= PAUSE_MS) {
+          s.paused = false
+          s.deleting = true
+          s.pauseStart = 0
+          s.lastUpdate = timestamp
+        }
+        rafId = requestAnimationFrame(animate)
+        return
+      }
+
+      const interval = s.deleting ? DELETE_MS : TYPING_MS
+
+      if (timestamp - s.lastUpdate >= interval) {
+        s.lastUpdate = timestamp
+
+        if (!s.deleting) {
+          if (s.charIndex < phrase.length) {
+            s.charIndex++
+            setDisplayText(phrase.slice(0, s.charIndex))
+          } else {
+            s.paused = true
+          }
+        } else {
+          if (s.charIndex > 0) {
+            s.charIndex--
+            setDisplayText(phrase.slice(0, s.charIndex))
+          } else {
+            s.deleting = false
+            s.phraseIndex = (s.phraseIndex + 1) % phrases.length
+          }
+        }
+      }
+
+      rafId = requestAnimationFrame(animate)
     }
-    return () => clearTimeout(timeout)
-  }, [text, deleting, phraseIndex, isPaused])
+
+    rafId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(rafId)
+  }, [])
 
   return (
     <span className="animated-gradient-text">
-      {text}
+      {displayText}
       <span className="typewriter-cursor">|</span>
     </span>
   )
 }
 
+// ── Animated Counter ──────────────────────────────────────────
 function AnimatedCounter({ target, suffix, inView }: { target: number; suffix: string; inView: boolean }) {
   const [count, setCount] = useState(0)
+  const rafRef = useRef<number>()
+  const startRef = useRef<number>(0)
+  const startTimeRef = useRef<number>(0)
+
   useEffect(() => {
     if (!inView) return
-    let start = 0
-    const step = target / (2000 / 16)
-    const timer = setInterval(() => {
-      start += step
-      if (start >= target) { setCount(target); clearInterval(timer) }
-      else setCount(Math.floor(start))
-    }, 16)
-    return () => clearInterval(timer)
+    const duration = 2000
+    startRef.current = 0
+    startTimeRef.current = 0
+
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) startTimeRef.current = timestamp
+      const elapsed = timestamp - startTimeRef.current
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setCount(Math.floor(eased * target))
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate)
+      } else {
+        setCount(target)
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
   }, [inView, target])
+
   return <>{count.toLocaleString()}{suffix}</>
 }
 
+// ── Data ──────────────────────────────────────────────────────
 const serviceIcons: Record<string, React.ReactNode> = {
   'Performance Marketing': <Target className="w-6 h-6" />,
   'SEO & Content Strategy': <Search className="w-6 h-6" />,
@@ -83,7 +140,7 @@ const serviceBackColors: Record<string, string> = {
   blue: 'from-blue-600/20 to-blue-800/20 border-blue-500/30',
   violet: 'from-violet-600/20 to-violet-800/20 border-violet-500/30',
   emerald: 'from-emerald-600/20 to-emerald-800/20 border-emerald-500/30',
-  amber: 'from-emerald-600/20 to-amber-800/20 border-emerald-500/30',
+  amber: 'from-emerald-600/20 to-green-800/20 border-emerald-500/30',
   pink: 'from-pink-600/20 to-pink-800/20 border-pink-500/30',
   cyan: 'from-cyan-600/20 to-cyan-800/20 border-cyan-500/30',
 }
@@ -139,26 +196,32 @@ export default function HomePage() {
   const liveRef = useRef(null)
   const statsInView = useInView(statsRef, { once: true, margin: '-100px' })
   const liveInView = useInView(liveRef, { once: true, margin: '-100px' })
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+
+  const toggleFaq = useCallback((i: number) => {
+    setOpenFaq(prev => prev === i ? null : i)
+  }, [])
 
   return (
     <div>
-        <SEOHead
-        title="ProfitPlus | #1 Performance Marketing Agency Pune & India"
-        description="India's most profit-driven marketing agency based in Pune. Data-driven campaigns delivering 320%+ average ROI for businesses across India and globally."
-        keywords="marketing agency pune, marketing agency india, performance marketing pune, digital marketing agency india, best marketing agency pune"
-        url="https://profit-plus-beta.vercel.app/"
-      />
       {/* Hero */}
       <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-950 pt-20">
-        <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-20">
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+          style={{ willChange: 'auto' }}
+        >
           <source src="/hero.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/90" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/40" />
-        <ParticleBackground />
+
+        {/* Only show particles on desktop */}
+        {!isMobile && <ParticleBackground />}
+
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-10 md:left-20 w-48 md:w-72 h-48 md:h-72 bg-emerald-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-green-500/10 rounded-full blur-3xl" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-36 md:py-32">
@@ -198,7 +261,7 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Link to="/contact" className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25">
+              <Link to="/contact" className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25">
                 Start Maximizing Profit
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -276,7 +339,7 @@ export default function HomePage() {
       </section>
 
       {/* Live Results Ticker */}
-      <section ref={liveRef} className="py-16 bg-gradient-to-r from-emerald-500/5 via-orange-500/5 to-emerald-500/5 border-b border-emerald-500/10">
+      <section ref={liveRef} className="py-16 bg-gradient-to-r from-emerald-500/5 via-green-500/5 to-emerald-500/5 border-b border-emerald-500/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-3">
@@ -328,7 +391,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
                   className="flip-card h-64"
                 >
                   <div className="flip-card-inner">
@@ -352,7 +415,7 @@ export default function HomePage() {
                           </li>
                         ))}
                       </ul>
-                      <Link to="/contact" className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all">
+                      <Link to="/contact" className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-bold rounded-xl transition-all">
                         Get Started <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -475,10 +538,14 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`relative p-6 md:p-8 rounded-2xl border transition-all ${plan.highlighted ? 'bg-gradient-to-b from-emerald-500/10 to-slate-900 border-emerald-500/30 glow-card' : 'bg-slate-900 border-white/5 hover:border-white/10'}`}
+                className={`relative p-6 md:p-8 rounded-2xl border transition-all ${
+                  plan.highlighted
+                    ? 'bg-gradient-to-b from-emerald-500/10 to-slate-900 border-emerald-500/30 glow-card'
+                    : 'bg-slate-900 border-white/5 hover:border-white/10'
+                }`}
               >
                 {plan.highlighted && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-emerald-500 text-slate-950 text-xs font-bold rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full">
                     MOST POPULAR
                   </div>
                 )}
@@ -496,7 +563,14 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/contact" className={`block text-center px-6 py-3 rounded-xl font-semibold text-sm transition-all ${plan.highlighted ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950' : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'}`}>
+                <Link
+                  to="/contact"
+                  className={`block text-center px-6 py-3 rounded-xl font-semibold text-sm transition-all ${
+                    plan.highlighted
+                      ? 'bg-emerald-500 hover:bg-emerald-400 text-white'
+                      : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'
+                  }`}
+                >
                   {plan.cta}
                 </Link>
               </motion.div>
@@ -528,7 +602,7 @@ export default function HomePage() {
                 className="bg-slate-900 border border-white/5 rounded-xl overflow-hidden hover:border-emerald-500/10 transition-all"
               >
                 <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  onClick={() => toggleFaq(i)}
                   className="w-full flex items-center justify-between p-5 text-left"
                 >
                   <span className="text-white font-medium text-sm md:text-base">{faq.q}</span>
@@ -540,7 +614,7 @@ export default function HomePage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
                       <div className="px-5 pb-5 border-t border-white/5 pt-3">
@@ -570,7 +644,7 @@ export default function HomePage() {
               Book a free strategy call and we'll show you exactly how we'd grow your profits in the next 90 days.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/contact" className="group flex items-center justify-center gap-2 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25">
+              <Link to="/contact" className="group flex items-center justify-center gap-2 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25">
                 Book Free Strategy Call
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>

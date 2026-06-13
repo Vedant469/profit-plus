@@ -106,7 +106,7 @@ export default function LeadsPage() {
               className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-slate-900 border border-white/5 rounded-2xl hover:border-emerald-500/10 transition-all"
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white text-sm font-bold">{lead.name?.[0]?.toUpperCase()}</span>
                 </div>
                 <div>

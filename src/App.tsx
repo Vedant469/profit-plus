@@ -36,16 +36,6 @@ const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
 const LeadsPage = lazy(() => import('./pages/dashboard/LeadsPage'))
 const ReferralPage = lazy(() => import('./pages/dashboard/ReferralPage'))
 
-function PublicLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen bg-slate-950 pb-20 md:pb-0">
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
-    </div>
-  )
-}
-
 function DashboardLoader() {
   return (
     <div className="min-h-screen bg-slate-950">
@@ -67,20 +57,24 @@ function PublicLoader() {
 
 function AnimatedRoutes() {
   const location = useLocation()
+  const isDashboard = location.pathname.startsWith('/dashboard')
+
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Public routes */}
-        <Route path="/" element={<PublicLayout><PageTransition><HomePage /></PageTransition></PublicLayout>} />
-        <Route path="/about" element={<PublicLayout><PageTransition><AboutPage /></PageTransition></PublicLayout>} />
-        <Route path="/services" element={<PublicLayout><PageTransition><ServicesPage /></PageTransition></PublicLayout>} />
-        <Route path="/portfolio" element={<PublicLayout><PageTransition><PortfolioPage /></PageTransition></PublicLayout>} />
-        <Route path="/contact" element={<PublicLayout><PageTransition><ContactPage /></PageTransition></PublicLayout>} />
-        <Route path="/blog" element={<PublicLayout><PageTransition><BlogPage /></PageTransition></PublicLayout>} />
+        {/* Public pages — no PublicLayout wrapper so Navbar persists */}
+        <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
+        <Route path="/services" element={<PageTransition><ServicesPage /></PageTransition>} />
+        <Route path="/portfolio" element={<PageTransition><PortfolioPage /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
+        <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
+
+        {/* Auth pages */}
         <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
         <Route path="/pending-approval" element={<PageTransition><PendingApprovalPage /></PageTransition>} />
 
-        {/* Protected dashboard routes */}
+        {/* Dashboard */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><PageTransition><DashboardOverview /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/campaigns" element={<ProtectedRoute><DashboardLayout><PageTransition><CampaignsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/analytics" element={<ProtectedRoute><DashboardLayout><PageTransition><AnalyticsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
@@ -88,7 +82,6 @@ function AnimatedRoutes() {
         <Route path="/dashboard/leads" element={<ProtectedRoute><DashboardLayout><PageTransition><LeadsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/referral" element={<ProtectedRoute><DashboardLayout><PageTransition><ReferralPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
 
-        {/* 404 */}
         <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
       </Routes>
     </AnimatePresence>
@@ -99,6 +92,9 @@ function AppContent() {
   useSmoothScroll()
   const location = useLocation()
   const isDashboard = location.pathname.startsWith('/dashboard')
+  const isSpecialPage = ['/login', '/pending-approval'].includes(location.pathname)
+  const isPublic = !isDashboard && !isSpecialPage
+
   const [showIntro, setShowIntro] = useState(() => {
     return !sessionStorage.getItem('pp-intro-shown')
   })
@@ -116,14 +112,24 @@ function AppContent() {
       <ScrollProgressBar />
       <CookieBanner />
       <LiveChat />
-      {!isDashboard && <BackToTop />}
-      {!isDashboard && <WhatsAppButton />}
-      {!isDashboard && <SocialProofTicker />}
-      {!isDashboard && <ExitIntentPopup />}
       <MobileBottomNav />
-      <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
-        <AnimatedRoutes />
-      </Suspense>
+
+      {/* Navbar persists across all public pages — fixes sliding animation */}
+      {isPublic && <Navbar />}
+
+      {/* Main content */}
+      <div className={isPublic ? 'min-h-screen bg-slate-950 pb-20 md:pb-0' : ''}>
+        <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
+          <AnimatedRoutes />
+        </Suspense>
+        {isPublic && <Footer />}
+      </div>
+
+      {/* Floating buttons — public only */}
+      {isPublic && <BackToTop />}
+      {isPublic && <WhatsAppButton />}
+      {isPublic && <SocialProofTicker />}
+      {isPublic && <ExitIntentPopup />}
     </>
   )
 }

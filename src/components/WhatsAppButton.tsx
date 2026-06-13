@@ -52,7 +52,7 @@ export default function WhatsAppButton() {
                   onClick={() => openWhatsApp(phone, name)}
                   className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-green-500/10 border border-white/5 hover:border-green-500/20 rounded-xl transition-all group"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-xs font-bold">{name[0]}</span>
                   </div>
                   <div className="text-left flex-1">

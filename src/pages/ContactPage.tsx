@@ -144,7 +144,7 @@ export default function ContactPage() {
                       <span className="text-gray-300 text-sm font-medium">{name}</span>
                       <a
                         href={`tel:${phone.replace(/\s/g, '')}`}
-                        className="text-emerald-400 hover:text-amber-300 text-sm font-mono transition-colors"
+                        className="text-emerald-400 hover:text-emerald-300 text-sm font-mono transition-colors"
                       >
                         {phone}
                       </a>
@@ -154,7 +154,7 @@ export default function ContactPage() {
               </div>
 
               {/* Office Hours */}
-              <div className="p-4 bg-gradient-to-br from-emerald-500/10 to-orange-500/10 border border-emerald-500/20 rounded-xl">
+              <div className="p-4 bg-gradient-to-br from-emerald-500/10 to-green-600/10 border border-emerald-500/20 rounded-xl">
                 <h3 className="text-white font-semibold mb-2 text-sm">Office Hours (IST)</h3>
                 <p className="text-gray-400 text-sm">Monday – Friday: 9:00 AM – 6:00 PM IST</p>
                 <p className="text-gray-400 text-sm">Saturday: 10:00 AM – 2:00 PM IST</p>

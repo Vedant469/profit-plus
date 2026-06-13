@@ -61,7 +61,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="p-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <TrendingUp className="w-4 h-4 text-white" />
             </div>
             {!collapsed && (
@@ -179,7 +179,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-orange-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center">
                 <span className="text-white text-xs font-bold">{userInitial}</span>
               </div>
               <div className="hidden md:block">

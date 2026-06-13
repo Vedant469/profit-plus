@@ -15,7 +15,7 @@ export default function PendingApprovalPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-green-600/10 rounded-full blur-3xl" />
       </div>
 
       <motion.div
@@ -24,7 +24,7 @@ export default function PendingApprovalPage() {
         className="relative z-10 w-full max-w-md text-center"
       >
         <div className="inline-flex items-center gap-2 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-600 rounded-xl flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
           <span className="font-bold text-white text-xl">

@@ -40,20 +40,14 @@
   .btn-press {
     transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
-  .btn-press:active {
-    transform: scale(0.97);
-  }
+  .btn-press:active { transform: scale(0.97); }
 
   .card-hover {
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
   }
-  .card-hover:hover {
-    transform: translateY(-4px);
-  }
+  .card-hover:hover { transform: translateY(-4px); }
 
-  .link-animate {
-    position: relative;
-  }
+  .link-animate { position: relative; }
   .link-animate::after {
     content: '';
     position: absolute;
@@ -64,20 +58,18 @@
     background: #10b981;
     transition: width 0.3s ease;
   }
-  .link-animate:hover::after {
-    width: 100%;
-  }
+  .link-animate:hover::after { width: 100%; }
 }
 
 @layer utilities {
   .gradient-text {
-    background: linear-gradient(to right, #34d399, #10b981);
+    background: linear-gradient(to right, #34d399, #059669);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
- .animated-gradient-text {
+  .animated-gradient-text {
     background: linear-gradient(270deg, #34d399, #10b981, #059669, #10b981, #34d399);
     background-size: 300% 300%;
     animation: gradient-shift 4s ease infinite;
@@ -122,10 +114,9 @@
   animation: marquee 25s linear infinite;
   display: flex;
   width: max-content;
+  will-change: transform;
 }
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
+.animate-marquee:hover { animation-play-state: paused; }
 
 /* ── Gradient shift ────────────────────────────────────────── */
 @keyframes gradient-shift {
@@ -134,7 +125,7 @@
   100% { background-position: 0% 50%; }
 }
 
-/* ── Border pulse glow ─────────────────────────────────────── */
+/* ── Border pulse ──────────────────────────────────────────── */
 @keyframes border-pulse {
   0%, 100% { box-shadow: 0 0 0 1px rgba(16,185,129,0.05); }
   50% { box-shadow: 0 0 20px 1px rgba(16,185,129,0.15), 0 0 0 1px rgba(16,185,129,0.2); }
@@ -148,6 +139,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  will-change: transform;
 }
 .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
 .flip-card-front,
@@ -160,46 +152,25 @@
 }
 .flip-card-back { transform: rotateY(180deg); }
 
-/* ── Shimmer skeleton ──────────────────────────────────────── */
+/* ── Shimmer ───────────────────────────────────────────────── */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 .skeleton-shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.03) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.03) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
-}
-
-/* ── Button ripple ─────────────────────────────────────────── */
-@keyframes ripple {
-  to { transform: scale(4); opacity: 0; }
-}
-.ripple-effect {
-  position: relative;
-  overflow: hidden;
-}
-.ripple-effect::after {
-  content: '';
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple 0.6s linear;
-  top: 50%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -50px;
-  pointer-events: none;
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #10b981, #059669);
+  background: linear-gradient(to bottom, #34d399, #059669);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover { background: #10b981; }
@@ -210,23 +181,24 @@
   color: #fff;
 }
 
-/* ── Crisp chat above mobile bottom nav ────────────────────── */
+/* ── Performance ───────────────────────────────────────────── */
+.motion-safe {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Crisp chat above mobile nav ───────────────────────────── */
 @media (max-width: 768px) {
   #crisp-chatbox {
     bottom: 80px !important;
     right: 8px !important;
     left: auto !important;
-  }
-
-  .crisp-client .cc-tlyw {
-    bottom: 80px !important;
-  }
-
-  .crisp-client .cc-kxkl {
-    bottom: 80px !important;
-  }
-
-  .crisp-client .cc-nsge {
-    bottom: 80px !important;
   }
 }

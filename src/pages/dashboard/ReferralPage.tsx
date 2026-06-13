@@ -64,7 +64,7 @@ export default function ReferralPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden p-6 md:p-8 bg-gradient-to-br from-emerald-500/10 via-orange-500/5 to-slate-900 border border-emerald-500/20 rounded-2xl"
+        className="relative overflow-hidden p-6 md:p-8 bg-gradient-to-br from-emerald-500/10 via-green-600/5 to-slate-900 border border-emerald-500/20 rounded-2xl"
       >
         <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="relative z-10">

@@ -54,7 +54,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10">
           <div className="col-span-2 lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-600 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-4 h-4 text-white" />
               </div>
               <span className="font-bold text-white text-lg">Profit<span className="text-emerald-400">Plus</span></span>
@@ -115,7 +115,7 @@ export default function Footer() {
                   ].map(({ name, phone }) => (
                     <div key={name} className="flex items-center justify-between gap-2">
                       <span className="text-gray-400 text-xs">{name}</span>
-                      <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-emerald-400 hover:text-amber-300 text-xs font-mono transition-colors">
+                      <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-emerald-400 hover:text-emerald-300 text-xs font-mono transition-colors">
                         {phone}
                       </a>
                     </div>

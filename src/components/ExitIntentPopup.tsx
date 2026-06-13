@@ -67,7 +67,7 @@ export default function ExitIntentPopup() {
           >
             <div className="relative bg-slate-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
               {/* Top gradient bar */}
-              <div className="h-1 bg-gradient-to-r from-emerald-400 to-orange-500" />
+              <div className="h-1 bg-gradient-to-r from-emerald-400 to-green-600" />
 
               {/* Close button */}
               <button
@@ -156,7 +156,7 @@ export default function ExitIntentPopup() {
                       <Link
                         to="/contact"
                         onClick={() => setVisible(false)}
-                        className="text-emerald-400 hover:text-amber-300 text-xs transition-colors"
+                        className="text-emerald-400 hover:text-emerald-300 text-xs transition-colors"
                       >
                         Book a call instead →
                       </Link>

@@ -190,7 +190,7 @@ export default function BlogPage() {
                           {post.readTime}
                         </div>
                       </div>
-                      <button className="text-emerald-400 hover:text-amber-300 transition-colors">
+                      <button className="text-emerald-400 hover:text-emerald-300 transition-colors">
                         <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>

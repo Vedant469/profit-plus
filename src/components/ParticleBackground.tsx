@@ -16,12 +16,19 @@ export default function ParticleBackground() {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
-    const colors = ['#10b981', '#fb923c', '#34d399', '#fdba74', '#ffffff']
+    const isMobile = window.innerWidth < 768
+    const isLowEnd = navigator.hardwareConcurrency <= 4
+
+    // Green color palette
+    const colors = ['#10b981', '#34d399', '#059669', '#6ee7b7', '#a7f3d0']
     const particles: Particle[] = []
     let animationId: number
+    let lastTime = 0
+    const FPS = isMobile ? 30 : 60
+    const FRAME_MS = 1000 / FPS
 
     const resize = () => {
       canvas.width = window.innerWidth
@@ -31,29 +38,32 @@ export default function ParticleBackground() {
     const createParticle = (): Particle => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      size: Math.random() * 2 + 0.5,
-      opacity: Math.random() * 0.5 + 0.1,
+      vx: (Math.random() - 0.5) * (isMobile ? 0.2 : 0.4),
+      vy: (Math.random() - 0.5) * (isMobile ? 0.2 : 0.4),
+      size: Math.random() * (isMobile ? 1.5 : 2) + 0.5,
+      opacity: Math.random() * 0.4 + 0.1,
       color: colors[Math.floor(Math.random() * colors.length)]!,
     })
 
     const init = () => {
       resize()
       particles.length = 0
-      const count = Math.floor((canvas.width * canvas.height) / 15000)
-      for (let i = 0; i < Math.min(count, 80); i++) {
+      const area = canvas.width * canvas.height
+      const density = isMobile ? 40000 : isLowEnd ? 20000 : 12000
+      const count = Math.min(Math.floor(area / density), isMobile ? 20 : 60)
+      for (let i = 0; i < count; i++) {
         particles.push(createParticle())
       }
     }
 
     const drawConnections = (p1: Particle, p2: Particle) => {
+      if (isMobile) return // Skip connections on mobile for performance
       const dx = p1.x - p2.x
       const dy = p1.y - p2.y
       const dist = Math.sqrt(dx * dx + dy * dy)
-      if (dist < 120) {
+      if (dist < 100) {
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(16, 185, 129, ${0.08 * (1 - dist / 120)})`
+        ctx.strokeStyle = `rgba(16, 185, 129, ${0.06 * (1 - dist / 100)})`
         ctx.lineWidth = 0.5
         ctx.moveTo(p1.x, p1.y)
         ctx.lineTo(p2.x, p2.y)
@@ -61,19 +71,22 @@ export default function ParticleBackground() {
       }
     }
 
-    const animate = () => {
+    const animate = (timestamp: number) => {
+      animationId = requestAnimationFrame(animate)
+
+      // Cap FPS for performance
+      if (timestamp - lastTime < FRAME_MS) return
+      lastTime = timestamp
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       particles.forEach((p, i) => {
-        // Move
         p.x += p.vx
         p.y += p.vy
 
-        // Bounce
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1
 
-        // Draw particle
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
         ctx.fillStyle = p.color
@@ -81,23 +94,34 @@ export default function ParticleBackground() {
         ctx.fill()
         ctx.globalAlpha = 1
 
-        // Draw connections
-        for (let j = i + 1; j < particles.length; j++) {
-          drawConnections(p, particles[j]!)
+        if (!isMobile) {
+          for (let j = i + 1; j < particles.length; j++) {
+            drawConnections(p, particles[j]!)
+          }
         }
       })
-
-      animationId = requestAnimationFrame(animate)
     }
 
     init()
-    animate()
+    animationId = requestAnimationFrame(animate)
 
-    window.addEventListener('resize', init)
+    const handleResize = () => { init() }
+    window.addEventListener('resize', handleResize, { passive: true })
+
+    // Pause when tab is hidden
+    const handleVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationId)
+      } else {
+        animationId = requestAnimationFrame(animate)
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
 
     return () => {
       cancelAnimationFrame(animationId)
-      window.removeEventListener('resize', init)
+      window.removeEventListener('resize', handleResize)
+      document.removeEventListener('visibilitychange', handleVisibility)
     }
   }, [])
 
@@ -105,7 +129,7 @@ export default function ParticleBackground() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ opacity: 0.4 }}
+      style={{ opacity: 0.5 }}
     />
   )
 }

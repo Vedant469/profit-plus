@@ -112,7 +112,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-green-600/10 rounded-full blur-3xl" />
       </div>
 
       <motion.div
@@ -124,7 +124,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-orange-500 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-600 rounded-xl flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-white text-xl">
@@ -175,7 +175,7 @@ export default function LoginPage() {
               </p>
               <button
                 onClick={() => switchMode('login')}
-                className="mt-2 text-emerald-400 hover:text-amber-300 text-sm font-medium transition-colors"
+                className="mt-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium transition-colors"
               >
                 ← Back to Sign In
               </button>
@@ -275,7 +275,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => switchMode('forgot')}
-                        className="text-emerald-400 hover:text-amber-300 text-xs transition-colors"
+                        className="text-emerald-400 hover:text-emerald-300 text-xs transition-colors"
                       >
                         Forgot password?
                       </button>
@@ -339,7 +339,7 @@ export default function LoginPage() {
                 Don't have an account?{' '}
                 <button
                   onClick={() => switchMode('signup')}
-                  className="text-emerald-400 hover:text-amber-300 transition-colors font-medium"
+                  className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
                 >
                   Create one
                 </button>
@@ -349,7 +349,7 @@ export default function LoginPage() {
                 Already have an account?{' '}
                 <button
                   onClick={() => switchMode('login')}
-                  className="text-emerald-400 hover:text-amber-300 transition-colors font-medium"
+                  className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
                 >
                   Sign in
                 </button>
@@ -360,7 +360,7 @@ export default function LoginPage() {
 
         <p className="text-center text-gray-600 text-sm mt-3">
           Need access?{' '}
-          <a href="/contact" className="text-emerald-400 hover:text-amber-300 transition-colors">
+          <a href="/contact" className="text-emerald-400 hover:text-emerald-300 transition-colors">
             Contact us
           </a>
         </p>
