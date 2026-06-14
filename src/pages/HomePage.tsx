@@ -639,8 +639,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <ROICalculator />
 
-            {/* CTA */}
+      {/* CTA */}
       <section className="py-20 md:py-24 bg-slate-900/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
