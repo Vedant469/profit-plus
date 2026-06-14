@@ -316,6 +316,76 @@
   }
 }
 
+/* ── Purple Theme ───────────────────────────────────────────── */
+.page-section-alt {
+  background: rgba(139, 92, 246, 0.03);
+  border-top: 1px solid rgba(139, 92, 246, 0.08);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.08);
+}
+
+/* ── Pill Buttons ───────────────────────────────────────────── */
+.btn-ghost-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-ghost-pill:hover {
+  color: white;
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+.btn-neon-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  border: 1px solid rgba(139, 92, 246, 0.6);
+  background: rgba(10, 5, 20, 0.9);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.05);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-neon-pill:hover {
+  border-color: rgba(167, 139, 250, 0.8);
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), 0 0 60px rgba(139, 92, 246, 0.2), inset 0 0 30px rgba(139, 92, 246, 0.1);
+}
+
+.btn-green-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #020617;
+  background: linear-gradient(135deg, #00ff88, #00cc6a);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-green-pill:hover {
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+  transform: translateY(-1px);
+}
+
 /* ── Crisp chat ────────────────────────────────────────────── */
 @media (max-width: 768px) {
   #crisp-chatbox {

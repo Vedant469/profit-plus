@@ -30,11 +30,27 @@ const LoginPage = lazy(() => import('./pages/LoginPage'))
 const BlogPage = lazy(() => import('./pages/BlogPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const PendingApprovalPage = lazy(() => import('./pages/PendingApprovalPage'))
+const GodmodePage = lazy(() => import('./pages/GodmodePage'))
 const DashboardOverview = lazy(() => import('./pages/dashboard/DashboardOverview'))
 const CampaignsPage = lazy(() => import('./pages/dashboard/CampaignsPage'))
 const AnalyticsPage = lazy(() => import('./pages/dashboard/AnalyticsPage'))
 const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
 const LeadsPage = lazy(() => import('./pages/dashboard/LeadsPage'))
+
+function PublicLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="min-h-screen pb-20 md:pb-0"
+      style={{
+        background: 'linear-gradient(160deg, #0d0520 0%, #1a0a35 25%, #0a0d20 60%, #020617 100%)',
+      }}
+    >
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+    </div>
+  )
+}
 
 function DashboardLoader() {
   return (
@@ -46,11 +62,14 @@ function DashboardLoader() {
 
 function PublicLoader() {
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: 'linear-gradient(160deg, #0d0520 0%, #1a0a35 25%, #0a0d20 60%, #020617 100%)' }}
+    >
       <div className="flex flex-col items-center gap-4">
         <div
           className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
-          style={{ borderColor: 'rgba(0,255,136,0.2)', borderTopColor: '#00ff88' }}
+          style={{ borderColor: 'rgba(139,92,246,0.2)', borderTopColor: '#8b5cf6' }}
         />
         <p className="text-gray-500 text-sm animate-pulse">Loading...</p>
       </div>
@@ -63,14 +82,15 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-        <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
-        <Route path="/services" element={<PageTransition><ServicesPage /></PageTransition>} />
-        <Route path="/portfolio" element={<PageTransition><PortfolioPage /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
-        <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
+        <Route path="/" element={<PublicLayout><PageTransition><HomePage /></PageTransition></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><PageTransition><AboutPage /></PageTransition></PublicLayout>} />
+        <Route path="/services" element={<PublicLayout><PageTransition><ServicesPage /></PageTransition></PublicLayout>} />
+        <Route path="/portfolio" element={<PublicLayout><PageTransition><PortfolioPage /></PageTransition></PublicLayout>} />
+        <Route path="/contact" element={<PublicLayout><PageTransition><ContactPage /></PageTransition></PublicLayout>} />
+        <Route path="/blog" element={<PublicLayout><PageTransition><BlogPage /></PageTransition></PublicLayout>} />
         <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
         <Route path="/pending-approval" element={<PageTransition><PendingApprovalPage /></PageTransition>} />
+        <Route path="/godmode" element={<GodmodePage />} />
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><PageTransition><DashboardOverview /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/campaigns" element={<ProtectedRoute><DashboardLayout><PageTransition><CampaignsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
         <Route path="/dashboard/analytics" element={<ProtectedRoute><DashboardLayout><PageTransition><AnalyticsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
@@ -86,7 +106,7 @@ function AppContent() {
   useSmoothScroll()
   const location = useLocation()
   const { shouldReduceMotion, shouldDisable3D } = useAdaptiveQuality()
-  const isSpecialPage = ['/login', '/pending-approval'].includes(location.pathname)
+  const isSpecialPage = ['/login', '/pending-approval', '/godmode'].includes(location.pathname)
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isPublic = !isDashboard && !isSpecialPage
 
@@ -112,12 +132,9 @@ function AppContent() {
 
       {isPublic && <Navbar />}
 
-      <div className={isPublic ? 'min-h-screen bg-slate-950 pb-20 md:pb-0' : ''}>
-        <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
-          <AnimatedRoutes />
-        </Suspense>
-        {isPublic && <Footer />}
-      </div>
+      <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
+        <AnimatedRoutes />
+      </Suspense>
 
       {isPublic && !shouldReduceMotion && <BackToTop />}
       {isPublic && <WhatsAppButton />}

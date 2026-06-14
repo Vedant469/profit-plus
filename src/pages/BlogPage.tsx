@@ -1,17 +1,17 @@
-import SEOHead from '../components/SEOHead'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, User, ArrowRight, Search } from 'lucide-react'
 import { blogPosts } from '../data/mockData'
+import SEOHead from '../components/SEOHead'
 
 const categories = ['All', 'Case Study', 'Performance Marketing', 'SEO', 'Email Marketing', 'Analytics']
 
 const categoryColors: Record<string, string> = {
   'Case Study': 'text-blue-400 bg-blue-500/10 border-blue-500/20',
   'Performance Marketing': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  'SEO': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+  'SEO': 'text-violet-400 bg-violet-500/10 border-violet-500/20',
   'Email Marketing': 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-  'Analytics': 'text-violet-400 bg-violet-500/10 border-violet-500/20',
+  'Analytics': 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
 }
 
 export default function BlogPage() {
@@ -28,28 +28,27 @@ export default function BlogPage() {
   const featured = blogPosts[0]!
 
   return (
-    <div className="bg-slate-950 pt-24">
-       <SEOHead
+    <div className="pt-24">
+      <SEOHead
         title="Marketing Insights & Blog | ProfitPlus Agency India"
         description="Expert marketing insights, case studies and profit-growing strategies from ProfitPlus — India's leading performance marketing agency based in Pune."
-        keywords="marketing blog india, digital marketing insights pune, performance marketing tips india, marketing agency blog pune, ROI marketing strategies india"
+        keywords="marketing blog india, digital marketing insights pune, performance marketing tips india"
         url="https://profit-plus-beta.vercel.app/blog"
       />
+
       {/* Hero */}
       <section className="py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ background: 'rgba(139,92,246,0.08)' }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="text-emerald-400 font-medium mb-3">Blog & Insights</p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium mb-4" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', color: '#a78bfa' }}>
+              Blog & Insights
+            </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               Profit-Growing <span className="gradient-text">Knowledge Hub</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Actionable strategies, case studies, and insights from our team to help you grow your profits faster.
+              Actionable strategies, case studies, and insights to help you grow your profits faster.
             </p>
           </motion.div>
         </div>
@@ -62,43 +61,41 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-2xl bg-slate-900 border border-white/5 hover:border-emerald-500/20 transition-all group"
+            className="relative overflow-hidden rounded-2xl group transition-all"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(139,92,246,0.15)' }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="relative h-64 lg:h-auto overflow-hidden">
                 <img
                   src={featured.image}
                   alt={featured.title}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r ${featured.color} opacity-50`} />
                 <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-emerald-500 text-slate-950 text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: '#00ff88', color: '#020617' }}>
                     Featured
                   </span>
                 </div>
               </div>
+
               <div className="p-8 md:p-10 flex flex-col justify-center">
                 <span className={`inline-flex w-fit px-2.5 py-1 rounded-full text-xs font-medium border mb-4 ${categoryColors[featured.category] ?? ''}`}>
                   {featured.category}
                 </span>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
-                  {featured.title}
-                </h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">{featured.title}</h2>
                 <p className="text-gray-400 leading-relaxed mb-6">{featured.excerpt}</p>
                 <div className="flex items-center gap-4 mb-6">
                   <div className="flex items-center gap-2 text-gray-500 text-sm">
-                    <User className="w-4 h-4" />
-                    {featured.author}
+                    <User className="w-4 h-4" />{featured.author}
                   </div>
                   <div className="flex items-center gap-2 text-gray-500 text-sm">
-                    <Clock className="w-4 h-4" />
-                    {featured.readTime}
+                    <Clock className="w-4 h-4" />{featured.readTime}
                   </div>
                 </div>
-                <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all w-fit">
-                  Read Article
-                  <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                <button className="btn-green-pill w-fit">
+                  Read Article <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -110,25 +107,23 @@ export default function BlogPage() {
       <section className="pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            {/* Category filters */}
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                    activeCategory === cat
-                      ? 'bg-emerald-500 text-slate-950'
-                      : 'bg-slate-900 border border-white/5 text-gray-400 hover:text-white hover:border-white/10'
-                  }`}
+                  className="px-4 py-2 rounded-full text-sm font-medium transition-all"
+                  style={{
+                    background: activeCategory === cat ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.05)',
+                    border: `1px solid ${activeCategory === cat ? 'rgba(139,92,246,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    color: activeCategory === cat ? '#a78bfa' : '#9ca3af',
+                  }}
                 >
                   {cat}
                 </button>
               ))}
             </div>
-
-            {/* Search */}
-            <div className="flex items-center gap-2 bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 w-full sm:w-auto">
+            <div className="flex items-center gap-2 rounded-xl px-4 py-2.5 w-full sm:w-auto" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(139,92,246,0.15)' }}>
               <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
               <input
                 type="text"
@@ -155,13 +150,17 @@ export default function BlogPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-emerald-500/20 transition-all duration-300"
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                  className="group overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer"
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(139,92,246,0.1)' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139,92,246,0.3)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139,92,246,0.1)'}
                 >
                   <div className="relative h-48 overflow-hidden">
                     <img
                       src={post.image}
                       alt={post.title}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t ${post.color} opacity-40`} />
@@ -173,26 +172,20 @@ export default function BlogPage() {
                       </span>
                       <span className="text-gray-500 text-xs">{post.date}</span>
                     </div>
-                    <h3 className="text-white font-bold text-lg mb-2 leading-tight group-hover:text-emerald-400 transition-colors">
+                    <h3 className="text-white font-bold text-lg mb-2 leading-tight group-hover:opacity-80 transition-opacity line-clamp-2">
                       {post.title}
                     </h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                      {post.excerpt}
-                    </p>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">{post.excerpt}</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1.5 text-gray-500 text-xs">
-                          <User className="w-3.5 h-3.5" />
-                          {post.author}
+                          <User className="w-3.5 h-3.5" />{post.author}
                         </div>
                         <div className="flex items-center gap-1.5 text-gray-500 text-xs">
-                          <Clock className="w-3.5 h-3.5" />
-                          {post.readTime}
+                          <Clock className="w-3.5 h-3.5" />{post.readTime}
                         </div>
                       </div>
-                      <button className="text-emerald-400 hover:text-emerald-300 transition-colors">
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
+                      <ArrowRight className="w-4 h-4" style={{ color: '#a78bfa' }} />
                     </div>
                   </div>
                 </motion.div>
