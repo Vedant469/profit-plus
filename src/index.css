@@ -49,7 +49,6 @@
 }
 
 @layer utilities {
-  /* ── Neon Green Gradient Text ───────────────────────────── */
   .gradient-text {
     background: linear-gradient(to right, #00ff88, #00cc6a);
     -webkit-background-clip: text;
@@ -58,7 +57,7 @@
   }
 
   .animated-gradient-text {
-    background: linear-gradient(270deg, #00ff88, #00e676, #00cc6a, #00e676, #00ff88);
+    background: linear-gradient(270deg, #34d399, #00ff88, #00cc6a, #00ff88, #34d399);
     background-size: 300% 300%;
     animation: gradient-shift 4s ease infinite;
     -webkit-background-clip: text;
@@ -73,19 +72,17 @@
     border: 1px solid rgba(255,255,255,0.08);
   }
 
-  /* ── Neon Glow Card ─────────────────────────────────────── */
   .glow-card {
     animation: border-pulse 3s ease-in-out infinite;
     transition: box-shadow 0.3s ease;
   }
   .glow-card:hover {
     animation: none;
-    box-shadow: 0 0 30px rgba(0,255,136,0.15),
+    box-shadow: 0 0 30px rgba(0,255,136,0.12),
                 0 0 60px rgba(0,255,136,0.05),
-                0 0 0 1px rgba(0,255,136,0.3);
+                0 0 0 1px rgba(0,255,136,0.2);
   }
 
-  /* ── Holographic Sheen ──────────────────────────────────── */
   .holo-card {
     position: relative;
     overflow: hidden;
@@ -107,30 +104,16 @@
     pointer-events: none;
     z-index: 1;
   }
-  .holo-card:hover::before {
-    opacity: 1;
-  }
+  .holo-card:hover::before { opacity: 1; }
 
-  /* ── Glitch Text ────────────────────────────────────────── */
-  .glitch {
-    position: relative;
-  }
   .glitch:hover {
     animation: glitch-anim 0.4s ease;
   }
 
-  /* ── Neon Button ────────────────────────────────────────── */
-  .neon-btn {
-    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3),
-                0 0 20px rgba(0, 255, 136, 0.15),
-                inset 0 0 10px rgba(0, 255, 136, 0.05);
-    transition: all 0.3s ease;
-  }
-  .neon-btn:hover {
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.5),
-                0 0 40px rgba(0, 255, 136, 0.3),
-                0 0 60px rgba(0, 255, 136, 0.1),
-                inset 0 0 20px rgba(0, 255, 136, 0.1);
+  .page-section-alt {
+    background: rgba(139, 92, 246, 0.03);
+    border-top: 1px solid rgba(139, 92, 246, 0.08);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.08);
   }
 }
 
@@ -147,69 +130,53 @@
   text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
 }
 
-/* ── Aurora Background ─────────────────────────────────────── */
+/* ── Aurora ────────────────────────────────────────────────── */
 .aurora-container {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
-
 .aurora-blob {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
   will-change: transform;
 }
-
 .aurora-1 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0,255,136,0.12) 0%, transparent 70%);
-  top: -200px;
-  left: -100px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,255,136,0.1) 0%, transparent 70%);
+  top: -200px; left: -100px;
   animation: aurora-move-1 12s ease-in-out infinite;
 }
-
 .aurora-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(0,200,100,0.1) 0%, transparent 70%);
-  top: 100px;
-  right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+  top: 100px; right: -100px;
   animation: aurora-move-2 15s ease-in-out infinite;
 }
-
 .aurora-3 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%);
-  bottom: -100px;
-  left: 40%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(0,255,136,0.06) 0%, transparent 70%);
+  bottom: -100px; left: 40%;
   animation: aurora-move-3 10s ease-in-out infinite;
 }
-
 .aurora-4 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(0,150,80,0.08) 0%, transparent 70%);
-  top: 50%;
-  left: 20%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+  top: 50%; left: 20%;
   animation: aurora-move-1 18s ease-in-out infinite reverse;
 }
-
 @keyframes aurora-move-1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(40px, -40px) scale(1.08); }
   66% { transform: translate(-30px, 30px) scale(0.95); }
 }
-
 @keyframes aurora-move-2 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(-50px, 30px) scale(1.05); }
   66% { transform: translate(30px, -50px) scale(0.92); }
 }
-
 @keyframes aurora-move-3 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   50% { transform: translate(-40px, -30px) scale(1.1); }
@@ -241,7 +208,7 @@
   50% { box-shadow: 0 0 20px 1px rgba(0,255,136,0.12), 0 0 0 1px rgba(0,255,136,0.2); }
 }
 
-/* ── Glitch animation ──────────────────────────────────────── */
+/* ── Glitch ────────────────────────────────────────────────── */
 @keyframes glitch-anim {
   0% { transform: translate(0); }
   20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
@@ -278,7 +245,7 @@
 }
 .flip-card-back { transform: rotateY(180deg); }
 
-/* ── Skeleton shimmer ──────────────────────────────────────── */
+/* ── Skeleton ──────────────────────────────────────────────── */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -298,12 +265,12 @@
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, #00ff88, #00cc6a);
   border-radius: 4px;
-  box-shadow: 0 0 6px rgba(0,255,136,0.5);
+  box-shadow: 0 0 6px rgba(0,255,136,0.4);
 }
 
 /* ── Selection ─────────────────────────────────────────────── */
 ::selection {
-  background: rgba(0, 255, 136, 0.25);
+  background: rgba(0, 255, 136, 0.2);
   color: #fff;
 }
 
@@ -316,120 +283,105 @@
   }
 }
 
-/* ── Purple Theme ───────────────────────────────────────────── */
-.page-section-alt {
-  background: rgba(139, 92, 246, 0.03);
-  border-top: 1px solid rgba(139, 92, 246, 0.08);
-  border-bottom: 1px solid rgba(139, 92, 246, 0.08);
-}
+/* ══════════════════════════════════════════════════════════════
+   PILL BUTTONS — must be AFTER tailwind to override
+══════════════════════════════════════════════════════════════ */
 
-/* ── Pill Buttons ───────────────────────────────────────────── */
-.btn-ghost-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 22px;
-  border-radius: 50px;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: transparent;
-  transition: all 0.25s ease;
-  cursor: pointer;
-  text-decoration: none;
-}
-.btn-ghost-pill:hover {
-  color: white;
-  border-color: rgba(139, 92, 246, 0.5);
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
-}
-
-.btn-neon-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 22px;
-  border-radius: 50px;
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-  border: 1px solid rgba(139, 92, 246, 0.6);
-  background: rgba(10, 5, 20, 0.9);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.05);
-  transition: all 0.25s ease;
-  cursor: pointer;
-  text-decoration: none;
-}
-.btn-neon-pill:hover {
-  border-color: rgba(167, 139, 250, 0.8);
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), 0 0 60px rgba(139, 92, 246, 0.2), inset 0 0 30px rgba(139, 92, 246, 0.1);
-}
-
+a.btn-green-pill,
+button.btn-green-pill,
+div.btn-green-pill,
 .btn-green-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 28px;
-  border-radius: 50px !important;
-  font-size: 14px;
-  font-weight: 700;
-  color: #020617;
-  background: linear-gradient(135deg, #00ff88, #00cc6a);
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-  transition: all 0.25s ease;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 12px 28px !important;
+  border-radius: 9999px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #020617 !important;
+  background: linear-gradient(135deg, #00ff88, #00cc6a) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.35) !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  border: none !important;
+  -webkit-text-fill-color: #020617 !important;
 }
+a.btn-green-pill:hover,
+button.btn-green-pill:hover,
 .btn-green-pill:hover {
-  box-shadow: 0 0 35px rgba(0, 255, 136, 0.6);
-  transform: translateY(-1px);
+  box-shadow: 0 0 40px rgba(0, 255, 136, 0.6) !important;
+  transform: translateY(-2px) !important;
+  color: #020617 !important;
+  -webkit-text-fill-color: #020617 !important;
 }
 
+a.btn-ghost-pill,
+button.btn-ghost-pill,
+div.btn-ghost-pill,
 .btn-ghost-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 28px;
-  border-radius: 50px !important;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: transparent;
-  transition: all 0.25s ease;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 12px 28px !important;
+  border-radius: 9999px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  background: transparent !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.75) !important;
 }
+a.btn-ghost-pill:hover,
+button.btn-ghost-pill:hover,
 .btn-ghost-pill:hover {
-  color: white;
-  border-color: rgba(139, 92, 246, 0.6);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  border-color: rgba(139, 92, 246, 0.6) !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2) !important;
 }
 
+a.btn-neon-pill,
+button.btn-neon-pill,
+div.btn-neon-pill,
 .btn-neon-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 28px;
-  border-radius: 50px !important;
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-  border: 1px solid rgba(139, 92, 246, 0.6);
-  background: rgba(10, 5, 20, 0.9);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.05);
-  transition: all 0.25s ease;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 12px 28px !important;
+  border-radius: 9999px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  border: 1px solid rgba(139, 92, 246, 0.6) !important;
+  background: rgba(10, 5, 20, 0.9) !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3),
+              inset 0 0 20px rgba(139, 92, 246, 0.05) !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
 }
+a.btn-neon-pill:hover,
+button.btn-neon-pill:hover,
 .btn-neon-pill:hover {
-  border-color: rgba(167, 139, 250, 0.8);
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), 0 0 60px rgba(139, 92, 246, 0.2), inset 0 0 30px rgba(139, 92, 246, 0.1);
+  border-color: rgba(167, 139, 250, 0.8) !important;
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5),
+              0 0 60px rgba(139, 92, 246, 0.2),
+              inset 0 0 30px rgba(139, 92, 246, 0.1) !important;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
 }
+
 /* ── Crisp chat ────────────────────────────────────────────── */
 @media (max-width: 768px) {
   #crisp-chatbox {

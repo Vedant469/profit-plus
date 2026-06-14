@@ -37,17 +37,21 @@ const AnalyticsPage = lazy(() => import('./pages/dashboard/AnalyticsPage'))
 const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
 const LeadsPage = lazy(() => import('./pages/dashboard/LeadsPage'))
 
-function PublicLayout({ children }: { children: React.ReactNode }) {
+const PURPLE_BG = 'linear-gradient(160deg, #0d0520 0%, #1a0a35 25%, #0a0d20 60%, #020617 100%)'
+
+function PageLoader() {
   return (
     <div
-      className="min-h-screen pb-20 md:pb-0"
-      style={{
-        background: 'linear-gradient(160deg, #0d0520 0%, #1a0a35 25%, #0a0d20 60%, #020617 100%)',
-      }}
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: PURPLE_BG }}
     >
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
+      <div className="flex flex-col items-center gap-3">
+        <div
+          className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
+          style={{ borderColor: 'rgba(139,92,246,0.2)', borderTopColor: '#8b5cf6' }}
+        />
+        <p className="text-gray-600 text-xs">Loading...</p>
+      </div>
     </div>
   )
 }
@@ -60,43 +64,82 @@ function DashboardLoader() {
   )
 }
 
-function PublicLoader() {
+// Each route wraps its own Suspense to prevent blank screens
+function PublicPage({ component: Component }: { component: React.ComponentType }) {
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{ background: 'linear-gradient(160deg, #0d0520 0%, #1a0a35 25%, #0a0d20 60%, #020617 100%)' }}
-    >
-      <div className="flex flex-col items-center gap-4">
-        <div
-          className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
-          style={{ borderColor: 'rgba(139,92,246,0.2)', borderTopColor: '#8b5cf6' }}
-        />
-        <p className="text-gray-500 text-sm animate-pulse">Loading...</p>
-      </div>
-    </div>
+    <Suspense fallback={<PageLoader />}>
+      <PageTransition>
+        <Component />
+      </PageTransition>
+    </Suspense>
+  )
+}
+
+function DashPage({ component: Component }: { component: React.ComponentType }) {
+  return (
+    <Suspense fallback={<DashboardLoader />}>
+      <PageTransition>
+        <Component />
+      </PageTransition>
+    </Suspense>
   )
 }
 
 function AnimatedRoutes() {
   const location = useLocation()
+
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="sync" initial={false}>
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PublicLayout><PageTransition><HomePage /></PageTransition></PublicLayout>} />
-        <Route path="/about" element={<PublicLayout><PageTransition><AboutPage /></PageTransition></PublicLayout>} />
-        <Route path="/services" element={<PublicLayout><PageTransition><ServicesPage /></PageTransition></PublicLayout>} />
-        <Route path="/portfolio" element={<PublicLayout><PageTransition><PortfolioPage /></PageTransition></PublicLayout>} />
-        <Route path="/contact" element={<PublicLayout><PageTransition><ContactPage /></PageTransition></PublicLayout>} />
-        <Route path="/blog" element={<PublicLayout><PageTransition><BlogPage /></PageTransition></PublicLayout>} />
-        <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-        <Route path="/pending-approval" element={<PageTransition><PendingApprovalPage /></PageTransition>} />
-        <Route path="/godmode" element={<GodmodePage />} />
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><PageTransition><DashboardOverview /></PageTransition></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/campaigns" element={<ProtectedRoute><DashboardLayout><PageTransition><CampaignsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/analytics" element={<ProtectedRoute><DashboardLayout><PageTransition><AnalyticsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/reports" element={<ProtectedRoute><DashboardLayout><PageTransition><ReportsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/leads" element={<ProtectedRoute><DashboardLayout><PageTransition><LeadsPage /></PageTransition></DashboardLayout></ProtectedRoute>} />
-        <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
+        {/* Public */}
+        <Route path="/" element={<PublicPage component={HomePage} />} />
+        <Route path="/about" element={<PublicPage component={AboutPage} />} />
+        <Route path="/services" element={<PublicPage component={ServicesPage} />} />
+        <Route path="/portfolio" element={<PublicPage component={PortfolioPage} />} />
+        <Route path="/contact" element={<PublicPage component={ContactPage} />} />
+        <Route path="/blog" element={<PublicPage component={BlogPage} />} />
+        <Route path="/login" element={<PublicPage component={LoginPage} />} />
+        <Route path="/pending-approval" element={<PublicPage component={PendingApprovalPage} />} />
+        <Route path="/godmode" element={<PublicPage component={GodmodePage} />} />
+
+        {/* Dashboard */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DashPage component={DashboardOverview} />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/campaigns" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DashPage component={CampaignsPage} />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/analytics" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DashPage component={AnalyticsPage} />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/reports" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DashPage component={ReportsPage} />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/leads" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DashPage component={LeadsPage} />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="*" element={<PublicPage component={NotFoundPage} />} />
       </Routes>
     </AnimatePresence>
   )
@@ -106,6 +149,7 @@ function AppContent() {
   useSmoothScroll()
   const location = useLocation()
   const { shouldReduceMotion, shouldDisable3D } = useAdaptiveQuality()
+
   const isSpecialPage = ['/login', '/pending-approval', '/godmode'].includes(location.pathname)
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isPublic = !isDashboard && !isSpecialPage
@@ -132,9 +176,15 @@ function AppContent() {
 
       {isPublic && <Navbar />}
 
-      <Suspense fallback={isDashboard ? <DashboardLoader /> : <PublicLoader />}>
+      {/* Public wrapper with purple bg */}
+      {isPublic ? (
+        <div className="min-h-screen pb-20 md:pb-0" style={{ background: PURPLE_BG }}>
+          <AnimatedRoutes />
+          <Footer />
+        </div>
+      ) : (
         <AnimatedRoutes />
-      </Suspense>
+      )}
 
       {isPublic && !shouldReduceMotion && <BackToTop />}
       {isPublic && <WhatsAppButton />}
