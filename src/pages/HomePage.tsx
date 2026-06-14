@@ -9,6 +9,8 @@ import MagneticButton from '../components/MagneticButton'
 import LiquidShape from '../components/LiquidShape'
 import ProgressiveImage from '../components/ProgressiveImage'
 import { useAdaptiveQuality } from '../hooks/useAdaptiveQuality'
+import Hero3D from '../components/Hero3D'
+import ROICalculator from '../components/ROICalculator'
 import { useHaptic } from '../hooks/useHaptic'
 
 const phrases = [
@@ -213,6 +215,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/90" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/40" />
         <AuroraBackground />
+        <Hero3D />
         <ParticleBackground />
         {isHighEnd && (
           <>
@@ -637,7 +640,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
+            {/* CTA */}
       <section className="py-20 md:py-24 bg-slate-900/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
