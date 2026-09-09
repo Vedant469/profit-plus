@@ -1,73 +1,128 @@
-# React + TypeScript + Vite
+# 📈 Profit Plus
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> A modern, interactive business platform built with React and TypeScript, combining polished UI, data-driven experiences, authentication, lead management, and a responsive PWA-ready architecture.
 
-Currently, two official plugins are available:
+## ✨ Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Profit Plus is a modern web application focused on creating a premium digital experience for business and financial-oriented content.
 
-## React Compiler
+The project combines a responsive interface with interactive animations, data visualization, authentication, backend integration, lead collection, and an internal administration interface.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The goal was to build more than a static landing page — the application is structured as a complete modern web experience with reusable components and backend-powered functionality.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🎨 Interactive User Experience
+- Modern responsive interface
+- Motion-driven page transitions and interactions
+- Animated typography and UI elements
+- Interactive cards and visual effects
+- Smooth scrolling
+- Progressive image loading
+- Responsive experience across desktop and mobile
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 📊 Data & Visualization
+- Interactive charts with Recharts
+- Data-driven UI components
+- Dynamic portfolio/campaign content
+- Dashboard-oriented visual presentation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 🔐 Authentication
+- User login interface
+- Authentication flows powered by Supabase
+- Protected application functionality
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 🧑‍💼 Admin Dashboard
+- Internal administration interface
+- Lead management
+- Profile/content management
+- Message and communication management
+- Centralized business data handling
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 📩 Lead & Contact System
+- Contact/lead submission workflow
+- Server-side email handling
+- Automated email notifications using Resend
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 📱 Progressive Web App
+- PWA-ready architecture
+- Installable web experience
+- Web app manifest
+- Service worker support
+- Adaptive quality handling for different devices
+
+### ⚡ Performance & UX
+- Vite-powered development and production builds
+- Lazy/progressive image loading
+- Adaptive visual quality
+- Responsive layouts
+- Component-based architecture
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+
+### UI / Animation
+- Framer Motion
+- GSAP
+- React Spring
+- Lenis
+- Lucide React
+
+### 3D & Visualization
+- Three.js
+- React Three Fiber
+- React Three Drei
+- Recharts
+
+### Backend & Services
+- Supabase
+- Resend
+- Vercel Serverless Functions
+
+### Tooling
+- ESLint
+- PostCSS
+- Tailwind CSS
+- Git
+- GitHub
+
+---
+
+## 🏗️ Project Structure
+
+```text
+profit-plus/
+│
+├── api/
+│   └── sendEmail.js
+│
+├── public/
+│   ├── images/
+│   ├── videos/
+│   ├── manifest.json
+│   └── ...
+│
+├── src/
+│   ├── components/
+│   ├── hooks/
+│   ├── lib/
+│   ├── pages/
+│   ├── App.tsx
+│   └── main.tsx
+│
+├── .env.example
+├── .gitignore
+├── package.json
+├── tailwind.config.js
+├── tsconfig.app.json
+├── vite.config.ts
+└── README.md
