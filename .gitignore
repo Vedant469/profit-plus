@@ -25,3 +25,6 @@ dist-ssr
 node_modules
 dist
 *.zip
+.env
+.env.*
+!.env.example
