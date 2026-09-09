@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { lazy, Suspense, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import DashboardLayout from './components/layout/DashboardLayout'
@@ -194,5 +195,10 @@ function AppContent() {
 }
 
 export default function App() {
-  return <AppContent />
+  return (
+    <>
+      <AppContent />
+      <Analytics />
+    </>
+  )
 }
