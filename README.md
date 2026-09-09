@@ -1,128 +1,127 @@
 # 📈 Profit Plus
 
-> A modern, interactive business platform built with React and TypeScript, combining polished UI, data-driven experiences, authentication, lead management, and a responsive PWA-ready architecture.
+> A modern, interactive business platform built with React and TypeScript, combining premium UI, data visualization, authentication, lead management, and PWA-ready functionality.
+
+## 🖥️ Product Preview
+
+<p align="center">
+  <img src="./public/screenshots/home.png" width="900" alt="Profit Plus homepage" />
+</p>
+
+---
 
 ## ✨ Overview
 
-Profit Plus is a modern web application focused on creating a premium digital experience for business and financial-oriented content.
+Profit Plus is a full-stack web experience designed for modern business and financial-focused applications.
 
-The project combines a responsive interface with interactive animations, data visualization, authentication, backend integration, lead collection, and an internal administration interface.
+It combines an interactive frontend with backend-powered features including authentication, data management, lead collection, email notifications, and an internal administration dashboard.
 
-The goal was to build more than a static landing page — the application is structured as a complete modern web experience with reusable components and backend-powered functionality.
+Built with a focus on **visual design, reusable components, responsive UX, and production-oriented architecture**.
 
 ---
 
 ## 🚀 Features
 
 ### 🎨 Interactive User Experience
+
 - Modern responsive interface
-- Motion-driven page transitions and interactions
-- Animated typography and UI elements
-- Interactive cards and visual effects
+- Motion-driven page transitions
+- Animated typography and visual effects
+- Interactive cards and hover interactions
 - Smooth scrolling
 - Progressive image loading
-- Responsive experience across desktop and mobile
+- Desktop and mobile optimized layouts
 
-### 📊 Data & Visualization
+### 📊 Data Visualization
+
 - Interactive charts with Recharts
 - Data-driven UI components
-- Dynamic portfolio/campaign content
-- Dashboard-oriented visual presentation
+- Dynamic portfolio and campaign content
+- Visual presentation of business-oriented data
 
 ### 🔐 Authentication
-- User login interface
-- Authentication flows powered by Supabase
-- Protected application functionality
+
+- User authentication flow
+- Supabase-powered authentication
+- Login and protected application functionality
 
 ### 🧑‍💼 Admin Dashboard
+
 - Internal administration interface
 - Lead management
-- Profile/content management
-- Message and communication management
-- Centralized business data handling
+- Profile and content management
+- Message management
+- Centralized business data
 
 ### 📩 Lead & Contact System
-- Contact/lead submission workflow
+
+- Contact and lead submission
 - Server-side email handling
-- Automated email notifications using Resend
+- Automated email notifications
+- Resend integration
 
 ### 📱 Progressive Web App
+
 - PWA-ready architecture
-- Installable web experience
+- Installable web application
 - Web app manifest
 - Service worker support
-- Adaptive quality handling for different devices
+- Adaptive quality handling
 
 ### ⚡ Performance & UX
+
 - Vite-powered development and production builds
-- Lazy/progressive image loading
-- Adaptive visual quality
+- Progressive image loading
+- Adaptive rendering quality
 - Responsive layouts
-- Component-based architecture
+- Reusable React components
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
 
-### UI / Animation
-- Framer Motion
-- GSAP
-- React Spring
-- Lenis
-- Lucide React
+`React` `TypeScript` `Vite` `Tailwind CSS`
+
+### UI & Animation
+
+`Framer Motion` `GSAP` `React Spring` `Lenis` `Lucide React`
 
 ### 3D & Visualization
-- Three.js
-- React Three Fiber
-- React Three Drei
-- Recharts
+
+`Three.js` `React Three Fiber` `Drei` `Recharts`
 
 ### Backend & Services
-- Supabase
-- Resend
-- Vercel Serverless Functions
+
+`Supabase` `Resend` `Vercel Serverless Functions`
 
 ### Tooling
-- ESLint
-- PostCSS
-- Tailwind CSS
-- Git
-- GitHub
+
+`ESLint` `PostCSS` `Git` `GitHub` `Vercel`
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Architecture
 
 ```text
-profit-plus/
-│
-├── api/
-│   └── sendEmail.js
-│
-├── public/
-│   ├── images/
-│   ├── videos/
-│   ├── manifest.json
-│   └── ...
-│
-├── src/
-│   ├── components/
-│   ├── hooks/
-│   ├── lib/
-│   ├── pages/
-│   ├── App.tsx
-│   └── main.tsx
-│
-├── .env.example
-├── .gitignore
-├── package.json
-├── tailwind.config.js
-├── tsconfig.app.json
-├── vite.config.ts
-└── README.md
+                    ┌────────────────────┐
+                    │    React Frontend  │
+                    └──────────┬─────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+        UI Components      Supabase         Client Hooks
+              │                │                │
+              │                ▼                │
+              │          Application Data      │
+              │                                 │
+              ▼                                 ▼
+       Animations / Charts               Authentication
+              │
+              ▼
+        Vercel API Layer
+              │
+              ▼
+            Resend
