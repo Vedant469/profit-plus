@@ -1,10 +1,65 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, User } from 'lucide-react'
+import {
+  TrendingUp,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+  User,
+  ArrowLeft,
+  Loader2,
+} from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 
 type Mode = 'login' | 'signup' | 'forgot'
+
+function getAuthErrorMessage(error: unknown, mode: Mode) {
+  const message = error instanceof Error ? error.message : String(error ?? '')
+  const normalized = message.toLowerCase()
+
+  if (
+    normalized.includes('failed to fetch') ||
+    normalized.includes('networkerror') ||
+    normalized.includes('fetch failed') ||
+    normalized.includes('load failed')
+  ) {
+    return 'We could not reach the authentication service. Check your Supabase URL, environment variables, and network connection.'
+  }
+
+  if (normalized.includes('invalid login credentials')) {
+    return 'Wrong email or password. Please try again.'
+  }
+
+  if (normalized.includes('email not confirmed')) {
+    return 'Please confirm your email address before signing in.'
+  }
+
+  if (normalized.includes('too many requests')) {
+    return 'Too many attempts. Please wait a moment and try again.'
+  }
+
+  if (normalized.includes('user already registered') || normalized.includes('already registered')) {
+    return 'An account with this email already exists. Please sign in instead.'
+  }
+
+  if (normalized.includes('password should be at least')) {
+    return 'Password must be at least 6 characters.'
+  }
+
+  if (mode === 'forgot') {
+    return message || 'We could not send the reset link. Please try again.'
+  }
+
+  if (mode === 'signup') {
+    return message || 'We could not create your account. Please try again.'
+  }
+
+  return message || 'Sign in failed. Please try again.'
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -19,98 +74,136 @@ export default function LoginPage() {
   const [resetSent, setResetSent] = useState(false)
   const navigate = useNavigate()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
+
+    const trimmedEmail = email.trim()
+
+    if (!trimmedEmail || !password) {
+      setError('Enter your email and password to continue.')
+      return
+    }
+
     setLoading(true)
     setError('')
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) throw error
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: trimmedEmail,
+        password,
+      })
+
+      if (signInError) throw signInError
+
       navigate('/dashboard')
-    } catch (err: any) {
-      setError(err.message === 'Invalid login credentials'
-        ? 'Wrong email or password. Please try again.'
-        : err.message ?? 'Sign in failed')
+    } catch (err) {
+      setError(getAuthErrorMessage(err, 'login'))
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = async (e: FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+
+    const trimmedEmail = email.trim()
+    const trimmedName = name.trim()
+    const trimmedCompany = company.trim()
+
     setError('')
 
+    if (!trimmedName) {
+      setError('Enter your full name.')
+      return
+    }
+
+    if (!trimmedEmail) {
+      setError('Enter your email address.')
+      return
+    }
+
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      setLoading(false)
+      setError('Passwords do not match.')
       return
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      setLoading(false)
+      setError('Password must be at least 6 characters.')
       return
     }
 
+    setLoading(true)
+
     try {
-      // Sign up
       const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
+        email: trimmedEmail,
         password,
-        options: { data: { name, company } },
+        options: {
+          data: {
+            name: trimmedName,
+            company: trimmedCompany,
+          },
+        },
       })
+
       if (signUpError) throw signUpError
 
-      // Create profile
       if (data.user) {
-        await supabase.from('profiles').insert([{
-          id: data.user.id,
-          email: data.user.email,
-          name,
-          company,
-          approved: false,
-        }]).select()
+        const { error: profileError } = await supabase.from('profiles').upsert(
+          {
+            id: data.user.id,
+            email: data.user.email,
+            name: trimmedName,
+            company: trimmedCompany,
+            approved: false,
+          },
+          { onConflict: 'id' },
+        )
+
+        if (profileError) {
+          console.warn('Profile creation failed:', profileError.message)
+        }
       }
 
-      // Auto sign in immediately after signup
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (signInError) {
-        // Email might need confirmation - show message
-        setError('Account created! Please check your email to confirm, then sign in.')
-        setMode('login')
-      } else {
-        // Successfully signed in — go to dashboard
+      if (data.session) {
         navigate('/dashboard')
+        return
       }
-    } catch (err: any) {
-      if (err.message?.includes('already registered')) {
-        setError('An account with this email already exists. Please sign in.')
-        setMode('login')
-      } else {
-        setError(err.message ?? 'Failed to create account')
-      }
+
+      setMode('login')
+      setPassword('')
+      setConfirmPassword('')
+      setError('Account created. Check your email to confirm your account, then sign in.')
+    } catch (err) {
+      setError(getAuthErrorMessage(err, 'signup'))
     } finally {
       setLoading(false)
     }
   }
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
+  const handleForgotPassword = async (e: FormEvent) => {
     e.preventDefault()
+
+    const trimmedEmail = email.trim()
+
+    if (!trimmedEmail) {
+      setError('Enter your email address first.')
+      return
+    }
+
     setLoading(true)
     setError('')
+
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
         redirectTo: `${window.location.origin}/reset-password`,
       })
-      if (error) throw error
+
+      if (resetError) throw resetError
+
       setResetSent(true)
-    } catch (err: any) {
-      setError(err.message ?? 'Failed to send reset email')
+    } catch (err) {
+      setError(getAuthErrorMessage(err, 'forgot'))
     } finally {
       setLoading(false)
     }
@@ -122,227 +215,283 @@ export default function LoginPage() {
     setResetSent(false)
   }
 
+  const title =
+    mode === 'login' ? 'Welcome Back' :
+    mode === 'signup' ? 'Create Your Account' :
+    'Reset Password'
+
+  const subtitle =
+    mode === 'login' ? 'Access your growth dashboard' :
+    mode === 'signup' ? 'Create an account to access your workspace' :
+    'We will send a secure reset link to your inbox'
+
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 rounded-full blur-3xl" style={{ background: 'rgba(0,255,136,0.06)' }} />
-        <div className="absolute bottom-20 right-20 w-96 h-96 rounded-full blur-3xl" style={{ background: 'rgba(0,200,100,0.04)' }} />
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-12 text-white">
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 rounded-full blur-3xl"
+          style={{ background: 'rgba(0,255,136,0.05)' }}
+        />
+        <div
+          className="absolute bottom-0 right-0 h-96 w-96 rounded-full blur-3xl"
+          style={{ background: 'rgba(139,92,246,0.05)' }}
+        />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
+      <motion.main
+        initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 w-full max-w-md"
+        transition={{ duration: 0.45 }}
+        className="relative z-10 mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-md flex-col justify-center"
       >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <a href="/" className="inline-flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
+        <div className="mb-7 text-center">
+          <a
+            href="/"
+            className="mx-auto mb-4 inline-flex items-center gap-2 transition-opacity hover:opacity-80"
+            aria-label="Back to ProfitPlus home"
+          >
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #00ff88, #00cc6a)', boxShadow: '0 0 20px rgba(0,255,136,0.4)' }}
+              className="flex h-11 w-11 items-center justify-center rounded-xl"
+              style={{
+                background: 'linear-gradient(135deg, #00ff88, #00cc6a)',
+                boxShadow: '0 0 24px rgba(0,255,136,0.28)',
+              }}
             >
-              <TrendingUp className="w-5 h-5 text-white" />
+              <TrendingUp className="h-5 w-5 text-slate-950" />
             </div>
-            <span className="font-bold text-white text-xl">
+            <span className="text-xl font-bold">
               Profit<span style={{ color: '#00ff88' }}>Plus</span>
             </span>
           </a>
-          <a href="/" className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-300 text-xs mb-4 transition-colors">
-            ← Back to Home
+
+          <a
+            href="/"
+            className="mx-auto inline-flex items-center gap-1.5 text-xs text-gray-500 transition-colors hover:text-gray-300"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to Home
           </a>
-          <h1 className="text-2xl font-bold text-white mb-2">
-            {mode === 'login' ? 'Welcome Back' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
-          </h1>
-          <p className="text-gray-400 text-sm">
-            {mode === 'login' ? 'Sign in to your client dashboard'
-              : mode === 'signup' ? 'Join ProfitPlus — takes 30 seconds'
-              : 'We\'ll send you a reset link'}
-          </p>
+
+          <div className="mt-5">
+            <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+            <p className="mt-2 text-sm leading-6 text-gray-400">{subtitle}</p>
+          </div>
         </div>
 
-        <div className="p-8 bg-slate-900 border border-white/5 rounded-2xl">
-          {/* Reset sent */}
+        <section className="rounded-3xl border border-white/10 bg-slate-900/90 p-6 shadow-2xl shadow-black/20 sm:p-8">
           {resetSent ? (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center text-center gap-4 py-4"
+              className="flex flex-col items-center py-6 text-center"
             >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: 'rgba(0,255,136,0.1)', border: '1px solid rgba(0,255,136,0.3)' }}>
-                <CheckCircle className="w-8 h-8" style={{ color: '#00ff88' }} />
+              <div
+                className="mb-5 flex h-16 w-16 items-center justify-center rounded-full"
+                style={{
+                  background: 'rgba(0,255,136,0.1)',
+                  border: '1px solid rgba(0,255,136,0.28)',
+                }}
+              >
+                <CheckCircle className="h-8 w-8" style={{ color: '#00ff88' }} />
               </div>
-              <h3 className="text-white font-bold text-lg">Check Your Email!</h3>
-              <p className="text-gray-400 text-sm max-w-xs">
-                We sent a reset link to <span style={{ color: '#00ff88' }}>{email}</span>. Check your inbox!
+
+              <h2 className="text-xl font-bold">Check your email</h2>
+              <p className="mt-2 max-w-xs text-sm leading-6 text-gray-400">
+                We sent a password reset link to{' '}
+                <span style={{ color: '#00ff88' }}>{email.trim()}</span>.
               </p>
+
               <button
+                type="button"
                 onClick={() => switchMode('login')}
-                className="mt-2 text-sm font-medium transition-colors"
+                className="mt-6 text-sm font-semibold transition-opacity hover:opacity-80"
                 style={{ color: '#00ff88' }}
               >
-                ← Back to Sign In
+                Back to Sign In
               </button>
             </motion.div>
           ) : (
             <form
-              onSubmit={mode === 'login' ? handleLogin : mode === 'signup' ? handleSignup : handleForgotPassword}
+              onSubmit={
+                mode === 'login'
+                  ? handleLogin
+                  : mode === 'signup'
+                    ? handleSignup
+                    : handleForgotPassword
+              }
               className="space-y-4"
             >
-              {/* Error */}
               {error && (
                 <motion.div
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-start gap-2.5 p-4 bg-red-500/10 border border-red-500/20 rounded-xl"
+                  role="alert"
+                  className="flex items-start gap-2.5 rounded-xl border border-red-500/20 bg-red-500/10 p-4"
                 >
-                  <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-red-400 text-sm">{error}</p>
+                  <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-400" />
+                  <p className="text-sm leading-5 text-red-300">{error}</p>
                 </motion.div>
               )}
 
-              {/* Signup fields */}
               {mode === 'signup' && (
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1.5">Full Name *</label>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1.5 block text-xs font-medium text-gray-400">
+                      Full Name *
+                    </span>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                       <input
                         type="text"
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="John Smith"
-                        className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none text-sm transition-colors"
-                        style={{ borderColor: 'rgba(255,255,255,0.1)' }}
-                        onFocus={e => e.target.style.borderColor = '#00ff88'}
-                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                        placeholder="Your name"
+                        autoComplete="name"
+                        className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-emerald-400"
                       />
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1.5">Company</label>
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1.5 block text-xs font-medium text-gray-400">
+                      Company
+                    </span>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                       <input
                         type="text"
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
-                        placeholder="Acme Inc."
-                        className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none text-sm transition-colors"
-                        style={{ borderColor: 'rgba(255,255,255,0.1)' }}
-                        onFocus={e => e.target.style.borderColor = '#00ff88'}
-                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                        placeholder="Company name"
+                        autoComplete="organization"
+                        className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-emerald-400"
                       />
                     </div>
-                  </div>
+                  </label>
                 </div>
               )}
 
-              {/* Email */}
-              <div>
-                <label className="block text-gray-400 text-xs mb-1.5">Email Address *</label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-gray-400">
+                  Email Address *
+                </span>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="w-full pl-10 pr-4 py-3 bg-white/5 border rounded-xl text-white placeholder-gray-500 focus:outline-none text-sm transition-colors"
-                    style={{ borderColor: 'rgba(255,255,255,0.1)' }}
-                    onFocus={e => e.target.style.borderColor = '#00ff88'}
-                    onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    autoComplete="email"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-emerald-400"
                   />
                 </div>
-              </div>
+              </label>
 
-              {/* Password */}
               {mode !== 'forgot' && (
-                <div>
-                  <label className="block text-gray-400 text-xs mb-1.5">Password *</label>
+                <label className="block">
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-400">Password *</span>
+                    {mode === 'login' && (
+                      <button
+                        type="button"
+                        onClick={() => switchMode('forgot')}
+                        className="text-xs font-medium transition-opacity hover:opacity-80"
+                        style={{ color: '#00ff88' }}
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
+
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-12 py-3 bg-white/5 border rounded-xl text-white placeholder-gray-500 focus:outline-none text-sm transition-colors"
-                      style={{ borderColor: 'rgba(255,255,255,0.1)' }}
-                      onFocus={e => e.target.style.borderColor = '#00ff88'}
-                      onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                      className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-12 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-emerald-400"
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                      onClick={() => setShowPassword((value) => !value)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-gray-300"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </button>
                   </div>
-                  {mode === 'login' && (
-                    <div className="text-right mt-1.5">
-                      <button
-                        type="button"
-                        onClick={() => switchMode('forgot')}
-                        className="text-xs transition-colors hover:opacity-80"
-                        style={{ color: '#00ff88' }}
-                      >
-                        Forgot password?
-                      </button>
-                    </div>
-                  )}
-                </div>
+                </label>
               )}
 
-              {/* Confirm password */}
               {mode === 'signup' && (
-                <div>
-                  <label className="block text-gray-400 text-xs mb-1.5">Confirm Password *</label>
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-medium text-gray-400">
+                    Confirm Password *
+                  </span>
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-4 py-3 bg-white/5 border rounded-xl text-white placeholder-gray-500 focus:outline-none text-sm transition-colors"
-                      style={{ borderColor: confirmPassword && confirmPassword !== password ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)' }}
-                      onFocus={e => e.target.style.borderColor = '#00ff88'}
-                      onBlur={e => e.target.style.borderColor = confirmPassword && confirmPassword !== password ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)'}
+                      autoComplete="new-password"
+                      className="w-full rounded-xl border bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-emerald-400"
+                      style={{
+                        borderColor:
+                          confirmPassword && confirmPassword !== password
+                            ? 'rgba(239,68,68,0.55)'
+                            : 'rgba(255,255,255,0.1)',
+                      }}
                     />
                   </div>
                   {confirmPassword && confirmPassword !== password && (
-                    <p className="text-red-400 text-xs mt-1">Passwords don't match</p>
+                    <p className="mt-1.5 text-xs text-red-400">Passwords do not match.</p>
                   )}
-                </div>
+                </label>
               )}
 
-              {/* Submit */}
               <button
                 type="submit"
-                disabled={loading || (mode === 'signup' && !!confirmPassword && confirmPassword !== password)}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 font-bold rounded-xl transition-all mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  loading ||
+                  (mode === 'signup' &&
+                    !!confirmPassword &&
+                    confirmPassword !== password)
+                }
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50"
                 style={{
                   background: 'linear-gradient(135deg, #00ff88, #00cc6a)',
                   color: '#020617',
-                  boxShadow: loading ? 'none' : '0 0 20px rgba(0,255,136,0.3)',
+                  boxShadow: loading ? 'none' : '0 0 22px rgba(0,255,136,0.22)',
                 }}
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
-                    {mode === 'login' ? 'Signing in...' : mode === 'signup' ? 'Creating account...' : 'Sending...'}
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {mode === 'login'
+                      ? 'Signing in...'
+                      : mode === 'signup'
+                        ? 'Creating account...'
+                        : 'Sending link...'}
                   </>
+                ) : mode === 'login' ? (
+                  'Sign In to Dashboard'
+                ) : mode === 'signup' ? (
+                  'Create Account'
                 ) : (
-                  mode === 'login' ? 'Sign In to Dashboard'
-                    : mode === 'signup' ? 'Create Account & Sign In'
-                    : 'Send Reset Link'
+                  'Send Reset Link'
                 )}
               </button>
 
@@ -350,51 +499,61 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => switchMode('login')}
-                  className="w-full text-center text-gray-400 hover:text-white text-sm transition-colors"
+                  className="flex w-full items-center justify-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
                 >
-                  ← Back to Sign In
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Back to Sign In
                 </button>
               )}
             </form>
           )}
-        </div>
+        </section>
 
-        {/* Toggle */}
-        {mode !== 'forgot' && !resetSent && (
-          <p className="text-center text-gray-500 text-sm mt-6">
-            {mode === 'login' ? (
-              <>
-                Don't have an account?{' '}
-                <button
-                  onClick={() => switchMode('signup')}
-                  className="font-medium transition-colors hover:opacity-80"
-                  style={{ color: '#00ff88' }}
-                >
-                  Create one free
-                </button>
-              </>
-            ) : (
-              <>
-                Already have an account?{' '}
-                <button
-                  onClick={() => switchMode('login')}
-                  className="font-medium transition-colors hover:opacity-80"
-                  style={{ color: '#00ff88' }}
-                >
-                  Sign in
-                </button>
-              </>
+        {!resetSent && (
+          <div className="mt-6 text-center">
+            {mode !== 'forgot' && (
+              <p className="text-sm text-gray-500">
+                {mode === 'login' ? (
+                  <>
+                    Need an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => switchMode('signup')}
+                      className="font-semibold transition-opacity hover:opacity-80"
+                      style={{ color: '#00ff88' }}
+                    >
+                      Create one
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Already have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => switchMode('login')}
+                      className="font-semibold transition-opacity hover:opacity-80"
+                      style={{ color: '#00ff88' }}
+                    >
+                      Sign in
+                    </button>
+                  </>
+                )}
+              </p>
             )}
-          </p>
-        )}
 
-        <p className="text-center text-gray-600 text-xs mt-3">
-          Need access?{' '}
-          <a href="/contact" style={{ color: '#00ff88' }} className="hover:opacity-80 transition-opacity">
-            Contact us
-          </a>
-        </p>
-      </motion.div>
+            <p className="mt-2 text-xs text-gray-600">
+              Need client access?{' '}
+              <a
+                href="/contact"
+                className="transition-opacity hover:opacity-80"
+                style={{ color: '#00ff88' }}
+              >
+                Contact us
+              </a>
+            </p>
+          </div>
+        )}
+      </motion.main>
     </div>
   )
 }
