@@ -465,7 +465,7 @@ export default function DashboardOverview() {
                     stroke="#6b7280"
                     tick={{ fill: '#6b7280', fontSize: 11 }}
                     tickFormatter={(value) => `$${(toNumber(value) / 1000).toFixed(0)}k`}
-                  />
+                  />c:\Users\vedan\Downloads\CampaignsPage_supabase_crud.tsx
                   <Tooltip
                     contentStyle={chartTooltipStyle}
                     formatter={(value) => formatCurrency(toNumber(value))}
