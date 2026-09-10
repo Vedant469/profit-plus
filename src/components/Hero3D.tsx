@@ -24,12 +24,34 @@ function ProfitLine() {
   })
 
   return (
-    <group ref={ref} position={[0, -0.2, -1]}>
-      <primitive object={new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: '#00ff88', linewidth: 2 }))} />
+    <group
+      ref={ref}
+      position={[0, -1.25, -1]}
+      scale={0.9}
+    >
+      <primitive
+        object={
+          new THREE.Line(
+            geometry,
+            new THREE.LineBasicMaterial({
+              color: '#00ff88',
+              linewidth: 2,
+              transparent: true,
+              opacity: 0.7,
+            })
+          )
+        }
+      />
       {points.map((p, i) => (
         <mesh key={i} position={p}>
           <sphereGeometry args={[0.04, 16, 16]} />
-          <meshStandardMaterial color="#00ff88" emissive="#00ff88" emissiveIntensity={1} />
+          <meshStandardMaterial
+            color="#00ff88"
+            emissive="#00ff88"
+            emissiveIntensity={0.7}
+            transparent
+            opacity={0.8}
+          />
         </mesh>
       ))}
     </group>
