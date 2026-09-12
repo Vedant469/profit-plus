@@ -32,6 +32,7 @@ body {
   overflow-x: hidden;
 }
 
+
 /* =========================================================
    GLOBAL BOX SIZING
    ========================================================= */
@@ -318,7 +319,22 @@ select {
   background-size: 200% auto;
   animation: shimmer 3s linear infinite;
 }
-
+.animated-gradient-text {
+  background: linear-gradient(
+    270deg,
+    #34d399,
+    #00ff88,
+    #00cc6a,
+    #00ff88,
+    #34d399
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.4));
+}
 /* =========================================================
    GRID / BACKGROUND EFFECTS
    ========================================================= */
@@ -430,5 +446,55 @@ textarea::placeholder {
     bottom: 80px !important;
     right: 8px !important;
     left: auto !important;
+  }
+}
+/* ── Typewriter cursor ─────────────────────────────────────── */
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.typewriter-cursor {
+  display: inline;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: #00ff88 !important;
+  color: #00ff88 !important;
+  animation: blink 1s step-end infinite;
+  margin-left: 4px;
+  font-weight: 300;
+  text-shadow:
+    0 0 6px rgba(0, 255, 136, 0.8),
+    0 0 12px rgba(0, 255, 136, 0.5),
+    0 0 20px rgba(0, 255, 136, 0.25);
+}
+/* =========================================================
+   CUSTOM CURSOR - DESKTOP
+   ========================================================= */
+
+@media (pointer: fine) and (min-width: 769px) {
+  html,
+  body,
+  html *,
+  html *::before,
+  html *::after {
+    cursor: none !important;
+  }
+
+  input,
+  textarea,
+  select,
+  [contenteditable='true'] {
+    cursor: none !important;
   }
 }
