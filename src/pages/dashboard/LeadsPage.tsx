@@ -56,37 +56,44 @@ const statusConfig: Record<
   {
     label: string
     className: string
+    dotClass: string
   }
 > = {
   new: {
     label: 'New',
     className:
       'text-blue-300 bg-blue-500/10 border-blue-500/20',
+    dotClass: 'bg-blue-400',
   },
   contacted: {
     label: 'Contacted',
     className:
       'text-violet-300 bg-violet-500/10 border-violet-500/20',
+    dotClass: 'bg-violet-400',
   },
   qualified: {
     label: 'Qualified',
     className:
       'text-cyan-300 bg-cyan-500/10 border-cyan-500/20',
+    dotClass: 'bg-cyan-400',
   },
   proposal: {
     label: 'Proposal',
     className:
       'text-amber-300 bg-amber-500/10 border-amber-500/20',
+    dotClass: 'bg-amber-400',
   },
   won: {
     label: 'Won',
     className:
       'text-emerald-300 bg-emerald-500/10 border-emerald-500/20',
+    dotClass: 'bg-emerald-400',
   },
   lost: {
     label: 'Lost',
     className:
       'text-red-300 bg-red-500/10 border-red-500/20',
+    dotClass: 'bg-red-400',
   },
 }
 
@@ -101,23 +108,66 @@ const budgetColors: Record<string, string> = {
     'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
 }
 
-function isFollowUpOverdue(lead: Lead) {
-  if (!lead.next_follow_up_at) return false
-
-  if (lead.status === 'won' || lead.status === 'lost') {
-    return false
-  }
-
-  return new Date(lead.next_follow_up_at).getTime() < Date.now()
-}
-
 function formatDateTime(value?: string | null) {
   if (!value) return 'Not set'
 
-  return new Date(value).toLocaleString('en-IN', {
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Invalid date'
+  }
+
+  return date.toLocaleString('en-IN', {
     dateStyle: 'medium',
     timeStyle: 'short',
   })
+}
+
+function toDateTimeLocalValue(value?: string | null) {
+  if (!value) return ''
+
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return ''
+  }
+
+  const year = date.getFullYear()
+  const month = String(
+    date.getMonth() + 1
+  ).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(
+    2,
+    '0'
+  )
+  const minutes = String(date.getMinutes()).padStart(
+    2,
+    '0'
+  )
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+function isFollowUpOverdue(lead: Lead) {
+  if (!lead.next_follow_up_at) return false
+
+  if (
+    lead.status === 'won' ||
+    lead.status === 'lost'
+  ) {
+    return false
+  }
+
+  const followUpTime = new Date(
+    lead.next_follow_up_at
+  ).getTime()
+
+  if (Number.isNaN(followUpTime)) {
+    return false
+  }
+
+  return followUpTime < Date.now()
 }
 
 export default function LeadsPage() {
@@ -129,20 +179,30 @@ export default function LeadsPage() {
   } = useLeads()
 
   const [search, setSearch] = useState('')
-  const [selected, setSelected] = useState<Lead | null>(null)
-  const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [selected, setSelected] =
+    useState<Lead | null>(null)
+
+  const [updatingId, setUpdatingId] =
+    useState<string | null>(null)
+
   const [savingFollowUp, setSavingFollowUp] =
     useState(false)
-  const [actionError, setActionError] = useState('')
 
-  const [followUpDate, setFollowUpDate] = useState('')
-  const [internalNotes, setInternalNotes] = useState('')
+  const [actionError, setActionError] =
+    useState('')
+
+  const [followUpDate, setFollowUpDate] =
+    useState('')
+
+  const [internalNotes, setInternalNotes] =
+    useState('')
 
   const normalizedLeads = useMemo<Lead[]>(
     () =>
       leads.map((lead) => ({
         ...lead,
-        status: (lead.status ?? 'new') as LeadStatus,
+        status: (lead.status ??
+          'new') as LeadStatus,
       })),
     [leads]
   )
@@ -150,16 +210,39 @@ export default function LeadsPage() {
   const filtered = useMemo(() => {
     const query = search.toLowerCase().trim()
 
-    if (!query) return normalizedLeads
+    if (!query) {
+      return normalizedLeads
+    }
 
     return normalizedLeads.filter(
       (lead) =>
-        lead.name?.toLowerCase().includes(query) ||
-        lead.email?.toLowerCase().includes(query) ||
-        lead.company?.toLowerCase().includes(query) ||
-        lead.status?.toLowerCase().includes(query)
+        lead.name
+          ?.toLowerCase()
+          .includes(query) ||
+        lead.email
+          ?.toLowerCase()
+          .includes(query) ||
+        lead.company
+          ?.toLowerCase()
+          .includes(query) ||
+        lead.status
+          ?.toLowerCase()
+          .includes(query)
     )
   }, [normalizedLeads, search])
+
+  const counts = useMemo(() => {
+    return STATUS_ORDER.reduce(
+      (acc, status) => {
+        acc[status] = filtered.filter(
+          (lead) => lead.status === status
+        ).length
+
+        return acc
+      },
+      {} as Record<LeadStatus, number>
+    )
+  }, [filtered])
 
   const updateStatus = async (
     leadId: string,
@@ -183,10 +266,11 @@ export default function LeadsPage() {
       payload.last_contacted_at = now
     }
 
-    const { error: updateError } = await supabase
-      .from('leads')
-      .update(payload)
-      .eq('id', leadId)
+    const { error: updateError } =
+      await supabase
+        .from('leads')
+        .update(payload)
+        .eq('id', leadId)
 
     if (updateError) {
       setActionError(updateError.message)
@@ -216,17 +300,27 @@ export default function LeadsPage() {
 
   const openLead = (lead: Lead) => {
     setSelected(lead)
-    setInternalNotes(lead.internal_notes ?? '')
+
+    setInternalNotes(
+      lead.internal_notes ?? ''
+    )
 
     setFollowUpDate(
-      lead.next_follow_up_at
-        ? new Date(lead.next_follow_up_at)
-            .toISOString()
-            .slice(0, 16)
-        : ''
+      toDateTimeLocalValue(
+        lead.next_follow_up_at
+      )
     )
 
     setActionError('')
+  }
+
+  const closeLead = () => {
+    if (savingFollowUp) return
+
+    setSelected(null)
+    setActionError('')
+    setFollowUpDate('')
+    setInternalNotes('')
   }
 
   const markContacted = async () => {
@@ -255,18 +349,15 @@ export default function LeadsPage() {
       const updatedLead = data as Lead
 
       setSelected(updatedLead)
+
       setInternalNotes(
         updatedLead.internal_notes ?? ''
       )
 
       setFollowUpDate(
-        updatedLead.next_follow_up_at
-          ? new Date(
-              updatedLead.next_follow_up_at
-            )
-              .toISOString()
-              .slice(0, 16)
-          : ''
+        toDateTimeLocalValue(
+          updatedLead.next_follow_up_at
+        )
       )
 
       await refetch()
@@ -306,24 +397,26 @@ export default function LeadsPage() {
       const updatedLead = data as Lead
 
       setSelected(updatedLead)
+
       setInternalNotes(
         updatedLead.internal_notes ?? ''
       )
 
       setFollowUpDate(
-        updatedLead.next_follow_up_at
-          ? new Date(
-              updatedLead.next_follow_up_at
-            )
-              .toISOString()
-              .slice(0, 16)
-          : ''
+        toDateTimeLocalValue(
+          updatedLead.next_follow_up_at
+        )
       )
 
       await refetch()
     }
 
     setSavingFollowUp(false)
+  }
+
+  const clearFollowUp = () => {
+    setFollowUpDate('')
+    setActionError('')
   }
 
   const exportCSV = () => {
@@ -347,36 +440,40 @@ export default function LeadsPage() {
         .replace(/"/g, '""')
         .replace(/\n/g, ' ')}"`
 
-    const rows = normalizedLeads.map((lead) => [
-      escapeCSV(lead.name),
-      escapeCSV(lead.email),
-      escapeCSV(lead.company),
-      escapeCSV(lead.budget),
-      escapeCSV(
-        statusConfig[lead.status ?? 'new'].label
-      ),
-      escapeCSV(
-        lead.last_contacted_at
-          ? new Date(
-              lead.last_contacted_at
-            ).toLocaleString('en-IN')
-          : ''
-      ),
-      escapeCSV(
-        lead.next_follow_up_at
-          ? new Date(
-              lead.next_follow_up_at
-            ).toLocaleString('en-IN')
-          : ''
-      ),
-      escapeCSV(lead.internal_notes),
-      escapeCSV(lead.message),
-      escapeCSV(
-        new Date(
-          lead.created_at
-        ).toLocaleDateString('en-IN')
-      ),
-    ])
+    const rows = normalizedLeads.map(
+      (lead) => [
+        escapeCSV(lead.name),
+        escapeCSV(lead.email),
+        escapeCSV(lead.company),
+        escapeCSV(lead.budget),
+        escapeCSV(
+          statusConfig[
+            lead.status ?? 'new'
+          ].label
+        ),
+        escapeCSV(
+          lead.last_contacted_at
+            ? formatDateTime(
+                lead.last_contacted_at
+              )
+            : ''
+        ),
+        escapeCSV(
+          lead.next_follow_up_at
+            ? formatDateTime(
+                lead.next_follow_up_at
+              )
+            : ''
+        ),
+        escapeCSV(lead.internal_notes),
+        escapeCSV(lead.message),
+        escapeCSV(
+          new Date(
+            lead.created_at
+          ).toLocaleDateString('en-IN')
+        ),
+      ]
+    )
 
     const csv = [headers, ...rows]
       .map((row) => row.join(','))
@@ -391,25 +488,13 @@ export default function LeadsPage() {
 
     anchor.href = url
     anchor.download = 'profitplus-leads.csv'
+
     document.body.appendChild(anchor)
     anchor.click()
     anchor.remove()
 
     URL.revokeObjectURL(url)
   }
-
-  const counts = useMemo(() => {
-    return STATUS_ORDER.reduce(
-      (acc, status) => {
-        acc[status] = filtered.filter(
-          (lead) => lead.status === status
-        ).length
-
-        return acc
-      },
-      {} as Record<LeadStatus, number>
-    )
-  }, [filtered])
 
   if (loading) {
     return (
@@ -466,7 +551,7 @@ export default function LeadsPage() {
       )}
 
       {/* Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {STATUS_ORDER.map((status) => (
           <div
             key={status}
@@ -511,9 +596,11 @@ export default function LeadsPage() {
       <div className="overflow-x-auto pb-4">
         <div className="grid grid-cols-6 gap-4 min-w-[1320px]">
           {STATUS_ORDER.map((status) => {
-            const statusLeads = filtered.filter(
-              (lead) => lead.status === status
-            )
+            const statusLeads =
+              filtered.filter(
+                (lead) =>
+                  lead.status === status
+              )
 
             return (
               <div
@@ -524,27 +611,14 @@ export default function LeadsPage() {
                 <div className="flex items-center justify-between px-1">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`w-2 h-2 rounded-full ${
-                        status === 'new'
-                          ? 'bg-blue-400'
-                          : status ===
-                              'contacted'
-                            ? 'bg-violet-400'
-                            : status ===
-                                'qualified'
-                              ? 'bg-cyan-400'
-                              : status ===
-                                  'proposal'
-                                ? 'bg-amber-400'
-                                : status ===
-                                    'won'
-                                  ? 'bg-emerald-400'
-                                  : 'bg-red-400'
-                      }`}
+                      className={`w-2 h-2 rounded-full ${statusConfig[status].dotClass}`}
                     />
 
                     <h2 className="text-sm font-semibold text-white">
-                      {statusConfig[status].label}
+                      {
+                        statusConfig[status]
+                          .label
+                      }
                     </h2>
                   </div>
 
@@ -563,7 +637,9 @@ export default function LeadsPage() {
                     statusLeads.map(
                       (lead, index) => {
                         const overdue =
-                          isFollowUpOverdue(lead)
+                          isFollowUpOverdue(
+                            lead
+                          )
 
                         return (
                           <motion.div
@@ -578,18 +654,23 @@ export default function LeadsPage() {
                             }}
                             transition={{
                               delay:
-                                index * 0.03,
+                                index *
+                                0.03,
                             }}
                             className="p-4 bg-slate-900 border border-white/5 rounded-xl hover:border-emerald-500/20 transition-all"
                           >
                             <div className="flex items-start justify-between gap-2">
                               <div className="min-w-0">
                                 <p className="text-white font-semibold text-sm truncate">
-                                  {lead.name}
+                                  {
+                                    lead.name
+                                  }
                                 </p>
 
                                 <p className="text-gray-500 text-xs mt-1 truncate">
-                                  {lead.email}
+                                  {
+                                    lead.email
+                                  }
                                 </p>
                               </div>
 
@@ -597,12 +678,15 @@ export default function LeadsPage() {
                                 <span
                                   className={`px-2 py-0.5 rounded-full text-[10px] font-medium border whitespace-nowrap ${
                                     budgetColors[
-                                      lead.budget
+                                      lead
+                                        .budget
                                     ] ??
                                     'text-gray-400 bg-gray-500/10 border-gray-500/20'
                                   }`}
                                 >
-                                  {lead.budget}
+                                  {
+                                    lead.budget
+                                  }
                                 </span>
                               )}
                             </div>
@@ -619,7 +703,7 @@ export default function LeadsPage() {
                               </div>
                             )}
 
-                            {/* Follow-up status */}
+                            {/* Follow-up indicator */}
                             {lead.next_follow_up_at && (
                               <div
                                 className={`flex items-center gap-1.5 mt-3 text-[10px] ${
@@ -630,7 +714,7 @@ export default function LeadsPage() {
                               >
                                 <Clock3 className="w-3 h-3 flex-shrink-0" />
 
-                                <span>
+                                <span className="truncate">
                                   {overdue
                                     ? `Overdue · ${formatDateTime(
                                         lead.next_follow_up_at
@@ -642,6 +726,7 @@ export default function LeadsPage() {
                               </div>
                             )}
 
+                            {/* Actions */}
                             <div className="flex items-center gap-2 mt-4">
                               <button
                                 onClick={() =>
@@ -733,34 +818,58 @@ export default function LeadsPage() {
 
       {/* Lead detail modal */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onMouseDown={(event) => {
+            if (
+              event.target ===
+              event.currentTarget
+            ) {
+              closeLead()
+            }
+          }}
+        >
           <motion.div
             initial={{
               opacity: 0,
-              scale: 0.95,
+              scale: 0.97,
+              y: 8,
             }}
             animate={{
               opacity: 1,
               scale: 1,
+              y: 0,
             }}
-            className="bg-slate-900 border border-white/10 rounded-2xl p-6 max-w-2xl w-full shadow-2xl my-8"
+            transition={{
+              duration: 0.18,
+            }}
+            className="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-2xl max-h-[calc(100vh-2rem)] overflow-y-auto shadow-2xl my-4"
           >
             {/* Modal header */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 px-6 py-5 bg-slate-900/95 backdrop-blur-md border-b border-white/5">
+              <div className="min-w-0">
                 <h3 className="text-white font-bold text-lg">
                   Lead Details
                 </h3>
 
-                <div className="flex items-center gap-2 mt-2">
+                <div className="flex flex-wrap items-center gap-2 mt-2">
                   <span
-                    className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium border ${
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
                       statusConfig[
                         selected.status ??
                           'new'
                       ].className
                     }`}
                   >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        statusConfig[
+                          selected.status ??
+                            'new'
+                        ].dotClass
+                      }`}
+                    />
+
                     {
                       statusConfig[
                         selected.status ??
@@ -781,240 +890,277 @@ export default function LeadsPage() {
               </div>
 
               <button
-                onClick={() =>
-                  setSelected(null)
-                }
-                className="text-gray-400 hover:text-white transition-colors"
+                onClick={closeLead}
+                disabled={savingFollowUp}
+                aria-label="Close lead details"
+                className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/5 disabled:opacity-50 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Lead information */}
-            <div className="space-y-4">
-              {[
-                {
-                  icon: Mail,
-                  label: 'Name',
-                  value: selected.name,
-                },
-                {
-                  icon: Mail,
-                  label: 'Email',
-                  value: selected.email,
-                },
-                {
-                  icon: Building2,
-                  label: 'Company',
-                  value:
-                    selected.company ||
-                    'Not provided',
-                },
-                {
-                  icon: DollarSign,
-                  label: 'Budget',
-                  value:
-                    selected.budget ||
-                    'Not specified',
-                },
-                {
-                  icon: Calendar,
-                  label: 'Submitted',
-                  value: formatDateTime(
-                    selected.created_at
-                  ),
-                },
-                {
-                  icon: Calendar,
-                  label: 'Updated',
-                  value: selected.updated_at
-                    ? formatDateTime(
-                        selected.updated_at
-                      )
-                    : 'Not updated',
-                },
-              ].map(
-                ({
-                  icon: Icon,
-                  label,
-                  value,
-                }) => (
-                  <div
-                    key={label}
-                    className="flex items-start gap-3 p-3 bg-white/5 rounded-xl"
+            {/* Modal body */}
+            <div className="px-6 py-5">
+              {/* Lead information */}
+              <div className="space-y-3">
+                {[
+                  {
+                    icon: Mail,
+                    label: 'Name',
+                    value: selected.name,
+                  },
+                  {
+                    icon: Mail,
+                    label: 'Email',
+                    value: selected.email,
+                  },
+                  {
+                    icon: Building2,
+                    label: 'Company',
+                    value:
+                      selected.company ||
+                      'Not provided',
+                  },
+                  {
+                    icon: DollarSign,
+                    label: 'Budget',
+                    value:
+                      selected.budget ||
+                      'Not specified',
+                  },
+                  {
+                    icon: Calendar,
+                    label: 'Submitted',
+                    value:
+                      formatDateTime(
+                        selected.created_at
+                      ),
+                  },
+                  {
+                    icon: Calendar,
+                    label: 'Updated',
+                    value:
+                      selected.updated_at
+                        ? formatDateTime(
+                            selected.updated_at
+                          )
+                        : 'Not updated',
+                  },
+                ].map(
+                  ({
+                    icon: Icon,
+                    label,
+                    value,
+                  }) => (
+                    <div
+                      key={label}
+                      className="flex items-start gap-3 p-3.5 bg-white/5 rounded-xl"
+                    >
+                      <Icon className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+
+                      <div className="min-w-0">
+                        <p className="text-gray-400 text-xs">
+                          {label}
+                        </p>
+
+                        <p className="text-white text-sm font-medium break-words mt-0.5">
+                          {value}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                )}
+
+                {/* Message */}
+                <div className="p-3.5 bg-white/5 rounded-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageSquare className="w-4 h-4 text-emerald-400" />
+
+                    <p className="text-gray-400 text-xs">
+                      Message
+                    </p>
+                  </div>
+
+                  <p className="text-white text-sm leading-relaxed whitespace-pre-wrap break-words">
+                    {selected.message ||
+                      'No message provided.'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Follow-up Management */}
+              <div className="mt-5 p-4 rounded-2xl bg-white/[0.03] border border-white/10">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div>
+                    <h4 className="text-white text-sm font-semibold">
+                      Follow-up Management
+                    </h4>
+
+                    <p className="text-gray-500 text-xs mt-1">
+                      Track outreach and upcoming
+                      follow-ups for this lead.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={markContacted}
+                    disabled={savingFollowUp}
+                    className="inline-flex items-center justify-center px-3.5 py-2 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium hover:bg-violet-500/20 disabled:opacity-50 transition-all"
                   >
-                    <Icon className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                    {savingFollowUp
+                      ? 'Saving...'
+                      : 'Mark Contacted'}
+                  </button>
+                </div>
 
-                    <div>
-                      <p className="text-gray-400 text-xs">
-                        {label}
-                      </p>
+                {/* Follow-up fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+                  <div>
+                    <label
+                      htmlFor="next-follow-up"
+                      className="block text-xs text-gray-400 mb-2"
+                    >
+                      Next Follow-up
+                    </label>
 
-                      <p className="text-white text-sm font-medium break-words">
-                        {value}
+                    <input
+                      id="next-follow-up"
+                      type="datetime-local"
+                      value={
+                        followUpDate
+                      }
+                      onChange={(
+                        event
+                      ) =>
+                        setFollowUpDate(
+                          event.target
+                            .value
+                        )
+                      }
+                      className="w-full min-w-0 px-3 py-2.5 bg-slate-950 border border-white/10 rounded-lg text-sm text-white outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 transition-all"
+                    />
+
+                    {followUpDate && (
+                      <p className="text-[11px] text-gray-500 mt-2">
+                        {new Date(
+                          followUpDate
+                        ).toLocaleString(
+                          'en-IN',
+                          {
+                            dateStyle:
+                              'medium',
+                            timeStyle:
+                              'short',
+                          }
+                        )}
                       </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-2">
+                      Last Contacted
+                    </label>
+
+                    <div className="w-full min-h-[42px] px-3 py-2.5 flex items-center bg-slate-950 border border-white/10 rounded-lg text-sm text-gray-300">
+                      {selected.last_contacted_at
+                        ? formatDateTime(
+                            selected.last_contacted_at
+                          )
+                        : 'Not contacted yet'}
                     </div>
                   </div>
-                )
-              )}
-
-              <div className="p-3 bg-white/5 rounded-xl">
-                <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare className="w-4 h-4 text-emerald-400" />
-
-                  <p className="text-gray-400 text-xs">
-                    Message
-                  </p>
                 </div>
 
-                <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">
-                  {selected.message ||
-                    'No message provided.'}
-                </p>
-              </div>
-            </div>
-
-            {/* Follow-up management */}
-            <div className="mt-6 p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <h4 className="text-white text-sm font-semibold">
-                    Follow-up Management
-                  </h4>
-
-                  <p className="text-gray-500 text-xs mt-1">
-                    Track outreach and upcoming
-                    follow-ups for this lead.
-                  </p>
-                </div>
-
-                <button
-                  onClick={markContacted}
-                  disabled={savingFollowUp}
-                  className="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium hover:bg-violet-500/20 disabled:opacity-50 transition-all"
-                >
-                  {savingFollowUp
-                    ? 'Saving...'
-                    : 'Mark Contacted'}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs text-gray-400 mb-2">
-                    Next Follow-up
+                {/* Internal notes */}
+                <div className="mt-4">
+                  <label
+                    htmlFor="internal-notes"
+                    className="block text-xs text-gray-400 mb-2"
+                  >
+                    Internal Notes
                   </label>
 
-                  <input
-                    type="datetime-local"
-                    value={followUpDate}
-                    onChange={(event) =>
-                      setFollowUpDate(
-                        event.target.value
+                  <textarea
+                    id="internal-notes"
+                    rows={4}
+                    value={
+                      internalNotes
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setInternalNotes(
+                        event.target
+                          .value
                       )
                     }
-                    className="w-full px-3 py-2.5 bg-slate-950 border border-white/10 rounded-lg text-sm text-white outline-none focus:border-emerald-500/40"
+                    placeholder="Add private sales notes..."
+                    className="w-full px-3 py-3 bg-slate-950 border border-white/10 rounded-lg text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 resize-none transition-all"
                   />
 
-                  {followUpDate && (
-                    <p className="text-[11px] text-gray-500 mt-2">
-                      {new Date(
-                        followUpDate
-                      ).toLocaleString(
-                        'en-IN',
-                        {
-                          dateStyle: 'medium',
-                          timeStyle: 'short',
-                        }
-                      )}
-                    </p>
-                  )}
+                  <p className="text-[11px] text-gray-600 mt-2">
+                    These notes are for your internal
+                    sales workflow.
+                  </p>
                 </div>
 
-                <div>
-                  <label className="block text-xs text-gray-400 mb-2">
-                    Last Contacted
-                  </label>
+                {/* Follow-up actions */}
+                <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-5 pt-4 border-t border-white/5">
+                  <button
+                    onClick={clearFollowUp}
+                    disabled={
+                      savingFollowUp ||
+                      !followUpDate
+                    }
+                    className="px-4 py-2.5 bg-white/5 border border-white/10 text-gray-400 text-sm font-medium rounded-lg hover:bg-white/10 disabled:opacity-40 transition-all"
+                  >
+                    Clear Follow-up
+                  </button>
 
-                  <div className="px-3 py-2.5 min-h-[42px] flex items-center bg-slate-950 border border-white/10 rounded-lg text-sm text-gray-300">
-                    {selected.last_contacted_at
-                      ? formatDateTime(
-                          selected.last_contacted_at
-                        )
-                      : 'Not contacted yet'}
-                  </div>
+                  <button
+                    onClick={saveFollowUp}
+                    disabled={
+                      savingFollowUp
+                    }
+                    className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-lg disabled:opacity-50 transition-all"
+                  >
+                    {savingFollowUp
+                      ? 'Saving...'
+                      : 'Save Follow-up'}
+                  </button>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs text-gray-400 mb-2">
-                  Internal Notes
-                </label>
+              {/* Error inside modal */}
+              {actionError && (
+                <div className="flex items-start gap-2.5 mt-4 p-3 rounded-xl bg-red-500/5 border border-red-500/10">
+                  <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
 
-                <textarea
-                  rows={4}
-                  value={internalNotes}
-                  onChange={(event) =>
-                    setInternalNotes(
-                      event.target.value
-                    )
-                  }
-                  placeholder="Add private sales notes..."
-                  className="w-full px-3 py-3 bg-slate-950 border border-white/10 rounded-lg text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-emerald-500/40 resize-none"
-                />
+                  <p className="text-xs text-red-300">
+                    {actionError}
+                  </p>
+                </div>
+              )}
 
-                <p className="text-[11px] text-gray-600 mt-2">
-                  These notes are intended for your
-                  internal sales workflow.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              {/* Modal footer */}
+              <div className="flex flex-col sm:flex-row gap-3 mt-5">
                 <button
-                  onClick={() => {
-                    setFollowUpDate('')
-
-                    setActionError('')
-                  }}
-                  disabled={
-                    savingFollowUp ||
-                    !followUpDate
-                  }
-                  className="px-4 py-2.5 bg-white/5 border border-white/10 text-gray-400 text-sm font-medium rounded-lg hover:bg-white/10 disabled:opacity-40 transition-all"
-                >
-                  Clear Follow-up
-                </button>
-
-                <button
-                  onClick={saveFollowUp}
+                  onClick={closeLead}
                   disabled={savingFollowUp}
-                  className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-lg disabled:opacity-50 transition-all"
+                  className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 text-gray-400 text-sm font-medium rounded-xl hover:bg-white/10 disabled:opacity-50 transition-all"
                 >
-                  {savingFollowUp
-                    ? 'Saving...'
-                    : 'Save Follow-up'}
+                  Close
                 </button>
+
+                <a
+                  href={`mailto:${selected.email}`}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
+                >
+                  <Mail className="w-4 h-4" />
+                  Reply Now
+                </a>
               </div>
-            </div>
-
-            {/* Modal footer */}
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
-              <button
-                onClick={() =>
-                  setSelected(null)
-                }
-                className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 text-gray-400 text-sm font-medium rounded-xl hover:bg-white/10 transition-all"
-              >
-                Close
-              </button>
-
-              <a
-                href={`mailto:${selected.email}`}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
-              >
-                <Mail className="w-4 h-4" />
-                Reply Now
-              </a>
             </div>
           </motion.div>
         </div>
