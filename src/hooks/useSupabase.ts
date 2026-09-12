@@ -1,59 +1,84 @@
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 export function useCampaigns() {
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetch() {
-      const { data: campaigns } = await supabase
-        .from('campaigns')
-        .select('*')
-        .order('created_at', { ascending: false })
-      setData(campaigns ?? [])
-      setLoading(false)
-    }
-    fetch()
+  const fetchCampaigns = useCallback(async () => {
+    setLoading(true)
+
+    const { data: campaigns } = await supabase
+      .from('campaigns')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    setData(campaigns ?? [])
+    setLoading(false)
   }, [])
 
-  return { data, loading }
+  useEffect(() => {
+    fetchCampaigns()
+  }, [fetchCampaigns])
+
+  return { data, loading, refetch: fetchCampaigns }
 }
 
 export function useReports() {
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetch() {
-      const { data: reports } = await supabase
-        .from('reports')
-        .select('*')
-        .order('date', { ascending: false })
-      setData(reports ?? [])
-      setLoading(false)
-    }
-    fetch()
+  const fetchReports = useCallback(async () => {
+    setLoading(true)
+
+    const { data: reports } = await supabase
+      .from('reports')
+      .select('*')
+      .order('date', { ascending: false })
+
+    setData(reports ?? [])
+    setLoading(false)
   }, [])
 
-  return { data, loading }
+  useEffect(() => {
+    fetchReports()
+  }, [fetchReports])
+
+  return { data, loading, refetch: fetchReports }
 }
 
 export function useLeads() {
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    async function fetch() {
-      const { data: leads } = await supabase
-        .from('leads')
-        .select('*')
-        .order('created_at', { ascending: false })
+  const fetchLeads = useCallback(async () => {
+    setLoading(true)
+    setError('')
+
+    const { data: leads, error: leadsError } = await supabase
+      .from('leads')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (leadsError) {
+      setError(leadsError.message)
+      setData([])
+    } else {
       setData(leads ?? [])
-      setLoading(false)
     }
-    fetch()
+
+    setLoading(false)
   }, [])
 
-  return { data, loading }
+  useEffect(() => {
+    fetchLeads()
+  }, [fetchLeads])
+
+  return {
+    data,
+    loading,
+    error,
+    refetch: fetchLeads,
+  }
 }
