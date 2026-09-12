@@ -6,9 +6,11 @@ export default function CustomCursor() {
   const glowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const finePointer = window.matchMedia('(pointer: fine)')
+    const mediaQuery = window.matchMedia('(pointer: fine)')
 
-    if (!finePointer.matches) return
+    if (!mediaQuery.matches) {
+      return
+    }
 
     let mouseX = window.innerWidth / 2
     let mouseY = window.innerHeight / 2
@@ -19,63 +21,109 @@ export default function CustomCursor() {
     let glowX = mouseX
     let glowY = mouseY
 
-    let isHovering = false
-    let isVisible = false
+    let visible = false
+    let hoveringInteractive = false
+    let draggingScrollbar = false
 
-    let rafId = 0
+    let animationFrame = 0
 
-    const setVisibility = (visible: boolean) => {
-      isVisible = visible
-
-      const opacity = visible ? '1' : '0'
+    const setVisibility = (value: boolean) => {
+      visible = value
 
       if (dotRef.current) {
-        dotRef.current.style.opacity = opacity
+        dotRef.current.style.opacity = value ? '1' : '0'
       }
 
       if (ringRef.current) {
-        ringRef.current.style.opacity = opacity
+        ringRef.current.style.opacity = value ? '1' : '0'
       }
 
       if (glowRef.current) {
-        glowRef.current.style.opacity = visible
-          ? isHovering
+        glowRef.current.style.opacity = value
+          ? hoveringInteractive
             ? '0.4'
             : '0.15'
           : '0'
       }
     }
 
+    const hideCustomCursor = () => {
+      if (dotRef.current) {
+        dotRef.current.style.opacity = '0'
+      }
+
+      if (ringRef.current) {
+        ringRef.current.style.opacity = '0'
+      }
+
+      if (glowRef.current) {
+        glowRef.current.style.opacity = '0'
+      }
+    }
+
+    const isOnBrowserScrollbar = (event: MouseEvent) => {
+      const documentWidth = document.documentElement.clientWidth
+      const documentHeight = document.documentElement.clientHeight
+
+      const onVerticalScrollbar = event.clientX >= documentWidth
+      const onHorizontalScrollbar = event.clientY >= documentHeight
+
+      return onVerticalScrollbar || onHorizontalScrollbar
+    }
+
     const onMouseMove = (event: MouseEvent) => {
       mouseX = event.clientX
       mouseY = event.clientY
 
-      if (!isVisible) {
+      if (!draggingScrollbar && !visible) {
         setVisibility(true)
       }
     }
 
     const onPointerOver = (event: PointerEvent) => {
+      if (draggingScrollbar) {
+        return
+      }
+
       const target = event.target
 
-      if (!(target instanceof Element)) return
+      if (!(target instanceof Element)) {
+        return
+      }
 
-      isHovering = Boolean(
+      hoveringInteractive = Boolean(
         target.closest(
-          'a, button, input, textarea, select, [role="button"], [data-cursor-hover]'
+          [
+            'a',
+            'button',
+            'input',
+            'textarea',
+            'select',
+            '[role="button"]',
+            '[data-cursor-hover]',
+          ].join(',')
         )
       )
+
+      if (visible) {
+        setVisibility(true)
+      }
     }
 
-    const onMouseLeave = () => {
-      setVisibility(false)
-    }
+    const onMouseDown = (event: MouseEvent) => {
+      /*
+       * Browser scrollbar interaction:
+       * hide our fake cursor completely.
+       * The native browser cursor remains untouched.
+       */
+      if (isOnBrowserScrollbar(event)) {
+        draggingScrollbar = true
+        hideCustomCursor()
+        return
+      }
 
-    const onMouseEnter = () => {
-      setVisibility(true)
-    }
+      draggingScrollbar = false
 
-    const onMouseDown = () => {
       if (dotRef.current) {
         dotRef.current.style.transform = `
           translate(${mouseX - 4}px, ${mouseY - 4}px)
@@ -86,17 +134,37 @@ export default function CustomCursor() {
       if (ringRef.current) {
         ringRef.current.style.transform = `
           translate(${ringX - 20}px, ${ringY - 20}px)
-          scale(0.82)
+          scale(0.8)
         `
       }
     }
 
     const onMouseUp = () => {
+      draggingScrollbar = false
+
       if (dotRef.current) {
         dotRef.current.style.transform = `
           translate(${mouseX - 4}px, ${mouseY - 4}px)
           scale(1)
         `
+      }
+
+      if (visible) {
+        setVisibility(true)
+      }
+    }
+
+    const onMouseLeave = () => {
+      visible = false
+
+      if (!draggingScrollbar) {
+        setVisibility(false)
+      }
+    }
+
+    const onMouseEnter = () => {
+      if (!draggingScrollbar) {
+        setVisibility(true)
       }
     }
 
@@ -115,62 +183,61 @@ export default function CustomCursor() {
     document.addEventListener('mouseenter', onMouseEnter)
 
     const animate = () => {
-      /* Dot follows the real cursor */
-      if (dotRef.current) {
-        dotRef.current.style.transform = `
-          translate(${mouseX - 4}px, ${mouseY - 4}px)
-          scale(1)
-        `
+      if (!draggingScrollbar) {
+        if (dotRef.current) {
+          dotRef.current.style.transform = `
+            translate(${mouseX - 4}px, ${mouseY - 4}px)
+            scale(1)
+          `
+        }
+
+        const ringLerp = 0.18
+
+        ringX += (mouseX - ringX) * ringLerp
+        ringY += (mouseY - ringY) * ringLerp
+
+        if (ringRef.current) {
+          const scale = hoveringInteractive ? 1.7 : 1
+
+          ringRef.current.style.transform = `
+            translate(${ringX - 20}px, ${ringY - 20}px)
+            scale(${scale})
+          `
+
+          ringRef.current.style.borderColor = hoveringInteractive
+            ? 'rgba(0,255,136,0.85)'
+            : 'rgba(0,255,136,0.4)'
+
+          ringRef.current.style.boxShadow = hoveringInteractive
+            ? '0 0 18px rgba(0,255,136,0.35)'
+            : 'none'
+        }
+
+        const glowLerp = 0.07
+
+        glowX += (mouseX - glowX) * glowLerp
+        glowY += (mouseY - glowY) * glowLerp
+
+        if (glowRef.current) {
+          glowRef.current.style.transform = `
+            translate(${glowX - 60}px, ${glowY - 60}px)
+          `
+
+          glowRef.current.style.opacity = visible
+            ? hoveringInteractive
+              ? '0.4'
+              : '0.15'
+            : '0'
+        }
       }
 
-      /* Ring */
-      const RING_LERP = 0.18
-
-      ringX += (mouseX - ringX) * RING_LERP
-      ringY += (mouseY - ringY) * RING_LERP
-
-      if (ringRef.current) {
-        const scale = isHovering ? 1.7 : 1
-
-        ringRef.current.style.transform = `
-          translate(${ringX - 20}px, ${ringY - 20}px)
-          scale(${scale})
-        `
-
-        ringRef.current.style.borderColor = isHovering
-          ? 'rgba(0,255,136,0.85)'
-          : 'rgba(0,255,136,0.4)'
-
-        ringRef.current.style.boxShadow = isHovering
-          ? '0 0 18px rgba(0,255,136,0.35)'
-          : 'none'
-      }
-
-      /* Glow */
-      const GLOW_LERP = 0.07
-
-      glowX += (mouseX - glowX) * GLOW_LERP
-      glowY += (mouseY - glowY) * GLOW_LERP
-
-      if (glowRef.current) {
-        glowRef.current.style.transform = `
-          translate(${glowX - 60}px, ${glowY - 60}px)
-        `
-
-        glowRef.current.style.opacity = isVisible
-          ? isHovering
-            ? '0.4'
-            : '0.15'
-          : '0'
-      }
-
-      rafId = requestAnimationFrame(animate)
+      animationFrame = requestAnimationFrame(animate)
     }
 
-    rafId = requestAnimationFrame(animate)
+    animationFrame = requestAnimationFrame(animate)
 
     return () => {
-      cancelAnimationFrame(rafId)
+      cancelAnimationFrame(animationFrame)
 
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('pointerover', onPointerOver)
@@ -184,7 +251,6 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Cursor dot */}
       <div
         ref={dotRef}
         className="fixed top-0 left-0 pointer-events-none hidden md:block"
@@ -198,11 +264,10 @@ export default function CustomCursor() {
             '0 0 8px rgba(0,255,136,0.9), 0 0 16px rgba(0,255,136,0.4)',
           opacity: 0,
           willChange: 'transform',
-          transition: 'opacity 0.2s ease',
+          transition: 'opacity 0.15s ease',
         }}
       />
 
-      {/* Cursor ring */}
       <div
         ref={ringRef}
         className="fixed top-0 left-0 pointer-events-none hidden md:block"
@@ -215,11 +280,10 @@ export default function CustomCursor() {
           opacity: 0,
           willChange: 'transform',
           transition:
-            'opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
+            'opacity 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease',
         }}
       />
 
-      {/* Cursor glow */}
       <div
         ref={glowRef}
         className="fixed top-0 left-0 pointer-events-none hidden md:block"
@@ -232,7 +296,7 @@ export default function CustomCursor() {
             'radial-gradient(circle, rgba(0,255,136,0.15) 0%, transparent 70%)',
           opacity: 0,
           willChange: 'transform',
-          transition: 'opacity 0.3s ease',
+          transition: 'opacity 0.25s ease',
           filter: 'blur(8px)',
         }}
       />

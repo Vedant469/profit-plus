@@ -816,358 +816,443 @@ export default function LeadsPage() {
 
       {/* Lead modal */}
       {selected && (
-        <>
-          {/* Visual backdrop only — DOES NOT capture scrolling */}
-          <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm pointer-events-none" />
+  <div
+    className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+    onWheel={(event) => {
+      event.stopPropagation()
+    }}
+    onTouchMove={(event) => {
+      event.stopPropagation()
+    }}
+  >
+    {/* Backdrop */}
+    <div
+      className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+      onClick={closeLead}
+    />
 
-          {/* Modal layer — only the modal captures pointer events */}
-          <div
-            className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
-            aria-hidden="true"
-          >
-            <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.97,
-                y: 8,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                y: 0,
-              }}
-              transition={{
-                duration: 0.18,
-              }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="lead-details-title"
-              className="pointer-events-auto w-full max-w-2xl h-[min(800px,calc(100vh-2rem))] max-h-[calc(100vh-2rem)] bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+    {/* Modal */}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96, y: 8 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="
+        relative
+        z-10
+        w-full
+        max-w-lg
+        max-h-[90vh]
+        min-h-0
+        flex
+        flex-col
+        overflow-hidden
+        rounded-2xl
+        border
+        border-white/10
+        bg-slate-900
+        shadow-2xl
+      "
+      onClick={(event) => event.stopPropagation()}
+      onWheel={(event) => event.stopPropagation()}
+      onTouchMove={(event) => event.stopPropagation()}
+    >
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
+
+      <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-4 border-b border-white/5 bg-slate-900">
+        <div className="min-w-0">
+          <h3 className="text-white font-bold text-lg">
+            Lead Details
+          </h3>
+
+          <p className="text-gray-500 text-xs mt-1">
+            Manage this lead and its follow-up
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={closeLead}
+          className="
+            flex-shrink-0
+            p-2
+            rounded-lg
+            text-gray-400
+            hover:text-white
+            hover:bg-white/5
+            transition-colors
+          "
+          aria-label="Close lead details"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* =====================================================
+          SCROLLABLE CONTENT
+      ====================================================== */}
+
+      <div
+        className="
+          flex-1
+          min-h-0
+          overflow-y-auto
+          overflow-x-hidden
+          overscroll-contain
+          scrollbar-gutter-stable
+        "
+        onWheel={(event) => {
+          event.stopPropagation()
+        }}
+        onTouchMove={(event) => {
+          event.stopPropagation()
+        }}
+      >
+        <div className="p-5 space-y-4">
+
+          {/* Lead information */}
+
+          {[
+            {
+              icon: Mail,
+              label: 'Name',
+              value: selected.name,
+            },
+            {
+              icon: Mail,
+              label: 'Email',
+              value: selected.email,
+            },
+            {
+              icon: Building2,
+              label: 'Company',
+              value: selected.company || 'Not provided',
+            },
+            {
+              icon: DollarSign,
+              label: 'Budget',
+              value: selected.budget || 'Not specified',
+            },
+            {
+              icon: Calendar,
+              label: 'Submitted',
+              value: new Date(
+                selected.created_at
+              ).toLocaleString('en-IN'),
+            },
+          ].map(({ icon: Icon, label, value }) => (
+            <div
+              key={label}
+              className="
+                flex
+                items-start
+                gap-3
+                p-3
+                rounded-xl
+                bg-white/5
+              "
             >
-              {/* Fixed modal header */}
-              <div className="flex-shrink-0 flex items-center justify-between gap-4 px-6 py-5 border-b border-white/10 bg-slate-900">
-                <div className="min-w-0">
-                  <h3
-                    id="lead-details-title"
-                    className="text-white font-bold text-lg"
-                  >
-                    Lead Details
-                  </h3>
+              <Icon className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
 
-                  <div className="flex flex-wrap items-center gap-2 mt-2">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                        statusConfig[
-                          selected.status ??
-                            'new'
-                        ].className
-                      }`}
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          statusConfig[
-                            selected.status ??
-                              'new'
-                          ].dotClass
-                        }`}
-                      />
+              <div className="min-w-0">
+                <p className="text-gray-400 text-xs">
+                  {label}
+                </p>
 
-                      {
-                        statusConfig[
-                          selected.status ??
-                            'new'
-                        ].label
-                      }
-                    </span>
-
-                    {isFollowUpOverdue(
-                      selected
-                    ) && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-red-300 bg-red-500/10 border border-red-500/20">
-                        <Clock3 className="w-3 h-3" />
-                        Overdue
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <button
-                  onClick={closeLead}
-                  disabled={savingFollowUp}
-                  aria-label="Close lead details"
-                  className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/5 disabled:opacity-50 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <p className="text-white text-sm font-medium break-words">
+                  {value}
+                </p>
               </div>
+            </div>
+          ))}
 
-              {/* ONLY this area scrolls */}
-              <div
-                className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
-                style={{
-                  scrollbarGutter: 'stable',
-                }}
-              >
-                <div className="px-6 py-5">
-                  {/* Lead information */}
-                  <div className="space-y-3">
-                    {[
-                      {
-                        icon: Mail,
-                        label: 'Name',
-                        value:
-                          selected.name,
-                      },
-                      {
-                        icon: Mail,
-                        label: 'Email',
-                        value:
-                          selected.email,
-                      },
-                      {
-                        icon: Building2,
-                        label: 'Company',
-                        value:
-                          selected.company ||
-                          'Not provided',
-                      },
-                      {
-                        icon: DollarSign,
-                        label: 'Budget',
-                        value:
-                          selected.budget ||
-                          'Not specified',
-                      },
-                      {
-                        icon: Calendar,
-                        label: 'Submitted',
-                        value:
-                          formatDateTime(
-                            selected.created_at
-                          ),
-                      },
-                      {
-                        icon: Calendar,
-                        label: 'Updated',
-                        value:
-                          selected
-                            .updated_at
-                            ? formatDateTime(
-                                selected.updated_at
-                              )
-                            : 'Not updated',
-                      },
-                    ].map(
-                      ({
-                        icon: Icon,
-                        label,
-                        value,
-                      }) => (
-                        <div
-                          key={label}
-                          className="flex items-start gap-3 p-3.5 bg-white/5 rounded-xl"
-                        >
-                          <Icon className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+          {/* Message */}
 
-                          <div className="min-w-0">
-                            <p className="text-gray-400 text-xs">
-                              {label}
-                            </p>
+          <div className="p-4 rounded-xl bg-white/5">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageSquare className="w-4 h-4 text-emerald-400" />
 
-                            <p className="text-white text-sm font-medium break-words mt-0.5">
-                              {value}
-                            </p>
-                          </div>
-                        </div>
-                      )
-                    )}
+              <p className="text-gray-400 text-xs">
+                Message
+              </p>
+            </div>
 
-                    {/* Message */}
-                    <div className="p-3.5 bg-white/5 rounded-xl">
-                      <div className="flex items-center gap-2 mb-2">
-                        <MessageSquare className="w-4 h-4 text-emerald-400" />
-
-                        <p className="text-gray-400 text-xs">
-                          Message
-                        </p>
-                      </div>
-
-                      <p className="text-white text-sm leading-relaxed whitespace-pre-wrap break-words">
-                        {selected.message ||
-                          'No message provided.'}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Follow-up Management */}
-                  <div className="mt-5 p-4 rounded-2xl bg-white/[0.03] border border-white/10">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                      <div>
-                        <h4 className="text-white text-sm font-semibold">
-                          Follow-up Management
-                        </h4>
-
-                        <p className="text-gray-500 text-xs mt-1">
-                          Track outreach and upcoming
-                          follow-ups for this lead.
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={
-                          markContacted
-                        }
-                        disabled={
-                          savingFollowUp
-                        }
-                        className="inline-flex items-center justify-center px-3.5 py-2 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium hover:bg-violet-500/20 disabled:opacity-50 transition-all"
-                      >
-                        {savingFollowUp
-                          ? 'Saving...'
-                          : 'Mark Contacted'}
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-                      <div>
-                        <label
-                          htmlFor="next-follow-up"
-                          className="block text-xs text-gray-400 mb-2"
-                        >
-                          Next Follow-up
-                        </label>
-
-                        <input
-                          id="next-follow-up"
-                          type="datetime-local"
-                          value={
-                            followUpDate
-                          }
-                          onChange={(
-                            event
-                          ) =>
-                            setFollowUpDate(
-                              event
-                                .target
-                                .value
-                            )
-                          }
-                          className="w-full min-w-0 px-3 py-2.5 bg-slate-950 border border-white/10 rounded-lg text-sm text-white outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 transition-all"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs text-gray-400 mb-2">
-                          Last Contacted
-                        </label>
-
-                        <div className="w-full min-h-[42px] px-3 py-2.5 flex items-center bg-slate-950 border border-white/10 rounded-lg text-sm text-gray-300">
-                          {selected.last_contacted_at
-                            ? formatDateTime(
-                                selected.last_contacted_at
-                              )
-                            : 'Not contacted yet'}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <label
-                        htmlFor="internal-notes"
-                        className="block text-xs text-gray-400 mb-2"
-                      >
-                        Internal Notes
-                      </label>
-
-                      <textarea
-                        id="internal-notes"
-                        rows={4}
-                        value={
-                          internalNotes
-                        }
-                        onChange={(
-                          event
-                        ) =>
-                          setInternalNotes(
-                            event
-                              .target
-                              .value
-                          )
-                        }
-                        placeholder="Add private sales notes..."
-                        className="w-full px-3 py-3 bg-slate-950 border border-white/10 rounded-lg text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 resize-none transition-all"
-                      />
-
-                      <p className="text-[11px] text-gray-600 mt-2">
-                        These notes are for your
-                        internal sales workflow.
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-5 pt-4 border-t border-white/5">
-                      <button
-                        onClick={
-                          clearFollowUp
-                        }
-                        disabled={
-                          savingFollowUp ||
-                          !followUpDate
-                        }
-                        className="px-4 py-2.5 bg-white/5 border border-white/10 text-gray-400 text-sm font-medium rounded-lg hover:bg-white/10 disabled:opacity-40 transition-all"
-                      >
-                        Clear Follow-up
-                      </button>
-
-                      <button
-                        onClick={
-                          saveFollowUp
-                        }
-                        disabled={
-                          savingFollowUp
-                        }
-                        className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-lg disabled:opacity-50 transition-all"
-                      >
-                        {savingFollowUp
-                          ? 'Saving...'
-                          : 'Save Follow-up'}
-                      </button>
-                    </div>
-                  </div>
-
-                  {actionError && (
-                    <div className="flex items-start gap-2.5 mt-4 p-3 rounded-xl bg-red-500/5 border border-red-500/10">
-                      <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
-
-                      <p className="text-xs text-red-300">
-                        {actionError}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Fixed footer */}
-              <div className="flex-shrink-0 flex flex-col sm:flex-row gap-3 px-6 py-4 border-t border-white/10 bg-slate-900">
-                <button
-                  onClick={closeLead}
-                  disabled={savingFollowUp}
-                  className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 text-gray-400 text-sm font-medium rounded-xl hover:bg-white/10 disabled:opacity-50 transition-all"
-                >
-                  Close
-                </button>
-
-                <a
-                  href={`mailto:${selected.email}`}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold rounded-xl transition-all"
-                >
-                  <Mail className="w-4 h-4" />
-                  Reply Now
-                </a>
-              </div>
-            </motion.div>
+            <p className="text-white text-sm leading-relaxed whitespace-pre-wrap break-words">
+              {selected.message || 'No message provided.'}
+            </p>
           </div>
-        </>
-      )}
+
+          {/* =================================================
+              FOLLOW-UP SECTION
+          ================================================== */}
+
+          <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-4">
+            <div>
+              <p className="text-white text-sm font-semibold">
+                Follow-up Management
+              </p>
+
+              <p className="text-gray-500 text-xs mt-1">
+                Manage contact status and next follow-up.
+              </p>
+            </div>
+
+            {/* Existing dates */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-3 rounded-lg bg-slate-950/60 border border-white/5">
+                <p className="text-gray-500 text-[11px] uppercase tracking-wide">
+                  Last Contacted
+                </p>
+
+                <p className="text-gray-300 text-sm mt-1">
+                  {selected.last_contacted_at
+                    ? formatDateTime(
+                        selected.last_contacted_at
+                      )
+                    : 'Not contacted'}
+                </p>
+              </div>
+
+              <div className="p-3 rounded-lg bg-slate-950/60 border border-white/5">
+                <p className="text-gray-500 text-[11px] uppercase tracking-wide">
+                  Next Follow-up
+                </p>
+
+                <p
+                  className={`text-sm mt-1 ${
+                    isFollowUpOverdue(selected)
+                      ? 'text-red-400'
+                      : 'text-gray-300'
+                  }`}
+                >
+                  {selected.next_follow_up_at
+                    ? formatDateTime(
+                        selected.next_follow_up_at
+                      )
+                    : 'Not scheduled'}
+                </p>
+              </div>
+            </div>
+
+            {/* Next follow-up */}
+
+            <div>
+              <label
+                htmlFor="lead-follow-up"
+                className="block mb-1.5 text-xs font-medium text-gray-400"
+              >
+                Next Follow-up
+              </label>
+
+              <input
+                id="lead-follow-up"
+                type="datetime-local"
+                value={toDateTimeLocalValue(
+                  selected.next_follow_up_at
+                )}
+                onChange={(event) => {
+                  setSelected((current) => {
+                    if (!current) {
+                      return current
+                    }
+
+                    return {
+                      ...current,
+                      next_follow_up_at: event.target.value
+                        ? new Date(
+                            event.target.value
+                          ).toISOString()
+                        : null,
+                    }
+                  })
+                }}
+                className="
+                  w-full
+                  rounded-xl
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  px-3.5
+                  py-2.5
+                  text-sm
+                  text-white
+                  outline-none
+                  focus:border-emerald-400/40
+                "
+              />
+            </div>
+
+            {/* Internal notes */}
+
+            <div>
+              <label
+                htmlFor="lead-internal-notes"
+                className="block mb-1.5 text-xs font-medium text-gray-400"
+              >
+                Internal Notes
+              </label>
+
+              <textarea
+                id="lead-internal-notes"
+                rows={4}
+                value={selected.internal_notes ?? ''}
+                onChange={(event) => {
+                  setSelected((current) => {
+                    if (!current) {
+                      return current
+                    }
+
+                    return {
+                      ...current,
+                      internal_notes: event.target.value,
+                    }
+                  })
+                }}
+                placeholder="Add internal notes..."
+                className="
+                  w-full
+                  min-h-[110px]
+                  resize-y
+                  rounded-xl
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  px-3.5
+                  py-3
+                  text-sm
+                  text-white
+                  placeholder:text-gray-600
+                  outline-none
+                  focus:border-emerald-400/40
+                "
+              />
+            </div>
+
+            {/* Actions */}
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={markContacted}
+                className="
+                  px-3
+                  py-2
+                  rounded-lg
+                  text-xs
+                  font-medium
+                  bg-emerald-500/10
+                  border
+                  border-emerald-500/20
+                  text-emerald-400
+                  hover:bg-emerald-500/20
+                  transition-colors
+                "
+              >
+                Mark Contacted
+              </button>
+
+              <button
+                type="button"
+                onClick={saveFollowUp}
+                className="
+                  px-3
+                  py-2
+                  rounded-lg
+                  text-xs
+                  font-bold
+                  bg-emerald-500
+                  text-slate-950
+                  hover:bg-emerald-400
+                  transition-colors
+                "
+              >
+                Save Follow-up
+              </button>
+
+              <button
+                type="button"
+                onClick={clearFollowUp}
+                className="
+                  px-3
+                  py-2
+                  rounded-lg
+                  text-xs
+                  font-medium
+                  bg-white/5
+                  border
+                  border-white/10
+                  text-gray-400
+                  hover:text-white
+                  hover:bg-white/10
+                  transition-colors
+                "
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+
+          {/* Extra bottom breathing room */}
+
+          <div className="h-2" />
+        </div>
+      </div>
+
+      {/* =====================================================
+          FOOTER
+      ====================================================== */}
+
+      <div className="flex-shrink-0 flex gap-3 p-5 border-t border-white/5 bg-slate-900">
+        <button
+          type="button"
+          onClick={closeLead}
+          className="
+            flex-1
+            px-4
+            py-2.5
+            bg-white/5
+            border
+            border-white/10
+            text-gray-400
+            text-sm
+            font-medium
+            rounded-xl
+            hover:bg-white/10
+            hover:text-white
+            transition-all
+          "
+        >
+          Close
+        </button>
+
+        <a
+          href={`mailto:${selected.email}`}
+          className="
+            flex-1
+            flex
+            items-center
+            justify-center
+            gap-2
+            px-4
+            py-2.5
+            bg-emerald-500
+            hover:bg-emerald-400
+            text-slate-950
+            text-sm
+            font-bold
+            rounded-xl
+            transition-all
+          "
+        >
+          <Mail className="w-4 h-4" />
+          Reply Now
+        </a>
+      </div>
+        </motion.div>
+  </div>
+)}
     </div>
   )
 }
