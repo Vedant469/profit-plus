@@ -155,17 +155,27 @@ function AppContent() {
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isPublic = !isDashboard && !isSpecialPage
 
-  const [loadOptionalWidgets, setLoadOptionalWidgets] = useState(false)
+  const [loadExitIntent, setLoadExitIntent] = useState(false)
+  const [loadLiveChat, setLoadLiveChat] = useState(false)
 
-  // Chat and exit-intent UI are not needed for the first render. Defer their
-  // chunks until after the page has had time to become interactive.
+  // Defer optional widgets until after the initial page has had time to become interactive.
+  // Keep the existing mobile exit-intent experience, but avoid loading desktop chat on touch devices.
   useEffect(() => {
-    setLoadOptionalWidgets(false)
+    setLoadExitIntent(false)
+    setLoadLiveChat(false)
 
-    if (!isPublic || window.matchMedia('(pointer: coarse)').matches) return
+    if (!isPublic) return
 
-    const timer = window.setTimeout(() => setLoadOptionalWidgets(true), 4000)
-    return () => window.clearTimeout(timer)
+    const exitTimer = window.setTimeout(() => setLoadExitIntent(true), 4000)
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+    const chatTimer = isCoarsePointer
+      ? undefined
+      : window.setTimeout(() => setLoadLiveChat(true), 4000)
+
+    return () => {
+      window.clearTimeout(exitTimer)
+      if (chatTimer !== undefined) window.clearTimeout(chatTimer)
+    }
   }, [isPublic, location.pathname])
 
   const [showIntro, setShowIntro] = useState(() => {
@@ -201,10 +211,10 @@ function AppContent() {
       <MobileBottomNav />
       <PullToRefresh />
 
-      {loadOptionalWidgets && (
+      {(loadLiveChat || loadExitIntent) && (
         <Suspense fallback={null}>
-          <LiveChat />
-          <ExitIntentPopup />
+          {loadLiveChat && <LiveChat />}
+          {loadExitIntent && <ExitIntentPopup />}
         </Suspense>
       )}
 
