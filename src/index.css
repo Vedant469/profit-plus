@@ -470,23 +470,4 @@ textarea::placeholder {
     0 0 12px rgba(0, 255, 136, 0.5),
     0 0 20px rgba(0, 255, 136, 0.25);
 }
-/* =========================================================
-   CUSTOM CURSOR - DESKTOP
-   ========================================================= */
-
-@media (pointer: fine) and (min-width: 769px) {
-  html,
-  body,
-  html *,
-  html *::before,
-  html *::after {
-    cursor: none !important;
-  }
-
-  input,
-  textarea,
-  select,
-  [contenteditable='true'] {
-    cursor: none !important;
-  }
-}
+/* Native browser cursor is enabled for all devices. */
