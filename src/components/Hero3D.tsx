@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Float, Stars, MeshDistortMaterial, Sphere, Octahedron, Torus } from '@react-three/drei'
 import * as THREE from 'three'
@@ -104,7 +104,7 @@ function MouseCamera() {
     camera.lookAt(0, 0, 0)
   })
 
-  useMemo(() => {
+  useEffect(() => {
     const handler = (e: MouseEvent) => {
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1
       mouse.current.y = (e.clientY / window.innerHeight) * 2 - 1
