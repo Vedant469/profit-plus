@@ -50,7 +50,7 @@ export default function PortfolioPage() {
               Example playbooks
             </div>
 
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
               See how we think about
               <span className="gradient-text"> growth.</span>
             </h1>
@@ -169,7 +169,7 @@ export default function PortfolioPage() {
                     {cs.client}
                   </p>
 
-                  <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
+                  <h3 className="mt-2 break-words text-xl font-bold tracking-tight text-white sm:text-2xl">
                     {cs.title}
                   </h3>
 
