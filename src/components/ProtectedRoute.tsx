@@ -7,16 +7,38 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const [authenticated, setAuthenticated] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuthenticated(!!session)
+    let active = true
+
+    const verifySession = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser()
+      if (!active) return
+      setAuthenticated(!error && !!user?.email_confirmed_at)
       setLoading(false)
-    })
+      if (error || !user?.email_confirmed_at) {
+        await supabase.auth.signOut()
+      }
+    }
 
+    void verifySession()
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAuthenticated(!!session)
+      if (!active) return
+      if (!session) {
+        setAuthenticated(false)
+        setLoading(false)
+        return
+      }
+      // The initial getUser() performs the authoritative confirmation check.
+      if (session.user.email_confirmed_at) setAuthenticated(true)
+      else {
+        setAuthenticated(false)
+        void supabase.auth.signOut()
+      }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   if (loading) return (
