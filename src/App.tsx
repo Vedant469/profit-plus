@@ -18,8 +18,9 @@ import useSmoothScroll from './hooks/useSmoothScroll'
 import { useAdaptiveQuality } from './hooks/useAdaptiveQuality'
 import { SkeletonPage } from './components/Skeleton'
 import IntroAnimation from './components/IntroAnimation'
-import ExitIntentPopup from './components/ExitIntentPopup'
-import LiveChat from './components/LiveChat'
+
+const LiveChat = lazy(() => import('./components/LiveChat'))
+const ExitIntentPopup = lazy(() => import('./components/ExitIntentPopup'))
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
@@ -154,6 +155,19 @@ function AppContent() {
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isPublic = !isDashboard && !isSpecialPage
 
+  const [loadOptionalWidgets, setLoadOptionalWidgets] = useState(false)
+
+  // Chat and exit-intent UI are not needed for the first render. Defer their
+  // chunks until after the page has had time to become interactive.
+  useEffect(() => {
+    setLoadOptionalWidgets(false)
+
+    if (!isPublic || window.matchMedia('(pointer: coarse)').matches) return
+
+    const timer = window.setTimeout(() => setLoadOptionalWidgets(true), 4000)
+    return () => window.clearTimeout(timer)
+  }, [isPublic, location.pathname])
+
   const [showIntro, setShowIntro] = useState(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isMobileOrTouch = window.matchMedia('(max-width: 767px), (pointer: coarse)').matches
@@ -184,9 +198,15 @@ function AppContent() {
       <ScrollToTop />
       <ScrollProgressBar />
       <CookieBanner />
-      <LiveChat />
       <MobileBottomNav />
       <PullToRefresh />
+
+      {loadOptionalWidgets && (
+        <Suspense fallback={null}>
+          <LiveChat />
+          <ExitIntentPopup />
+        </Suspense>
+      )}
 
       {isPublic && <Navbar />}
 
@@ -202,7 +222,6 @@ function AppContent() {
 
       {isPublic && !shouldReduceMotion && <BackToTop />}
       {isPublic && <WhatsAppButton />}
-      {isPublic && <ExitIntentPopup />}
     </>
   )
 }
