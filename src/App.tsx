@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/react'
 import Navbar from './components/layout/Navbar'
@@ -155,8 +155,19 @@ function AppContent() {
   const isPublic = !isDashboard && !isSpecialPage
 
   const [showIntro, setShowIntro] = useState(() => {
-    return !sessionStorage.getItem('pp-intro-shown')
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    return !prefersReducedMotion && !sessionStorage.getItem('pp-intro-shown')
   })
+
+  useEffect(() => {
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const handleMotionPreferenceChange = (event: MediaQueryListEvent) => {
+      if (event.matches) setShowIntro(false)
+    }
+
+    motionPreference.addEventListener('change', handleMotionPreferenceChange)
+    return () => motionPreference.removeEventListener('change', handleMotionPreferenceChange)
+  }, [])
 
   const handleIntroComplete = () => {
     sessionStorage.setItem('pp-intro-shown', 'true')
