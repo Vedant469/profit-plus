@@ -165,31 +165,37 @@ export default function GodmodePage() {
     }
   }, [authorized, fetchData])
 
-  const toggleApproval = async (
-    id: string,
-    current: boolean
-  ) => {
+  const toggleApproval = async (id: string, current: boolean) => {
     try {
       setActionError('')
 
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ approved: !current })
-        .eq('id', id)
+      if (!current) {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        if (sessionError || !session?.access_token) throw new Error('Your admin session has expired. Please sign in again.')
 
-      if (updateError) {
-        throw updateError
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-verify-user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ userId: id }),
+        })
+        const result = await response.json().catch(() => ({}))
+        if (!response.ok) throw new Error(result.error || 'Manual email verification failed.')
+      } else {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ approved: false })
+          .eq('id', id)
+        if (updateError) throw updateError
       }
 
       await fetchData()
     } catch (err) {
       console.error('Approval update failed:', err)
-
-      setActionError(
-        err instanceof Error
-          ? err.message
-          : 'Unable to update approval status.'
-      )
+      setActionError(err instanceof Error ? err.message : 'Unable to update approval status.')
     }
   }
 
