@@ -77,7 +77,7 @@ export default function ContactPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium mb-4" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', color: '#a78bfa' }}>
               Get In Touch
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               Let's Build Your{' '}
               <span className="gradient-text">Profit Engine</span>
             </h1>
@@ -106,13 +106,13 @@ export default function ContactPage() {
               </div>
 
               {/* Email */}
-              <div className="flex items-start gap-4 p-4 rounded-xl transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(139,92,246,0.1)' }}>
+              <div className="flex min-w-0 items-start gap-4 p-4 rounded-xl transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(139,92,246,0.1)' }}>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,255,136,0.1)', border: '1px solid rgba(0,255,136,0.2)', color: '#00ff88' }}>
                   <Mail className="w-5 h-5" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-gray-400 text-xs mb-1">Email</p>
-                  <a href="mailto:profitplus025@gmail.com" className="text-white font-medium text-sm hover:opacity-80 transition-opacity">
+                  <a href="mailto:profitplus025@gmail.com" className="break-all text-white font-medium text-sm hover:opacity-80 transition-opacity">
                     profitplus025@gmail.com
                   </a>
                 </div>
