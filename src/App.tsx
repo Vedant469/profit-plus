@@ -148,7 +148,7 @@ function AnimatedRoutes() {
 function AppContent() {
   useSmoothScroll()
   const location = useLocation()
-  const { shouldReduceMotion, shouldDisable3D } = useAdaptiveQuality()
+  const { shouldReduceMotion } = useAdaptiveQuality()
 
   const isSpecialPage = ['/login', '/pending-approval', '/godmode'].includes(location.pathname)
   const isDashboard = location.pathname.startsWith('/dashboard')
