@@ -5,9 +5,8 @@ export default function AuroraBackground() {
 
   useEffect(() => {
     const container = containerRef.current
-    if (!container) return
+    if (!container || window.matchMedia('(pointer: coarse)').matches) return
 
-    // Subtle mouse parallax on aurora blobs
     const handleMouseMove = (e: MouseEvent) => {
       const { innerWidth, innerHeight } = window
       const x = (e.clientX / innerWidth - 0.5) * 20
@@ -30,7 +29,6 @@ export default function AuroraBackground() {
       <div className="aurora-blob aurora-2" />
       <div className="aurora-blob aurora-3" />
       <div className="aurora-blob aurora-4" />
-      {/* Grid overlay for depth */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -41,7 +39,6 @@ export default function AuroraBackground() {
           backgroundSize: '60px 60px',
         }}
       />
-      {/* Noise texture */}
       <div
         className="absolute inset-0 opacity-20"
         style={{
