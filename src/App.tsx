@@ -13,7 +13,6 @@ import BackToTop from './components/BackToTop'
 import WhatsAppButton from './components/WhatsAppButton'
 import PageTransition from './components/PageTransition'
 import MobileBottomNav from './components/MobileBottomNav'
-import CustomCursor from './components/CustomCursor'
 import PullToRefresh from './components/PullToRefresh'
 import useSmoothScroll from './hooks/useSmoothScroll'
 import { useAdaptiveQuality } from './hooks/useAdaptiveQuality'
@@ -167,7 +166,6 @@ function AppContent() {
   return (
     <>
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
-      {!shouldDisable3D && <CustomCursor />}
       <ScrollToTop />
       <ScrollProgressBar />
       <CookieBanner />
