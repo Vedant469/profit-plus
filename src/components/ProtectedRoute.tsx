@@ -28,11 +28,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         return
       }
       // The initial getUser() performs the authoritative confirmation check.
-      if (session.user.email_confirmed_at) setAuthenticated(true)
-      else {
-        setAuthenticated(false)
-        void supabase.auth.signOut()
-      }
+      setAuthenticated(!!session.user.email_confirmed_at)
     })
 
     return () => {
