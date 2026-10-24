@@ -18,8 +18,9 @@ import useSmoothScroll from './hooks/useSmoothScroll'
 import { useAdaptiveQuality } from './hooks/useAdaptiveQuality'
 import { SkeletonPage } from './components/Skeleton'
 import IntroAnimation from './components/IntroAnimation'
-import ExitIntentPopup from './components/ExitIntentPopup'
-import LiveChat from './components/LiveChat'
+
+const LiveChat = lazy(() => import('./components/LiveChat'))
+const ExitIntentPopup = lazy(() => import('./components/ExitIntentPopup'))
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
@@ -154,6 +155,29 @@ function AppContent() {
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isPublic = !isDashboard && !isSpecialPage
 
+  const [loadExitIntent, setLoadExitIntent] = useState(false)
+  const [loadLiveChat, setLoadLiveChat] = useState(false)
+
+  // Defer optional widgets until after the initial page has had time to become interactive.
+  // Keep the existing mobile exit-intent experience, but avoid loading desktop chat on touch devices.
+  useEffect(() => {
+    setLoadExitIntent(false)
+    setLoadLiveChat(false)
+
+    if (!isPublic) return
+
+    const exitTimer = window.setTimeout(() => setLoadExitIntent(true), 4000)
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+    const chatTimer = isCoarsePointer
+      ? undefined
+      : window.setTimeout(() => setLoadLiveChat(true), 4000)
+
+    return () => {
+      window.clearTimeout(exitTimer)
+      if (chatTimer !== undefined) window.clearTimeout(chatTimer)
+    }
+  }, [isPublic, location.pathname])
+
   const [showIntro, setShowIntro] = useState(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isMobileOrTouch = window.matchMedia('(max-width: 767px), (pointer: coarse)').matches
@@ -184,9 +208,15 @@ function AppContent() {
       <ScrollToTop />
       <ScrollProgressBar />
       <CookieBanner />
-      <LiveChat />
       <MobileBottomNav />
       <PullToRefresh />
+
+      {(loadLiveChat || loadExitIntent) && (
+        <Suspense fallback={null}>
+          {loadLiveChat && <LiveChat />}
+          {loadExitIntent && <ExitIntentPopup />}
+        </Suspense>
+      )}
 
       {isPublic && <Navbar />}
 
@@ -202,7 +232,6 @@ function AppContent() {
 
       {isPublic && !shouldReduceMotion && <BackToTop />}
       {isPublic && <WhatsAppButton />}
-      {isPublic && <ExitIntentPopup />}
     </>
   )
 }
