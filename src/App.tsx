@@ -156,7 +156,11 @@ function AppContent() {
 
   const [showIntro, setShowIntro] = useState(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    return !prefersReducedMotion && !sessionStorage.getItem('pp-intro-shown')
+    const isMobileOrTouch = window.matchMedia('(max-width: 767px), (pointer: coarse)').matches
+
+    // Skip the full-screen GSAP intro on mobile so the actual page can paint immediately.
+    // Keep the existing desktop intro unchanged.
+    return !prefersReducedMotion && !isMobileOrTouch && !sessionStorage.getItem('pp-intro-shown')
   })
 
   useEffect(() => {
