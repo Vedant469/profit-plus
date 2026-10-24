@@ -27,16 +27,20 @@ export default function LiveChat() {
       }
     }
 
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
       if (!window.$crisp) return
       if (window.innerWidth < 768) {
         window.$crisp.push(['do', 'chat:hide'])
       } else {
         window.$crisp.push(['do', 'chat:show'])
       }
-    })
+    }
+
+    window.addEventListener('resize', handleResize, { passive: true })
 
     return () => {
+      window.removeEventListener('resize', handleResize)
+      script.onload = null
       if (document.head.contains(script)) {
         document.head.removeChild(script)
       }
