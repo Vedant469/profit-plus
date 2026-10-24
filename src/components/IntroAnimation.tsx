@@ -155,8 +155,12 @@ export default function IntroAnimation({ onComplete }: Props) {
     gsap.set([dot, dotGlow], { attr: { cx: startPt.x, cy: startPt.y } })
 
     // ── Master timeline ─────────────────────────────────────
+    let completionTimeout: ReturnType<typeof setTimeout> | undefined
+
     const tl = gsap.timeline({
-      onComplete: () => setTimeout(onComplete, 150),
+      onComplete: () => {
+        completionTimeout = setTimeout(onComplete, 150)
+      },
     })
 
     // Phase 1 — Draw line + move dot
@@ -245,7 +249,10 @@ export default function IntroAnimation({ onComplete }: Props) {
       ease: 'power2.inOut',
     }, '-=0.35')
 
-    return () => { tl.kill() }
+    return () => {
+      tl.kill()
+      if (completionTimeout !== undefined) clearTimeout(completionTimeout)
+    }
   }, [onComplete])
 
   return (
