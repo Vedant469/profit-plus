@@ -40,7 +40,7 @@ export default function ServicesPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium mb-4" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', color: '#a78bfa' }}>
               What We Offer
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               Services Built to <span className="gradient-text">Maximise Profit</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
