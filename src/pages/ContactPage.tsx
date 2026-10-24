@@ -13,26 +13,44 @@ const teamContacts = [
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [notificationFailed, setNotificationFailed] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', company: '', budget: '', message: '' })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setSubmitError('')
+    setNotificationFailed(false)
+
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      company: form.company.trim(),
+      budget: form.budget,
+      message: form.message.trim(),
+    }
+
     try {
-      const { error } = await supabase.from('leads').insert([{
-        name: form.name, email: form.email,
-        company: form.company, budget: form.budget, message: form.message,
-      }])
+      const { error } = await supabase.from('leads').insert([payload])
       if (error) throw error
-      await fetch('/api/sendEmail', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
+
+      try {
+        const response = await fetch('/api/sendEmail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        if (!response.ok) setNotificationFailed(true)
+      } catch (emailError) {
+        console.error('Lead saved but notification failed:', emailError)
+        setNotificationFailed(true)
+      }
+
       setSubmitted(true)
     } catch (err) {
-      console.error('Error:', err)
-      setSubmitted(true)
+      console.error('Lead submission failed:', err)
+      setSubmitError('We could not save your message. Please try again or contact us by email.')
     } finally {
       setLoading(false)
     }
@@ -157,7 +175,15 @@ export default function ContactPage() {
                     <Check className="w-8 h-8" style={{ color: '#00ff88' }} />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-3">Message Sent!</h3>
-                  <p className="text-gray-400 max-w-sm mb-6">Thanks for reaching out. Our team will review your details and get back to you within 24 hours.</p>
+                  <p className="text-gray-400 max-w-sm mb-3">Thanks for reaching out. Your message has been saved successfully.</p>
+                  {notificationFailed && (
+                    <p className="text-amber-300 text-sm max-w-md mb-6">
+                      Our email notification could not be sent. Please also email profitplus025@gmail.com so the team can respond promptly.
+                    </p>
+                  )}
+                  {!notificationFailed && (
+                    <p className="text-gray-400 max-w-sm mb-6">Our team will review your details and get back to you within 24 hours.</p>
+                  )}
                   <button
                     onClick={() => { setSubmitted(false); setForm({ name: '', email: '', company: '', budget: '', message: '' }) }}
                     className="btn-ghost-pill"
@@ -167,6 +193,11 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="p-6 md:p-8 rounded-2xl space-y-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(139,92,246,0.1)' }}>
+                  {submitError && (
+                    <p role="alert" className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-300">
+                      {submitError}
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-gray-400 text-sm mb-2">Full Name *</label>
