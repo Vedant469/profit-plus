@@ -1,84 +1,113 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const WINDOW_MS = 10 * 60 * 1000
+const MAX_REQUESTS = 5
+const rateLimit = new Map()
+
+function escapeHtml(value) {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[character])
+}
+
+function cleanText(value, maxLength) {
+  if (typeof value !== 'string') return ''
+  return value.trim().slice(0, maxLength)
+}
+
+function checkRateLimit(ip) {
+  const now = Date.now()
+  const current = rateLimit.get(ip)
+
+  if (!current || now - current.startedAt >= WINDOW_MS) {
+    rateLimit.set(ip, { startedAt: now, count: 1 })
+    return true
+  }
+
+  if (current.count >= MAX_REQUESTS) return false
+  current.count += 1
+  return true
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST')
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { name, email, company, budget, message } = req.body
+  const contentLength = Number(req.headers['content-length'] || 0)
+  if (contentLength > 12000) {
+    return res.status(413).json({ error: 'Request is too large' })
+  }
+
+  const forwardedFor = req.headers['x-forwarded-for']
+  const ip = (typeof forwardedFor === 'string' ? forwardedFor.split(',')[0] : '') ||
+    req.headers['x-real-ip'] ||
+    'unknown'
+
+  if (!checkRateLimit(String(ip).trim())) {
+    return res.status(429).json({ error: 'Too many requests. Please try again later.' })
+  }
+
+  const name = cleanText(req.body?.name, 100)
+  const email = cleanText(req.body?.email, 254).toLowerCase()
+  const company = cleanText(req.body?.company, 120)
+  const budget = cleanText(req.body?.budget, 40)
+  const message = cleanText(req.body?.message, 3000)
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const allowedBudgets = new Set(['', '50k-1L', '1L-2.5L', '2.5L-5L', '5L+'])
+
+  if (!name || !emailPattern.test(email) || !message) {
+    return res.status(400).json({ error: 'Please provide a valid name, email, and message.' })
+  }
+
+  if (!allowedBudgets.has(budget)) {
+    return res.status(400).json({ error: 'Please select a valid budget range.' })
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY is not configured')
+    return res.status(503).json({ error: 'Email notifications are temporarily unavailable.' })
+  }
+
+  const safeName = escapeHtml(name)
+  const safeEmail = escapeHtml(email)
+  const safeCompany = escapeHtml(company || 'Not provided')
+  const safeBudget = escapeHtml(budget || 'Not specified')
+  const safeMessage = escapeHtml(message).replace(/\r?\n/g, '<br />')
 
   try {
-    await resend.emails.send({
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const { error } = await resend.emails.send({
       from: 'ProfitPlus <onboarding@resend.dev>',
       to: ['profitplus025@gmail.com'],
-      subject: `🔥 New Lead: ${name} ${company ? `from ${company}` : ''}`,
+      subject: `New ProfitPlus lead: ${name.replace(/[\r\n]/g, ' ')}`,
       html: `
-        <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #020617; color: #f8fafc; border-radius: 16px; overflow: hidden;">
-          
-          <!-- Header -->
-          <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 32px; text-align: center;">
-            <h1 style="margin: 0; color: #020617; font-size: 24px; font-weight: 900;">🚀 New Lead!</h1>
-            <p style="margin: 8px 0 0; color: #020617; opacity: 0.8; font-size: 14px;">Someone just submitted the ProfitPlus contact form</p>
-          </div>
-
-          <!-- Body -->
-          <div style="padding: 32px;">
-            
-            <!-- Lead details -->
-            <div style="background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-              <h2 style="color: #10b981; font-size: 16px; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 0.1em;">Lead Details</h2>
-              
-              <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b; font-size: 14px; width: 30%;">Name</td>
-                  <td style="padding: 8px 0; color: #f8fafc; font-size: 14px; font-weight: 600;">${name}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b; font-size: 14px;">Email</td>
-                  <td style="padding: 8px 0;">
-                    <a href="mailto:${email}" style="color: #10b981; font-size: 14px; font-weight: 600;">${email}</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b; font-size: 14px;">Company</td>
-                  <td style="padding: 8px 0; color: #f8fafc; font-size: 14px;">${company || 'Not provided'}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b; font-size: 14px;">Budget</td>
-                  <td style="padding: 8px 0;">
-                    <span style="background: #10b98120; color: #10b981; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;">${budget || 'Not specified'}</span>
-                  </td>
-                </tr>
-              </table>
-            </div>
-
-            <!-- Message -->
-            <div style="background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-              <h2 style="color: #10b981; font-size: 16px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.1em;">Their Message</h2>
-              <p style="color: #94a3b8; font-size: 14px; line-height: 1.7; margin: 0;">${message}</p>
-            </div>
-
-            <!-- CTA -->
-            <div style="text-align: center;">
-              <a href="mailto:${email}" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: #020617; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 12px; text-decoration: none;">
-                Reply to ${name} →
-              </a>
-            </div>
-          </div>
-
-          <!-- Footer -->
-          <div style="padding: 20px 32px; border-top: 1px solid #1e293b; text-align: center;">
-            <p style="color: #334155; font-size: 12px; margin: 0;">ProfitPlus — Profit-Driven Marketing Agency</p>
-          </div>
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#0f172a">
+          <h1>New ProfitPlus contact request</h1>
+          <p><strong>Name:</strong> ${safeName}</p>
+          <p><strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
+          <p><strong>Company:</strong> ${safeCompany}</p>
+          <p><strong>Budget:</strong> ${safeBudget}</p>
+          <h2>Message</h2>
+          <p style="white-space:normal;line-height:1.6">${safeMessage}</p>
         </div>
       `,
     })
 
+    if (error) {
+      console.error('Resend error:', error)
+      return res.status(502).json({ error: 'Lead saved, but email notification failed.' })
+    }
+
     return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Email error:', error)
-    return res.status(500).json({ error: 'Failed to send email' })
+    return res.status(502).json({ error: 'Lead saved, but email notification failed.' })
   }
 }
