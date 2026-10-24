@@ -34,12 +34,12 @@ export default function MobileBottomNav() {
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
     >
-      <div className="flex items-center justify-around px-1 py-2">
+      <div className="flex items-center justify-around px-1 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         {navItems.map(({ label, href, icon: Icon }) => (
           <Link
             key={href}
             to={href}
-            className="flex flex-col items-center gap-1 px-3 py-2 rounded-xl relative min-w-0"
+            className="flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 relative"
           >
             {isActive(href) && (
               <motion.div
