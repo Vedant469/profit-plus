@@ -31,7 +31,6 @@ export function useAdaptiveQuality(): AdaptiveQuality {
       }
 
       let score = 0
-
       const cores = navigator.hardwareConcurrency ?? 4
       if (cores >= 8) score += 3
       else if (cores >= 4) score += 2
@@ -51,8 +50,7 @@ export function useAdaptiveQuality(): AdaptiveQuality {
 
       if (window.innerWidth < 768) score -= 2
 
-      const isBatteryConstrained = battery && battery.level < 0.2 && !battery.charging
-      if (isBatteryConstrained) {
+      if (battery && battery.level < 0.2 && !battery.charging) {
         setQuality('low')
       } else if (score >= 7) {
         setQuality('high')
@@ -68,7 +66,6 @@ export function useAdaptiveQuality(): AdaptiveQuality {
     const handleResize = () => detectQuality()
 
     detectQuality()
-
     if (connection) connection.addEventListener('change', detectQuality)
     motionPreference.addEventListener('change', handleMotionPreferenceChange)
     window.addEventListener('resize', handleResize, { passive: true })
