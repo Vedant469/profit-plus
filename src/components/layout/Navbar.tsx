@@ -195,7 +195,7 @@ export default function Navbar() {
           </div>
 
           <button
-            className="md:hidden p-1 transition-colors"
+            className="md:hidden flex h-11 w-11 items-center justify-center rounded-xl transition-colors"
             style={{ color: 'rgba(255,255,255,0.6)' }}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
@@ -213,7 +213,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-x-0 top-16 z-40 p-4 md:hidden"
+            className="fixed inset-x-0 top-[4.25rem] z-40 p-4 md:hidden max-h-[calc(100dvh-4.25rem)] overflow-y-auto"
             style={{
               background: 'rgba(13,5,32,0.98)',
               backdropFilter: 'blur(20px)',
