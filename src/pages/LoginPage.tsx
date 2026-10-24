@@ -88,12 +88,16 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email: trimmedEmail,
         password,
       })
 
       if (signInError) throw signInError
+      if (!data.user?.email_confirmed_at) {
+        await supabase.auth.signOut()
+        throw new Error('Email not confirmed. Check your inbox or contact an administrator for manual verification.')
+      }
 
       navigate('/dashboard')
     } catch (err) {
@@ -165,15 +169,16 @@ export default function LoginPage() {
         }
       }
 
-      if (data.session) {
+      if (data.session && data.user?.email_confirmed_at) {
         navigate('/dashboard')
         return
       }
+      if (data.session) await supabase.auth.signOut()
 
       setMode('login')
       setPassword('')
       setConfirmPassword('')
-      setError('Account created. Check your email to confirm your account, then sign in.')
+      setError('Account created. Check your inbox (and spam folder) for the confirmation link. You must confirm your email before signing in. If you cannot access the verification email, contact an administrator for manual verification.')
     } catch (err) {
       setError(getAuthErrorMessage(err, 'signup'))
     } finally {
