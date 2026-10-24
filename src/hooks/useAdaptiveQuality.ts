@@ -18,64 +18,82 @@ export function useAdaptiveQuality(): AdaptiveQuality {
   const [quality, setQuality] = useState<Quality>('high')
 
   useEffect(() => {
+    let active = true
+    let battery: any = null
+
+    const connection = (navigator as any).connection
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
+
     const detectQuality = () => {
+      if (motionPreference.matches) {
+        setQuality('low')
+        return
+      }
+
       let score = 0
 
-      // Check CPU cores
       const cores = navigator.hardwareConcurrency ?? 4
       if (cores >= 8) score += 3
       else if (cores >= 4) score += 2
       else score += 1
 
-      // Check device memory (GB)
       const memory = (navigator as any).deviceMemory ?? 4
       if (memory >= 8) score += 3
       else if (memory >= 4) score += 2
       else score += 1
 
-      // Check connection speed
-      const connection = (navigator as any).connection
       if (connection) {
         if (connection.effectiveType === '4g') score += 2
         else if (connection.effectiveType === '3g') score += 1
-        else score += 0
       } else {
-        score += 2 // Assume good connection
+        score += 2
       }
 
-      // Check if mobile
-      const isMobile = window.innerWidth < 768
-      if (isMobile) score -= 2
+      if (window.innerWidth < 768) score -= 2
 
-      // Check battery (if available)
-      if ('getBattery' in navigator) {
-        (navigator as any).getBattery().then((battery: any) => {
-          if (battery.level < 0.2 && !battery.charging) {
-            setQuality('low')
-          }
-        }).catch(() => {})
-      }
-
-      // Check reduced motion preference
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      if (prefersReducedMotion) {
+      const isBatteryConstrained = battery && battery.level < 0.2 && !battery.charging
+      if (isBatteryConstrained) {
         setQuality('low')
-        return
+      } else if (score >= 7) {
+        setQuality('high')
+      } else if (score >= 4) {
+        setQuality('medium')
+      } else {
+        setQuality('low')
       }
-
-      // Set quality based on score
-      if (score >= 7) setQuality('high')
-      else if (score >= 4) setQuality('medium')
-      else setQuality('low')
     }
+
+    const handleBatteryChange = () => detectQuality()
+    const handleMotionPreferenceChange = () => detectQuality()
+    const handleResize = () => detectQuality()
 
     detectQuality()
 
-    // Re-check on network change
-    const connection = (navigator as any).connection
-    if (connection) {
-      connection.addEventListener('change', detectQuality)
-      return () => connection.removeEventListener('change', detectQuality)
+    if (connection) connection.addEventListener('change', detectQuality)
+    motionPreference.addEventListener('change', handleMotionPreferenceChange)
+    window.addEventListener('resize', handleResize, { passive: true })
+
+    if ('getBattery' in navigator) {
+      ;(navigator as any).getBattery().then((result: any) => {
+        if (!active) return
+        battery = result
+        battery.addEventListener('levelchange', handleBatteryChange)
+        battery.addEventListener('chargingchange', handleBatteryChange)
+        detectQuality()
+      }).catch(() => {
+        // Battery status is optional; keep the device-based quality estimate.
+      })
+    }
+
+    return () => {
+      active = false
+      if (connection) connection.removeEventListener('change', detectQuality)
+      motionPreference.removeEventListener('change', handleMotionPreferenceChange)
+      window.removeEventListener('resize', handleResize)
+      if (battery) {
+        battery.removeEventListener('levelchange', handleBatteryChange)
+        battery.removeEventListener('chargingchange', handleBatteryChange)
+      }
     }
   }, [])
 
