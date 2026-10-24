@@ -7,32 +7,56 @@ export default function useSmoothScroll() {
   const location = useLocation()
 
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.0,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      touchMultiplier: 2,
-    })
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let rafId: number | null = null
 
-    lenisRef.current = lenis
+    const stopSmoothScroll = () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      }
+      lenisRef.current?.destroy()
+      lenisRef.current = null
+    }
 
-    let rafId: number
+    const startSmoothScroll = () => {
+      if (motionPreference.matches || lenisRef.current) return
 
-    function raf(time: number) {
-      lenis.raf(time)
+      const lenis = new Lenis({
+        duration: 1.0,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        touchMultiplier: 2,
+      })
+
+      lenisRef.current = lenis
+
+      const raf = (time: number) => {
+        lenis.raf(time)
+        rafId = requestAnimationFrame(raf)
+      }
+
       rafId = requestAnimationFrame(raf)
     }
 
-    rafId = requestAnimationFrame(raf)
+    const handleMotionPreferenceChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        stopSmoothScroll()
+      } else {
+        startSmoothScroll()
+      }
+    }
+
+    startSmoothScroll()
+    motionPreference.addEventListener('change', handleMotionPreferenceChange)
 
     return () => {
-      cancelAnimationFrame(rafId)
-      lenis.destroy()
-      lenisRef.current = null
+      motionPreference.removeEventListener('change', handleMotionPreferenceChange)
+      stopSmoothScroll()
     }
   }, [])
 
-  // Reset scroll position on every route change
+  // Reset scroll position on every route change.
   useEffect(() => {
     if (lenisRef.current) {
       lenisRef.current.scrollTo(0, { immediate: true })
