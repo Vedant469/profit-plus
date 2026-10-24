@@ -48,15 +48,7 @@ body {
    ========================================================= */
 
 /*
-  IMPORTANT:
-  Do NOT hide the real browser cursor.
-
-  The CustomCursor component is only a visual enhancement.
-  The native cursor is required for:
-  - scrollbar dragging
-  - text selection
-  - resize handles
-  - native browser interactions
+  Use the native browser cursor for consistent, accessible interactions.
 */
 
 * {
