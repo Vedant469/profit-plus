@@ -6,8 +6,7 @@ interface MagneticButtonProps {
   className?: string
   strength?: number
   onClick?: () => void
-    as?: 'button' | 'div' // reserved for future use
-
+  as?: 'button' | 'div'
 }
 
 export default function MagneticButton({
@@ -22,6 +21,7 @@ export default function MagneticButton({
   const [isHovered, setIsHovered] = useState(false)
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (window.matchMedia('(pointer: coarse)').matches) return
     const rect = ref.current?.getBoundingClientRect()
     if (!rect) return
     const x = e.clientX - rect.left - rect.width / 2
@@ -29,7 +29,9 @@ export default function MagneticButton({
     setPosition({ x: x * strength, y: y * strength })
   }
 
-  const handleMouseEnter = () => setIsHovered(true)
+  const handleMouseEnter = () => {
+    if (!window.matchMedia('(pointer: coarse)').matches) setIsHovered(true)
+  }
 
   const handleMouseLeave = () => {
     setIsHovered(false)
@@ -54,9 +56,8 @@ export default function MagneticButton({
         damping: 15,
         mass: 0.1,
       }}
-      className={`relative cursor-none ${className}`}
+      className={`relative cursor-auto ${className}`}
     >
-      {/* Neon glow ring on hover */}
       <motion.div
         className="absolute inset-0 rounded-xl pointer-events-none"
         animate={{
