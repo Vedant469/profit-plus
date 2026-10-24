@@ -78,7 +78,8 @@ export default function DashboardLayout({
           fixed md:sticky
           top-0 left-0
           z-50 md:z-30
-          h-screen
+          h-[100dvh]
+          max-w-[min(18rem,85vw)]
           ${
             mobileOpen
               ? 'translate-x-0'
@@ -108,7 +109,7 @@ export default function DashboardLayout({
 
           <button
             type="button"
-            className="md:hidden text-gray-400 hover:text-white"
+            className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 hover:text-white"
             onClick={() => setMobileOpen(false)}
           >
             <X className="w-5 h-5" />
@@ -200,7 +201,7 @@ export default function DashboardLayout({
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="md:hidden text-gray-400 hover:text-white transition-colors"
+              className="md:hidden flex h-11 w-11 items-center justify-center rounded-lg text-gray-400 hover:text-white transition-colors"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -269,7 +270,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Natural page scroll */}
-        <main className="p-4 sm:p-6">
+        <main className="min-w-0 p-3 sm:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           {children}
         </main>
       </div>
