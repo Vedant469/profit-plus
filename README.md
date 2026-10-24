@@ -124,8 +124,4 @@ Built with a focus on **visual design, reusable components, responsive UX, and p
         Vercel API Layer
               │
               ▼
-<<<<<<< Updated upstream
             Resend
-=======
-            Resend
->>>>>>> Stashed changes
